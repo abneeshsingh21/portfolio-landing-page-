@@ -128,10 +128,25 @@ export default function Navbar() {
             LinkedIn
           </a>
 
+          {/* Glassmorphic Resume Button */}
+          <a
+            href="/resume.pdf"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-white/20 bg-white/[0.07] backdrop-blur-md text-white text-[11px] font-bold tracking-[0.1em] uppercase hover:bg-white/15 hover:border-white/40 hover:scale-105 transition-all duration-200"
+          >
+            <span>Resume</span>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-80">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
+
           {/* Premium Hire Me CTA */}
           <a
             href="mailto:singhabneesh250@gmail.com"
-            className="group relative inline-flex items-center gap-2.5 overflow-hidden border border-white/20 text-white text-[11px] font-bold px-5 py-2.5 rounded-full tracking-[0.12em] uppercase hover:border-white/50 transition-all duration-300"
+            className="group relative inline-flex items-center gap-2.5 overflow-hidden border border-white/20 text-white text-[11px] font-bold px-5 py-2 rounded-full tracking-[0.12em] uppercase hover:border-white/50 transition-all duration-300"
             style={{ backdropFilter: 'blur(8px)' }}
           >
             {/* Shimmer sweep on hover */}
@@ -175,6 +190,9 @@ export default function Navbar() {
           </a>
         ))}
         <div className="flex flex-col gap-4 mt-6 border-t border-white/10 pt-8">
+          <a href="/resume.pdf" target="_blank" rel="noreferrer" className="text-[18px] font-bold text-white hover:text-white/60 transition-colors flex items-center gap-2" onClick={() => setIsOpen(false)}>
+            Resume ↗
+          </a>
           <a href="https://asworks.studio" target="_blank" rel="noreferrer" className="text-[18px] font-bold text-white/60 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>ASWorks Studio</a>
           <a href="https://github.com/abneeshsingh21" target="_blank" rel="noreferrer" className="text-[18px] font-bold text-white/60 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>GitHub</a>
           <a href="https://linkedin.com/in/abneesh-singh001" target="_blank" rel="noreferrer" className="text-[18px] font-bold text-white/60 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>LinkedIn</a>

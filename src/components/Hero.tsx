@@ -90,17 +90,30 @@ export default function Hero() {
               </svg>
             </a>
             <a
-              href="https://asworks.studio"
+              href="/resume.pdf"
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-white border border-white/20 text-[13px] font-bold px-6 py-3 rounded-full hover:bg-white/20 hover:scale-105 transition-all duration-200"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Download Resume
+            </a>
+            <a
+              href="https://asworks.studio"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 bg-transparent text-white/70 border border-white/10 text-[13px] font-medium px-5 py-3 rounded-full hover:text-white hover:border-white/30 transition-all duration-200"
             >
               ASWorks Studio
             </a>
             <a
               href="mailto:singhabneesh250@gmail.com"
               onClick={handleCopy}
-              className="inline-flex items-center gap-2 bg-transparent text-white/60 border border-white/10 text-[13px] font-medium px-6 py-3 rounded-full hover:text-white hover:border-white/30 transition-all duration-200"
+              className="inline-flex items-center gap-2 bg-transparent text-white/50 border border-white/10 text-[13px] font-medium px-5 py-3 rounded-full hover:text-white hover:border-white/30 transition-all duration-200"
             >
               {copied ? '✓ Copied!' : 'singhabneesh250@gmail.com'}
             </a>

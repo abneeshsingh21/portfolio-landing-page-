@@ -5,6 +5,7 @@ const commands = [
   { id: 'about',         group: 'Navigate',  label: 'Go to About',                           href: '#about',                                                     icon: '◈' },
   { id: 'architecture',  group: 'Navigate',  label: 'Go to Architecture',                    href: '#architecture',                                              icon: '◈' },
   { id: 'certs',         group: 'Navigate',  label: 'Go to Certifications',                  href: '#certifications',                                            icon: '◈' },
+  { id: 'resume',        group: 'Navigate',  label: 'View / Download Resume (PDF)',          href: '/resume.pdf',                                                icon: '↓' },
   { id: 'asworks',       group: 'Projects',  label: 'ASWorks — Digital Marketplace (Live)',  href: 'https://asworks.studio',                                     icon: '↗' },
   { id: 'epl',           group: 'Projects',  label: 'EPL — English Programming Language',    href: 'https://github.com/abneeshsingh21/EPL',                      icon: '↗' },
   { id: 'neuroshell',    group: 'Projects',  label: 'NeuroShell — AI Terminal Shell',        href: 'https://github.com/abneeshsingh21/neuroshell',               icon: '↗' },
