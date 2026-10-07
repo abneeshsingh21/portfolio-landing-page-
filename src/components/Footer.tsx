@@ -7,7 +7,6 @@ const links = [
   { label: 'ASWorks Marketplace',     href: 'https://asworks.studio' },
   { label: 'EPL on GitHub',           href: 'https://github.com/abneeshsingh21/EPL' },
   { label: 'NeuroShell — GitHub',     href: 'https://github.com/abneeshsingh21/neuroshell' },
-  { label: 'Syting Platform',         href: 'https://dashboard-nine-lovat-38.vercel.app' },
   { label: 'LangShift — Marketplace', href: 'https://marketplace.visualstudio.com/items?itemName=langshift.langshift' },
   { label: 'LinkedIn',                href: 'https://linkedin.com/in/abneesh-singh001' },
   { label: 'GitHub Profile',          href: 'https://github.com/abneeshsingh21' },

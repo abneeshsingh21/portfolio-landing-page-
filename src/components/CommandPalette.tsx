@@ -8,7 +8,7 @@ const commands = [
   { id: 'asworks',       group: 'Projects',  label: 'ASWorks — Digital Marketplace (Live)',  href: 'https://asworks.studio',                                     icon: '↗' },
   { id: 'epl',           group: 'Projects',  label: 'EPL — English Programming Language',    href: 'https://github.com/abneeshsingh21/EPL',                      icon: '↗' },
   { id: 'neuroshell',    group: 'Projects',  label: 'NeuroShell — AI Terminal Shell',        href: 'https://github.com/abneeshsingh21/neuroshell',               icon: '↗' },
-  { id: 'syting',        group: 'Projects',  label: 'Syting — Real-Time Discovery Platform', href: 'https://dashboard-nine-lovat-38.vercel.app',                icon: '↗' },
+  { id: 'syting',        group: 'Projects',  label: 'Syting — Real-Time Discovery Platform', href: '#projects',                                                 icon: '◈' },
   { id: 'langshift',     group: 'Projects',  label: 'LangShift — VS Code Marketplace',       href: 'https://marketplace.visualstudio.com/items?itemName=langshift.langshift', icon: '↗' },
   { id: 'github',        group: 'Social',    label: 'Open GitHub Profile',                   href: 'https://github.com/abneeshsingh21',                         icon: '↗' },
   { id: 'linkedin',      group: 'Social',    label: 'Open LinkedIn Profile',                 href: 'https://linkedin.com/in/abneesh-singh001',                  icon: '↗' },

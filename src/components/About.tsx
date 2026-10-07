@@ -6,7 +6,7 @@ const metrics = [
   { target: 4000, prefix: '', suffix: '+', label: 'Global Downloads',    sub: 'EPL Ecosystem' },
   { target: 2500, prefix: '', suffix: '+', label: 'Offline Phrases',     sub: 'NeuroShell Engine' },
   { target: 25,   prefix: '', suffix: '+', label: 'Language Targets',    sub: 'LangShift Transpiler' },
-  { target: 100,  prefix: '', suffix: '%', label: 'Live Architecture',   sub: 'asworks.studio & Syting' },
+  { target: 100,  prefix: '', suffix: '%', label: 'Commercial Uptime',   sub: 'asworks.studio' },
 ];
 
 const stack = ['C++', 'Python', 'SQL (PostgreSQL)', 'Generative AI', 'Agentic AI', 'Multi-LLM Routing', 'System Design', 'Next.js', 'FastAPI', 'Docker'];

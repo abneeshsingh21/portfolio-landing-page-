@@ -66,19 +66,19 @@ const projects = [
     role: 'Lead Systems & Database Developer',
     description: 'A real-time cross-platform mobile social discovery platform built with Flutter and Supabase PostgreSQL. Features privacy-first matchmaking, automated spam prevention, and low-latency encrypted messaging channels.',
     problem: 'Modern social and discovery apps frequently expose user privacy prematurely, suffer from laggy messaging infrastructure, and lack robust database-level security against spoofing.',
-    solution: 'Designed and deployed the backend architecture on PostgreSQL (SQL) with Row Level Security (RLS) policies, security-definer database triggers, and real-time WebSocket channels for sub-100ms chat latency. Built an administrative analytics dashboard to monitor platform health and safety.',
+    solution: 'Designed and deployed the backend architecture on PostgreSQL (SQL) with Row Level Security (RLS) policies, security-definer database triggers, and real-time WebSocket channels for sub-100ms chat latency.',
     impact: 'Real-Time Database Architecture',
     features: [
       'Privacy-First Mutual Discovery System',
       'PostgreSQL Backend with Row Level Security',
       'Sub-100ms Real-Time Chat via WebSockets',
       'Database Triggers for Automated Spam Defense',
-      'Dedicated Admin Monitoring Dashboard',
+      'Optimized Relational Schema & Indexes',
       'Cross-Platform iOS & Android Architecture'
     ],
     tags: ['Flutter', 'PostgreSQL', 'SQL', 'Supabase Realtime', 'System Design'],
-    link: 'https://dashboard-nine-lovat-38.vercel.app',
-    liveUrl: 'https://dashboard-nine-lovat-38.vercel.app'
+    link: '#projects',
+    isPrivate: true
   },
   {
     title: 'LangShift',

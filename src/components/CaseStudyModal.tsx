@@ -151,41 +151,50 @@ export default function CaseStudyModal({ project, isOpen, onClose }: { project: 
             </div>
             
             <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-              {project.liveUrl && project.liveUrl !== project.link && (
-                <a 
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group inline-flex items-center justify-center gap-2.5 bg-white text-black px-6 py-3.5 rounded-full font-bold text-[13px] hover:scale-105 transition-all duration-300"
-                >
-                  Visit Website
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
-                    <line x1="7" y1="17" x2="17" y2="7"></line>
-                    <polyline points="7 7 17 7 17 17"></polyline>
-                  </svg>
-                </a>
+              {project.isPrivate ? (
+                <div className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-white/15 bg-white/[0.04] text-white/70 text-[12px] font-bold tracking-wider uppercase">
+                  <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                  Private Proprietary Platform
+                </div>
+              ) : (
+                <>
+                  {project.liveUrl && project.liveUrl !== project.link && (
+                    <a 
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="group inline-flex items-center justify-center gap-2.5 bg-white text-black px-6 py-3.5 rounded-full font-bold text-[13px] hover:scale-105 transition-all duration-300"
+                    >
+                      Visit Website
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
+                        <line x1="7" y1="17" x2="17" y2="7"></line>
+                        <polyline points="7 7 17 7 17 17"></polyline>
+                      </svg>
+                    </a>
+                  )}
+                  <a 
+                    href={project.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={`group inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-[13px] hover:scale-105 transition-all duration-300 ${
+                      project.liveUrl && project.liveUrl !== project.link
+                        ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
+                        : 'bg-white text-black'
+                    }`}
+                  >
+                    {project.link.includes('github.com')
+                      ? 'View on GitHub'
+                      : project.link.includes('marketplace')
+                      ? 'VS Code Marketplace'
+                      : 'Launch Platform'}
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                      <polyline points="15 3 21 3 21 9"></polyline>
+                      <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                  </a>
+                </>
               )}
-              <a 
-                href={project.link}
-                target="_blank"
-                rel="noreferrer"
-                className={`group inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-[13px] hover:scale-105 transition-all duration-300 ${
-                  project.liveUrl && project.liveUrl !== project.link
-                    ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
-                    : 'bg-white text-black'
-                }`}
-              >
-                {project.link.includes('github.com')
-                  ? 'View on GitHub'
-                  : project.link.includes('marketplace')
-                  ? 'VS Code Marketplace'
-                  : 'Launch Platform'}
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
-                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                  <polyline points="15 3 21 3 21 9"></polyline>
-                  <line x1="10" y1="14" x2="21" y2="3"></line>
-                </svg>
-              </a>
             </div>
           </div>
 
