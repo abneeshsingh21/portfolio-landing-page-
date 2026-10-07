@@ -112,7 +112,15 @@ export default function Navbar() {
             GitHub
           </a>
           <a
-            href="https://linkedin.com/in/abneeshsingh21"
+            href="https://asworks.studio"
+            target="_blank"
+            rel="noreferrer"
+            className="text-white/40 text-[11px] font-bold uppercase tracking-widest hover:text-white transition-colors duration-200"
+          >
+            ASWorks
+          </a>
+          <a
+            href="https://linkedin.com/in/abneesh-singh001"
             target="_blank"
             rel="noreferrer"
             className="text-white/40 text-[11px] font-bold uppercase tracking-widest hover:text-white transition-colors duration-200"
@@ -167,8 +175,9 @@ export default function Navbar() {
           </a>
         ))}
         <div className="flex flex-col gap-4 mt-6 border-t border-white/10 pt-8">
+          <a href="https://asworks.studio" target="_blank" rel="noreferrer" className="text-[18px] font-bold text-white/60 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>ASWorks Studio</a>
           <a href="https://github.com/abneeshsingh21" target="_blank" rel="noreferrer" className="text-[18px] font-bold text-white/60 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>GitHub</a>
-          <a href="https://linkedin.com/in/abneeshsingh21" target="_blank" rel="noreferrer" className="text-[18px] font-bold text-white/60 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>LinkedIn</a>
+          <a href="https://linkedin.com/in/abneesh-singh001" target="_blank" rel="noreferrer" className="text-[18px] font-bold text-white/60 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>LinkedIn</a>
           <a href="mailto:singhabneesh250@gmail.com" className="text-[18px] font-bold text-white hover:text-white/60 transition-colors" onClick={() => setIsOpen(false)}>singhabneesh250@gmail.com</a>
         </div>
       </div>

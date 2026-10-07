@@ -3,13 +3,13 @@ import FadeIn from './FadeIn';
 import { useCountUp } from '../hooks/useCountUp';
 
 const metrics = [
-  { target: 4000, prefix: '', suffix: '+', label: 'PyPI Downloads',    sub: 'EPL Ecosystem' },
-  { target: 25,   prefix: '', suffix: '+', label: 'Language Targets',  sub: 'LangShift Extension' },
-  { target: 6,    prefix: '', suffix: '',  label: 'Open Source Tools', sub: 'Across all projects' },
-  { target: 2500, prefix: '', suffix: '+', label: 'Offline Phrases',   sub: 'NeuroShell Dictionary' },
+  { target: 4000, prefix: '', suffix: '+', label: 'Global Downloads',    sub: 'EPL Ecosystem' },
+  { target: 2500, prefix: '', suffix: '+', label: 'Offline Phrases',     sub: 'NeuroShell Engine' },
+  { target: 25,   prefix: '', suffix: '+', label: 'Language Targets',    sub: 'LangShift Transpiler' },
+  { target: 100,  prefix: '', suffix: '%', label: 'Live Architecture',   sub: 'asworks.studio & Syting' },
 ];
 
-const stack = ['C++', 'Python', 'Rust', 'pybind11', 'LLVM', 'WebAssembly', 'FastAPI', 'Ollama', 'TypeScript', 'spaCy'];
+const stack = ['C++', 'Python', 'SQL (PostgreSQL)', 'Generative AI', 'Agentic AI', 'Multi-LLM Routing', 'System Design', 'Next.js', 'FastAPI', 'Docker'];
 
 function MetricCard({ target, prefix, suffix, label, sub, isLast }: {
   target: number; prefix: string; suffix: string;
@@ -79,19 +79,33 @@ export default function About() {
         {/* 12-Column Bio Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 border-t border-white/10 pt-16">
 
-          {/* Left: Identity */}
+          {/* Left: Identity & Education */}
           <div className="md:col-span-4 flex flex-col">
             <FadeIn delay={200}>
               <h3 className="text-[20px] font-bold text-white mb-1 text-shadow">Abneesh Singh</h3>
-              <p className="text-[11px] text-white/50 uppercase tracking-[0.2em] font-bold mb-10 text-shadow">
-                Agentic AI &amp; Product Engineer
+              <p className="text-[11px] text-white/50 uppercase tracking-[0.2em] font-bold mb-4 text-shadow">
+                Agentic AI &amp; Systems Engineer
               </p>
+
+              {/* Education Box */}
+              <div className="p-4 rounded-xl border border-white/10 bg-white/[0.02] mb-8">
+                <p className="text-white/90 text-[12px] font-semibold leading-relaxed">
+                  B.Tech in Computer Science
+                </p>
+                <p className="text-white/50 text-[11px] tracking-wide">
+                  Specialization: Artificial Intelligence &amp; Machine Learning
+                </p>
+                <p className="text-white/30 text-[10px] uppercase tracking-wider mt-1 font-mono">
+                  Jagran Lakecity University · Expected 2027
+                </p>
+              </div>
+
               <div className="flex flex-col gap-3">
                 {[
                   'High-Performance C++ Systems',
-                  'Multi-LLM Orchestration',
-                  'Compiler & Language Design',
-                  'Zero-Trace Offline Architecture'
+                  'Generative & Agentic AI',
+                  'Relational Databases & SQL',
+                  'Developer Tooling & Compilers'
                 ].map((s) => (
                   <div key={s} className="flex items-center gap-3 text-[12px] sm:text-[13px] text-white/70 font-medium tracking-wide uppercase text-shadow">
                     <div className="w-1 h-1 rounded-full bg-white/40 flex-shrink-0"></div>
@@ -107,7 +121,7 @@ export default function About() {
             <FadeIn delay={300}>
               <div className="flex-1">
                 <p className="text-white/90 text-[15px] sm:text-[16px] leading-[1.9] font-light mb-0 text-shadow-lg">
-                  I build systems where raw computational power meets precise language understanding. My work spans the full stack of language technology — from designing EPL, a programming language with a multi-target compiler (LLVM, WebAssembly, Kotlin, Bytecode VM), to NeuroShell, an AI-native terminal with a 2,500-phrase offline NLP engine and a 4-layer safety system, both built on a native C++ core via pybind11.
+                  I am a software engineer and open-source creator focused on building high-performance systems and practical AI applications. With strong roots in C++, SQL, and modern Generative AI, my goal is to make computing intuitive and accessible. I created EPL (English Programming Language), an open-source language allowing anyone to code in plain English that has reached over 4,000 global downloads, and NeuroShell, an intelligent terminal shell combining a native C++ engine with AI to turn plain English into safe command-line executions.
                 </p>
               </div>
             </FadeIn>
@@ -115,7 +129,7 @@ export default function About() {
             <FadeIn delay={400}>
               <div className="flex-1 flex flex-col">
                 <p className="text-white/90 text-[15px] sm:text-[16px] leading-[1.9] font-light mb-10 text-shadow-lg">
-                  My engineering philosophy is precision through abstraction — removing every layer of unnecessary complexity between a user's intent and the system's execution. From LangShift, a VS Code extension that transpiles code across 25 languages with two-pass AI self-correction and PII scrubbing, to IRA, a fully offline voice assistant with real-time emotion detection — I build tools that feel inevitable to use.
+                  Beyond developer tools, I build and operate production-grade web and mobile platforms. I launched ASWorks (asworks.studio)—a live commercial digital marketplace with secure dual-gateway payments and automated digital fulfillment—and engineered Syting, a privacy-first real-time discovery platform backed by a robust PostgreSQL architecture. Whether designing agentic workflows, optimizing database queries, or writing core systems, I focus on software that is reliable, scalable, and genuinely useful.
                 </p>
                 <div className="mt-auto">
                   <a

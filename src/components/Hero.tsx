@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useTypewriter } from '../hooks/useTypewriter';
 
 const stats = [
-  { value: '6', label: 'Open Source Projects' },
-  { value: '4K+', label: 'PyPI Downloads' },
-  { value: '3', label: 'Published Tools' },
+  { value: '4K+', label: 'Global Downloads' },
+  { value: '2.5K+', label: 'Offline Phrases' },
+  { value: 'Live', label: 'Commercial SaaS' },
   { value: '25+', label: 'Language Targets' },
 ];
 
 export default function Hero() {
   const { displayed, done } = useTypewriter(
-    'Architecting AI-native programming languages, intelligent terminals, and autonomous security systems. What are we building next?'
+    'Architecting Generative AI & Agentic Systems, High-Performance C++, and Scalable Platforms. What are we building next?'
   );
   const [showContent, setShowContent] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -47,13 +47,13 @@ export default function Hero() {
             <span className="text-white/60 text-[11px] font-bold uppercase tracking-widest">Available for opportunities</span>
           </div>
 
-          {/* Blurred identity line */}
+          {/* Identity line - sharp and readable */}
           <div
-            className="pointer-events-none select-none mb-4 text-white font-bold text-shadow-lg"
-            style={{ fontSize: 'clamp(16px, 3vw, 22px)', lineHeight: 1.3, filter: 'blur(3.5px)', opacity: 0.9 }}
+            className="mb-4 text-white font-bold text-shadow-lg tracking-tight"
+            style={{ fontSize: 'clamp(18px, 3.2vw, 24px)', lineHeight: 1.3, opacity: 1 }}
           >
-            Hey, I'm Abneesh Singh —<br />
-            Agentic AI & Product Engineer
+            Hey, I'm <span className="text-white">Abneesh Singh</span> —<br />
+            <span className="text-white/80 font-semibold text-[15px] sm:text-[18px]">Agentic AI &amp; Systems Engineer</span>
           </div>
 
           {/* Typewriter */}
@@ -90,12 +90,12 @@ export default function Hero() {
               </svg>
             </a>
             <a
-              href="https://github.com/abneeshsingh21/EPL"
+              href="https://asworks.studio"
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-white border border-white/20 text-[13px] font-bold px-6 py-3 rounded-full hover:bg-white/20 hover:scale-105 transition-all duration-200"
             >
-              Explore EPL
+              ASWorks Studio
             </a>
             <a
               href="mailto:singhabneesh250@gmail.com"
@@ -116,9 +116,11 @@ export default function Hero() {
           >
             <a href="https://github.com/abneeshsingh21" target="_blank" rel="noreferrer" className="text-white/30 text-[11px] uppercase tracking-widest font-bold hover:text-white transition-colors duration-200">GitHub</a>
             <span className="w-1 h-1 rounded-full bg-white/20"></span>
-            <a href="https://linkedin.com/in/abneeshsingh21" target="_blank" rel="noreferrer" className="text-white/30 text-[11px] uppercase tracking-widest font-bold hover:text-white transition-colors duration-200">LinkedIn</a>
+            <a href="https://linkedin.com/in/abneesh-singh001" target="_blank" rel="noreferrer" className="text-white/30 text-[11px] uppercase tracking-widest font-bold hover:text-white transition-colors duration-200">LinkedIn</a>
             <span className="w-1 h-1 rounded-full bg-white/20"></span>
-            <a href="https://marketplace.visualstudio.com/items?itemName=langshift.langshift" target="_blank" rel="noreferrer" className="text-white/30 text-[11px] uppercase tracking-widest font-bold hover:text-white transition-colors duration-200">VS Code Marketplace</a>
+            <a href="https://asworks.studio" target="_blank" rel="noreferrer" className="text-white/30 text-[11px] uppercase tracking-widest font-bold hover:text-white transition-colors duration-200">asworks.studio</a>
+            <span className="w-1 h-1 rounded-full bg-white/20"></span>
+            <a href="https://marketplace.visualstudio.com/items?itemName=langshift.langshift" target="_blank" rel="noreferrer" className="text-white/30 text-[11px] uppercase tracking-widest font-bold hover:text-white transition-colors duration-200">VS Code Extension</a>
           </div>
         </div>
       </div>

@@ -4,27 +4,27 @@ import FadeIn from './FadeIn';
 const competencies = [
   {
     number: '01',
-    title: 'Systems Engineering',
-    description: 'Developing incredibly fast, memory-safe backend engines using C++, Rust, and pybind11 interoperability bridges for sub-microsecond execution.',
-    tags: ['C++', 'Rust', 'pybind11', 'CMake']
+    title: 'High-Performance C++ Systems',
+    description: 'Engineering ultra-fast, memory-conscious core runtime engines and native interoperability bridges using modern C++20 and pybind11 for near-instant execution.',
+    tags: ['C++', 'pybind11', 'CMake', 'System Design']
   },
   {
     number: '02',
-    title: 'Agentic AI & ML',
-    description: 'Orchestrating multi-LLM networks (Ollama, Anthropic, Llama.cpp) for complex, autonomous reasoning tasks that operate entirely offline.',
-    tags: ['Ollama', 'LLM', 'Phi-3', 'Mistral']
+    title: 'Generative AI & Agentic Systems',
+    description: 'Architecting intelligent autonomous pipelines, multi-LLM routing networks (Ollama, Claude, GPT-4o), and Zero-Trust safety shields that block destructive actions.',
+    tags: ['Agentic AI', 'Generative AI', 'Multi-LLM Routing', 'Zero-Trust Safety']
   },
   {
     number: '03',
-    title: 'Zero-Trace Architectures',
-    description: 'Designing 100% air-gapped systems that process sensitive telemetry locally via Small Language Models with zero network I/O.',
-    tags: ['OSINT', 'FastAPI', 'Privacy', 'SLMs']
+    title: 'Relational Databases & SQL',
+    description: 'Designing normalized schemas, query optimizations, Row Level Security (RLS) policies, and high-throughput real-time data channels with PostgreSQL.',
+    tags: ['PostgreSQL', 'SQL Optimization', 'Database Schema', 'Real-Time Data']
   },
   {
     number: '04',
-    title: 'Language & Compilers',
-    description: 'Parsing natural language into executable ASTs and leveraging LLVM, WebAssembly, Kotlin, and JS targets for universal deployment.',
-    tags: ['LLVM', 'WebAssembly', 'AST', 'TF-IDF']
+    title: 'Developer Tooling & Compilers',
+    description: 'Building multi-backend compilers (LLVM, WebAssembly), AST parsers, official VS Code extensions, and production-grade commercial software marketplaces.',
+    tags: ['LLVM', 'WebAssembly', 'Compiler Design', 'Next.js 15']
   }
 ];
 
@@ -71,7 +71,7 @@ export default function Experience() {
                   Architecture.
                 </h2>
                 <p className="text-white/60 text-[15px] leading-[1.8] font-light text-shadow-lg">
-                  I architect highly scalable, zero-latency systems at the intersection of C++/Rust execution speed and Python's ML ecosystem — building autonomous, offline-first workflows that refuse to compromise on privacy or performance.
+                  I architect reliable, high-performance systems at the intersection of modern C++ efficiency, relational database design, and Generative AI workflows—building intuitive developer tools and scalable platforms that deliver real-world impact.
                 </p>
               </div>
 

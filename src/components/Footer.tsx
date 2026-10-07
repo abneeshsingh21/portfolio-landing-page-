@@ -1,12 +1,16 @@
 import React from 'react';
 
 const links = [
-  { label: 'Projects',               href: '#projects' },
-  { label: 'Architecture',           href: '#architecture' },
-  { label: 'Certifications',         href: '#certifications' },
-  { label: 'EPL on GitHub',          href: 'https://github.com/abneeshsingh21/EPL' },
-  { label: 'LangShift — Marketplace',href: 'https://marketplace.visualstudio.com/items?itemName=langshift.langshift' },
-  { label: 'LinkedIn',               href: 'https://linkedin.com/in/abneeshsingh21' },
+  { label: 'Projects',                href: '#projects' },
+  { label: 'Architecture',            href: '#architecture' },
+  { label: 'Certifications',          href: '#certifications' },
+  { label: 'ASWorks Marketplace',     href: 'https://asworks.studio' },
+  { label: 'EPL on GitHub',           href: 'https://github.com/abneeshsingh21/EPL' },
+  { label: 'NeuroShell — GitHub',     href: 'https://github.com/abneeshsingh21/neuroshell' },
+  { label: 'Syting Platform',         href: 'https://dashboard-nine-lovat-38.vercel.app' },
+  { label: 'LangShift — Marketplace', href: 'https://marketplace.visualstudio.com/items?itemName=langshift.langshift' },
+  { label: 'LinkedIn',                href: 'https://linkedin.com/in/abneesh-singh001' },
+  { label: 'GitHub Profile',          href: 'https://github.com/abneeshsingh21' },
 ];
 
 export default function Footer() {
@@ -29,7 +33,7 @@ export default function Footer() {
                 <span className="text-white/30 text-[18px] select-none">✳︎</span>
               </div>
               <p className="text-white/55 text-[14px] leading-[1.8] font-light max-w-xs mb-8">
-                Agentic AI &amp; Product Engineer building offline-first, high-performance systems at the intersection of C++ and ML.
+                Agentic AI &amp; Systems Engineer building high-performance systems and practical AI applications at the intersection of C++, SQL, and Generative AI.
               </p>
               <a
                 href="mailto:singhabneesh250@gmail.com"

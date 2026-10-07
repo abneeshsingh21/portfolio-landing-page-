@@ -1,15 +1,18 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 
 const commands = [
-  { id: 'projects',      group: 'Navigate',  label: 'Go to Projects',         href: '#projects',       icon: '◈' },
-  { id: 'about',         group: 'Navigate',  label: 'Go to About',            href: '#about',          icon: '◈' },
-  { id: 'architecture',  group: 'Navigate',  label: 'Go to Architecture',     href: '#architecture',   icon: '◈' },
-  { id: 'certs',         group: 'Navigate',  label: 'Go to Certifications',   href: '#certifications', icon: '◈' },
-  { id: 'epl',           group: 'Projects',  label: 'EPL — English Programming Language', href: 'https://github.com/abneeshsingh21/EPL', icon: '↗' },
-  { id: 'langshift',     group: 'Projects',  label: 'LangShift — VS Code Marketplace',   href: 'https://marketplace.visualstudio.com/items?itemName=langshift.langshift', icon: '↗' },
-  { id: 'github',        group: 'Social',    label: 'Open GitHub Profile',    href: 'https://github.com/abneeshsingh21',          icon: '↗' },
-  { id: 'linkedin',      group: 'Social',    label: 'Open LinkedIn Profile',  href: 'https://linkedin.com/in/abneeshsingh21',     icon: '↗' },
-  { id: 'email',         group: 'Contact',   label: 'Send Email',             href: 'mailto:singhabneesh250@gmail.com',           icon: '→' },
+  { id: 'projects',      group: 'Navigate',  label: 'Go to Projects',                        href: '#projects',                                                  icon: '◈' },
+  { id: 'about',         group: 'Navigate',  label: 'Go to About',                           href: '#about',                                                     icon: '◈' },
+  { id: 'architecture',  group: 'Navigate',  label: 'Go to Architecture',                    href: '#architecture',                                              icon: '◈' },
+  { id: 'certs',         group: 'Navigate',  label: 'Go to Certifications',                  href: '#certifications',                                            icon: '◈' },
+  { id: 'asworks',       group: 'Projects',  label: 'ASWorks — Digital Marketplace (Live)',  href: 'https://asworks.studio',                                     icon: '↗' },
+  { id: 'epl',           group: 'Projects',  label: 'EPL — English Programming Language',    href: 'https://github.com/abneeshsingh21/EPL',                      icon: '↗' },
+  { id: 'neuroshell',    group: 'Projects',  label: 'NeuroShell — AI Terminal Shell',        href: 'https://github.com/abneeshsingh21/neuroshell',               icon: '↗' },
+  { id: 'syting',        group: 'Projects',  label: 'Syting — Real-Time Discovery Platform', href: 'https://dashboard-nine-lovat-38.vercel.app',                icon: '↗' },
+  { id: 'langshift',     group: 'Projects',  label: 'LangShift — VS Code Marketplace',       href: 'https://marketplace.visualstudio.com/items?itemName=langshift.langshift', icon: '↗' },
+  { id: 'github',        group: 'Social',    label: 'Open GitHub Profile',                   href: 'https://github.com/abneeshsingh21',                         icon: '↗' },
+  { id: 'linkedin',      group: 'Social',    label: 'Open LinkedIn Profile',                 href: 'https://linkedin.com/in/abneesh-singh001',                  icon: '↗' },
+  { id: 'email',         group: 'Contact',   label: 'Send Email',                            href: 'mailto:singhabneesh250@gmail.com',                          icon: '→' },
 ];
 
 export default function CommandPalette() {

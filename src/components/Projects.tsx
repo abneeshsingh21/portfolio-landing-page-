@@ -7,68 +7,97 @@ const projects = [
   {
     title: 'EPL Ecosystem',
     role: 'Founder & Lead Architect',
-    description: 'EPL (English Programming Language) is a fully-featured programming language where every keyword is natural English. Build web apps, REST APIs, AI pipelines, and cloud-native services — in syntax anyone can read.',
-    problem: 'Every programming language forces developers to learn cryptic symbols, rigid syntax, and language-specific idioms before writing a single line of useful logic. This creates an enormous barrier between ideas and execution.',
-    solution: 'Designed EPL with a multi-backend architecture: source code flows through a Lexer → Parser → AST, then targets an Interpreter, Bytecode VM, LLVM native compiler, or WebAssembly. Ships with a 22-package official ecosystem and a VS Code extension.',
-    impact: '4,000+ PyPI Downloads',
-    features: ['LLVM Native Compilation', 'WebAssembly & Kotlin Targets', 'Bytecode VM Engine', '22-Package Ecosystem', 'VS Code Extension', 'REST API & Web Support'],
-    tags: ['Python', 'LLVM', 'WebAssembly', 'Bytecode VM', 'Kotlin'],
-    link: 'https://github.com/abneeshsingh21/EPL'
+    description: 'An open-source programming language designed so that code reads like natural, plain English sentences. Built to make programming accessible to beginners and powerful for engineers, EPL features a multi-backend compiler and a full standard library with 4,000+ global downloads.',
+    problem: 'Programming languages enforce cryptic syntax and symbols that present a steep barrier for beginners, students, and domain experts trying to translate mental logic into runnable code.',
+    solution: 'Designed and implemented the EPL compiler pipeline (Lexer, Parser, AST) with multiple compilation targets (Interpreter, Bytecode VM, native LLVM, WebAssembly). Released an official VS Code extension with code assistance, a 22-package standard library, and an automated package registry.',
+    impact: '4,000+ Global Downloads',
+    features: [
+      'Natural Plain-English Syntax Engine',
+      'Multi-Backend Compiler (LLVM, Wasm, VM)',
+      '22-Package Standard Library Ecosystem',
+      'Official VS Code Extension with Diagnostics',
+      'Automated Package Registry System',
+      'Full Web Documentation & Active Community'
+    ],
+    tags: ['C++', 'Python', 'LLVM', 'WebAssembly', 'Compiler Design'],
+    link: 'https://github.com/abneeshsingh21/EPL',
+    liveUrl: 'https://eplang.me'
   },
   {
     title: 'NeuroShell',
-    role: 'Lead Developer',
-    description: 'The Ultimate AI-Powered Intelligent Terminal. Type plain English, get shell commands. Auto-fixes errors, works 100% offline with a 2,500+ phrase dictionary, and supports 6 LLM providers via a native C++ hybrid engine.',
-    problem: 'Traditional terminals require memorizing hundreds of cryptic commands and flags. A single typo crashes a workflow, errors are opaque, and there is no safety net against catastrophically destructive commands like `rm -rf /`.',
-    solution: 'Built a terminal replacement with a C++ hybrid engine (FastParser, FuzzyMatcher, MarkovEngine via pybind11) and a 2,500+ offline phrase dictionary for instant English→Shell translation. A 4-layer safety system blocks dangerous commands and 25+ auto-fix patterns repair errors without internet.',
+    role: 'Founder & Lead Developer',
+    description: 'An intelligent terminal shell that allows developers to execute system commands using plain English. Combines a native C++20 engine with multi-LLM routing, 2,500+ offline translation phrases, and a 4-layer Zero-Trust safety shield that blocks destructive commands.',
+    problem: 'Terminal environments require memorizing hundreds of obscure commands and flags. Typos break production workflows, and dangerous commands like rm -rf / lack intelligent guardrails, risking catastrophic data loss.',
+    solution: 'Engineered a dual-engine architecture: a native C++20 core (FastParser, FuzzyMatcher via pybind11) coupled with Python multi-LLM routing (Ollama, Claude, GPT-4o). Includes a 2,500+ phrase offline dictionary and a 4-layer Zero-Trust safety shield that catches and blocks hazardous operations before shell execution.',
     impact: '2,500+ Offline Phrases',
-    features: ['Natural Language → Shell Commands', 'C++ Hybrid Engine via pybind11', '4-Layer Safety System (blocks rm -rf /)', '2,500+ Offline Dictionary (No LLM needed)', '6 LLM Providers (Ollama, Claude, GPT-4o)', 'Desktop GUI + Mission Control HUD'],
-    tags: ['Python', 'C++', 'pybind11', 'Ollama', 'TF-IDF', 'NLP'],
-    link: 'https://github.com/abneeshsingh21'
+    features: [
+      'Natural English → Shell Command Translation',
+      'High-Speed C++20 Core via pybind11',
+      '4-Layer Zero-Trust Safety Shield',
+      'Multi-LLM Routing (Ollama / Claude / GPT)',
+      '100% Offline Mode (2,500+ Dictionary)',
+      'Official VS Code 1-Click Terminal Extension'
+    ],
+    tags: ['C++', 'Python', 'Generative AI', 'pybind11', 'Zero-Trust Shield'],
+    link: 'https://github.com/abneeshsingh21/neuroshell',
+    liveUrl: 'https://github.com/abneeshsingh21/neuroshell'
   },
   {
-    title: 'GHOST',
-    role: 'Creator',
-    description: 'GHOST (Grey Hat Operational Security Tool) is a full-spectrum cybersecurity platform combining a local LLM (Ollama/Qwen) with a Python backend and a real-time web dashboard for grey-hat security operations.',
-    problem: 'Security professionals lack a unified, AI-assisted tool that can reason about threats, run operational modes (Teaching → Autonomous → Stealth), and keep all data fully local without cloud dependencies.',
-    solution: 'Built a Flask/SocketIO server that bridges a local Ollama LLM with a Kali Linux subsystem. Supports 4 operational modes (TEACHING, SUPERVISED, AUTONOMOUS, STEALTH) with a real-time cockpit dashboard and zero-trace shadow mode.',
-    impact: 'Full Spectrum Security',
-    features: ['4 Operational Modes (Teaching → Stealth)', 'Local LLM via Ollama (Qwen 3)', 'Real-time Cockpit Dashboard', 'Zero-Trace Shadow Mode', 'Kali Linux Subsystem Bridge', 'Network Packet Capture'],
-    tags: ['Python', 'Ollama', 'Flask', 'SocketIO', 'Cybersecurity'],
-    link: 'https://github.com/abneeshsingh21'
+    title: 'ASWorks',
+    role: 'Founder & Lead Architect',
+    description: 'A commercial digital marketplace and SaaS platform (asworks.studio) where software engineers and creators buy, sell, and instantly download verified developer assets, UI components, and web templates.',
+    problem: 'Digital creators and developers struggle with high marketplace commission fees, slow asset distribution, unverified listings, and complex multi-currency payment setups.',
+    solution: 'Architected and launched a full-stack digital marketplace using Next.js 15, TypeScript, and MongoDB. Integrated dual global payment gateways (Stripe and Razorpay) with automated GST invoicing, creator verification, and instantaneous secure digital file fulfillment.',
+    impact: 'Live Commercial Platform',
+    features: [
+      'Live Commercial Marketplace at asworks.studio',
+      'Dual Payment Gateways (Stripe & Razorpay)',
+      'Automated Tax/GST Invoice Generation',
+      'Instant Secure File Download Delivery',
+      'Creator Verification & Asset Review Pipeline',
+      'Modern High-Performance Next.js 15 Architecture'
+    ],
+    tags: ['Next.js 15', 'TypeScript', 'MongoDB', 'Stripe', 'Razorpay'],
+    link: 'https://asworks.studio',
+    liveUrl: 'https://asworks.studio'
   },
   {
-    title: 'IRA',
-    role: 'Lead Architect',
-    description: 'IRA is a personal, emotionally intelligent voice assistant with a C++ reflex system and a Python AI brain. Features wake word detection, speaker voice authentication, emotion awareness, and a natural Hinglish personality.',
-    problem: 'Cloud voice assistants like Siri and Cortana require constant internet connectivity, collect user data, and lack genuine emotional awareness or cultural context for Indian users.',
-    solution: 'Designed a dual-layer architecture: a C++ core (built with CMake) handles ultra-low latency wake word detection and system reflexes, while the Python brain (Phi-3 Mini / Mistral 7B) provides personality, STT (Whisper), and TTS (Edge TTS Swara Neural).',
-    impact: 'Emotionally Intelligent AI',
-    features: ['"Hey IRA" Wake Word (Vosk C++)', 'Speaker Voice Auth (SpeechBrain)', 'Real-time Emotion Detection', 'Hinglish Personality & Conversation', 'Android Companion App', 'Full Offline Operation'],
-    tags: ['C++', 'Python', 'pybind11', 'Whisper', 'Phi-3', 'SpeechBrain'],
-    link: 'https://github.com/abneeshsingh21'
+    title: 'Syting',
+    role: 'Lead Systems & Database Developer',
+    description: 'A real-time cross-platform mobile social discovery platform built with Flutter and Supabase PostgreSQL. Features privacy-first matchmaking, automated spam prevention, and low-latency encrypted messaging channels.',
+    problem: 'Modern social and discovery apps frequently expose user privacy prematurely, suffer from laggy messaging infrastructure, and lack robust database-level security against spoofing.',
+    solution: 'Designed and deployed the backend architecture on PostgreSQL (SQL) with Row Level Security (RLS) policies, security-definer database triggers, and real-time WebSocket channels for sub-100ms chat latency. Built an administrative analytics dashboard to monitor platform health and safety.',
+    impact: 'Real-Time Database Architecture',
+    features: [
+      'Privacy-First Mutual Discovery System',
+      'PostgreSQL Backend with Row Level Security',
+      'Sub-100ms Real-Time Chat via WebSockets',
+      'Database Triggers for Automated Spam Defense',
+      'Dedicated Admin Monitoring Dashboard',
+      'Cross-Platform iOS & Android Architecture'
+    ],
+    tags: ['Flutter', 'PostgreSQL', 'SQL', 'Supabase Realtime', 'System Design'],
+    link: 'https://dashboard-nine-lovat-38.vercel.app',
+    liveUrl: 'https://dashboard-nine-lovat-38.vercel.app'
   },
   {
     title: 'LangShift',
-    role: 'Creator',
-    description: 'LangShift is a VS Code extension that converts code between 25+ programming languages with a single file rename. Powered by 6 AI providers, smart SHA-256 caching, PII scrubbing, and full offline support via Ollama.',
-    problem: 'Existing code translators are web-based toys — developers copy-paste into a browser UI, receive broken output without imports, and must manually fix it for every file. There is no workflow-native, enterprise-safe solution.',
-    solution: 'Built a VS Code extension (TypeScript) with a two-pass AI conversion pipeline: AI generates code, then reviews and self-corrects its output. Routes between 6 providers (Claude, GPT-4o, Gemini, Ollama, LM Studio) with automatic fallback chains and compiler validation.',
+    role: 'Creator & Developer',
+    description: 'A published Visual Studio Code extension that transpiles code across 25+ programming languages. Features automated two-pass AI self-correction, SHA-256 caching, enterprise PII sanitization, and offline LLM execution.',
+    problem: 'Web-based code converters require cumbersome copy-pasting, fail to import necessary libraries, produce broken syntax, and leak proprietary IP to third-party web servers.',
+    solution: 'Built a native VS Code extension (TypeScript) with a two-pass AI transpilation pipeline (generation followed by compiler verification and self-healing). Routes between 6 AI providers with automatic fallback, SHA-256 caching for zero duplicate calls, and local offline processing via Ollama.',
     impact: 'Published on VS Code Marketplace',
-    features: ['25+ Language Support', 'Two-Pass AI Self-Correction', '6 AI Providers + Offline (Ollama)', 'PII Scrubbing (HIPAA/GDPR)', 'SHA-256 Smart Caching', 'Compiler Validation (tsc, javac, rustc)'],
-    tags: ['TypeScript', 'VS Code API', 'Ollama', 'Claude', 'GPT-4o'],
-    link: 'https://marketplace.visualstudio.com/items?itemName=langshift.langshift'
-  },
-  {
-    title: 'N-CIIA',
-    role: 'Lead Systems Architect',
-    description: 'N-CIIA (National Cyber Investigation & Intelligence Assistant) is a multi-module intelligence platform for OSINT ingestion, digital persona reconstruction, threat scoring, and ML-based behavioral analysis.',
-    problem: 'Cybercrime investigators lack a unified, AI-assisted tool that can ingest OSINT data, reconstruct a suspect\'s digital persona, score threat levels, and package court-ready evidence — all from a single platform.',
-    solution: 'Built a FastAPI-powered intelligence engine with dedicated modules for OSINT ingestion, behavioral analysis, LLM integration, and evidence packaging. Features a real-time performance dashboard and a web cockpit for case management.',
-    impact: 'Multi-Module Intelligence Platform',
-    features: ['OSINT Data Ingestion', 'Digital Persona Reconstruction', 'ML-Based Threat Scoring', 'LLM Integration (FastAPI)', 'Evidence Packaging', 'Real-time Performance Dashboard'],
-    tags: ['Python', 'FastAPI', 'spaCy', 'ML', 'OSINT'],
-    link: 'https://github.com/abneeshsingh21'
+    features: [
+      'Transpiles Across 25+ Programming Languages',
+      'Two-Pass AI Self-Correction Pipeline',
+      'SHA-256 Smart Hash Caching',
+      'Zero-Data-Leak PII Sanitization',
+      'Local Offline Mode via Ollama Support',
+      'Compiler Validation (tsc, javac, rustc)'
+    ],
+    tags: ['TypeScript', 'VS Code API', 'Generative AI', 'Ollama', 'Compiler Validation'],
+    link: 'https://marketplace.visualstudio.com/items?itemName=langshift.langshift',
+    liveUrl: 'https://marketplace.visualstudio.com/items?itemName=langshift.langshift'
   }
 ];
 

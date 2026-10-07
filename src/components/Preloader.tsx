@@ -5,10 +5,10 @@ export default function Preloader() {
   const [text, setText] = useState('');
   
   const bootSequence = [
-    '> LOADING EPL COMPILER RUNTIME v9.4.0...',
-    '> MOUNTING NEUROSHELL HYBRID ENGINE [C++ + Python]...',
-    '> INITIALIZING GHOST v6 OPERATIONAL KERNEL...',
-    '> LINKING IRA VOICE AUTHENTICATION MODULE...',
+    '> LOADING EPL COMPILER RUNTIME [LLVM & Wasm Engine]...',
+    '> MOUNTING NEUROSHELL HYBRID ENGINE [C++20 & Python]...',
+    '> INITIALIZING ASWORKS MARKETPLACE [asworks.studio]...',
+    '> CONNECTING SYTING REAL-TIME POSTGRESQL ENGINE...',
     '> LANGSHIFT TRANSPILER READY — 25 LANGUAGE TARGETS...',
     '> ALL SYSTEMS NOMINAL. WELCOME.',
   ];
