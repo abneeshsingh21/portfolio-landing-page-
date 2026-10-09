@@ -11,31 +11,39 @@ const metrics = [
 
 const stack = ['C++', 'Python', 'SQL (PostgreSQL)', 'Generative AI', 'Agentic AI', 'Multi-LLM Routing', 'System Design', 'Next.js', 'FastAPI', 'Docker'];
 
-function MetricCard({ target, prefix, suffix, label, sub, isLast }: {
+function MetricCard({ target, prefix, suffix, label, sub, index }: {
   target: number; prefix: string; suffix: string;
-  label: string; sub: string; isLast: boolean;
+  label: string; sub: string; index: number;
 }) {
   const ref = useCountUp({ target, prefix, suffix });
+  const isRightIn2Col = index % 2 === 1;
+  const isBottomIn2Col = index >= 2;
+  const isLastIn4Col = index === 3;
+
   return (
-    <div className={`flex flex-col p-6 sm:p-8 ${
-      !isLast ? 'border-r border-white/10' : ''
+    <div className={`flex flex-col p-5 sm:p-8 ${
+      !isRightIn2Col ? 'border-r border-white/10' : ''
+    } ${
+      !isBottomIn2Col ? 'border-b border-white/10 md:border-b-0' : ''
+    } ${
+      !isLastIn4Col ? 'md:border-r md:border-white/10' : 'md:border-r-0'
     } hover:bg-white/[0.02] transition-colors duration-300`}>
       <span
         ref={ref}
-        className="text-white text-[28px] sm:text-[36px] font-bold tracking-tighter mb-1"
+        className="text-white text-[26px] sm:text-[36px] font-bold tracking-tighter mb-1"
         style={{ fontFamily: 'var(--font-heading)' }}
       />
-      <span className="text-white/70 text-[13px] font-semibold mb-1">{label}</span>
-      <span className="text-white/30 text-[11px] uppercase tracking-wider font-medium">{sub}</span>
+      <span className="text-white/70 text-[12px] sm:text-[13px] font-semibold mb-1">{label}</span>
+      <span className="text-white/30 text-[10px] sm:text-[11px] uppercase tracking-wider font-medium">{sub}</span>
     </div>
   );
 }
 
 function MetricsRow() {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-0 border border-white/10 rounded-xl overflow-hidden mb-20">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-0 border border-white/10 rounded-xl overflow-hidden mb-16 sm:mb-20">
       {metrics.map((m, i) => (
-        <MetricCard key={i} {...m} isLast={i === metrics.length - 1} />
+        <MetricCard key={i} {...m} index={i} />
       ))}
     </div>
   );
@@ -43,12 +51,12 @@ function MetricsRow() {
 
 export default function About() {
   return (
-    <div id="about" className="w-full px-6 sm:px-10 py-32 relative" style={{ scrollMarginTop: '80px' }}>
+    <div id="about" className="w-full px-5 sm:px-10 py-20 sm:py-32 relative" style={{ scrollMarginTop: '80px' }}>
       <div className="max-w-5xl mx-auto w-full flex flex-col">
 
         {/* Section Header */}
         <FadeIn>
-          <div className="flex items-center gap-5 mb-16">
+          <div className="flex items-center gap-5 mb-12 sm:mb-16">
             <div className="h-[1px] w-10 bg-white/30"></div>
             <span className="text-[11px] font-bold text-white/40 tracking-[0.2em] uppercase">About</span>
           </div>
@@ -57,7 +65,7 @@ export default function About() {
         {/* Pull Quote */}
         <FadeIn delay={100}>
           <h2
-            className="text-[30px] sm:text-[44px] md:text-[52px] font-bold text-white leading-[1.1] tracking-tight mb-6 max-w-4xl text-shadow-lg"
+            className="text-[26px] sm:text-[40px] md:text-[52px] font-bold text-white leading-[1.15] tracking-tight mb-8 max-w-4xl text-shadow-lg"
             style={{ fontFamily: 'var(--font-heading)' }}
           >
             Engineering at the boundary of{' '}
@@ -77,7 +85,7 @@ export default function About() {
         </FadeIn>
 
         {/* 12-Column Bio Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 border-t border-white/10 pt-16">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 sm:gap-12 border-t border-white/10 pt-12 sm:pt-16">
 
           {/* Left: Identity & Education */}
           <div className="md:col-span-4 flex flex-col">
@@ -117,7 +125,7 @@ export default function About() {
           </div>
 
           {/* Right: Bio paragraphs */}
-          <div className="md:col-span-8 flex flex-col sm:flex-row gap-10">
+          <div className="md:col-span-8 flex flex-col sm:flex-row gap-6 sm:gap-10">
             <FadeIn delay={300}>
               <div className="flex-1">
                 <p className="text-white/90 text-[15px] sm:text-[16px] leading-[1.9] font-light mb-0 text-shadow-lg">

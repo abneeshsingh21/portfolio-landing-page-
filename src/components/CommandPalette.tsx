@@ -81,17 +81,17 @@ export default function CommandPalette() {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-start justify-center pt-[18vh] px-4" onKeyDown={handleModalKeyDown}>
+    <div className="fixed inset-0 z-[200] flex items-start justify-center pt-8 sm:pt-[18vh] px-3 sm:px-4 pb-6" onKeyDown={handleModalKeyDown}>
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-md" onClick={() => setIsOpen(false)} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setIsOpen(false)} />
 
       {/* Modal */}
       <div
         className="relative w-full max-w-[560px] bg-[#0d0d0d]/95 border border-white/[0.08] rounded-2xl shadow-[0_24px_80px_rgba(0,0,0,0.8)] overflow-hidden backdrop-blur-2xl"
         style={{ animation: 'cmdSlideUp 0.2s cubic-bezier(0.16,1,0.3,1)' }}
       >
-        {/* Search Input */}
-        <div className="flex items-center px-5 border-b border-white/[0.06]">
+        {/* Search Input — 16px on mobile stops iOS Safari auto-zoom */}
+        <div className="flex items-center px-4 sm:px-5 border-b border-white/[0.06]">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/30 flex-shrink-0">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -100,20 +100,20 @@ export default function CommandPalette() {
             ref={inputRef}
             type="text"
             placeholder="Search commands..."
-            className="w-full bg-transparent text-white placeholder-white/25 px-4 py-4 outline-none text-[14px] font-medium tracking-wide"
+            className="w-full bg-transparent text-white placeholder-white/25 px-3 sm:px-4 py-3.5 sm:py-4 outline-none text-[16px] sm:text-[14px] font-medium tracking-wide"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
           <button
             onClick={() => setIsOpen(false)}
-            className="text-[10px] bg-white/5 text-white/30 px-2.5 py-1 rounded-md border border-white/10 hover:bg-white/10 transition-colors font-bold tracking-widest uppercase flex-shrink-0"
+            className="text-[10px] bg-white/5 text-white/40 px-2.5 py-1.5 rounded-md border border-white/10 hover:bg-white/10 active:scale-95 transition-all font-bold tracking-widest uppercase flex-shrink-0"
           >
             ESC
           </button>
         </div>
 
         {/* Results */}
-        <div ref={listRef} className="max-h-[360px] overflow-y-auto p-2">
+        <div ref={listRef} className="max-h-[48vh] sm:max-h-[360px] overflow-y-auto p-2" style={{ WebkitOverflowScrolling: 'touch' }}>
           {flat.length === 0 ? (
             <div className="text-center text-white/30 py-10 text-[13px] font-medium">No results found.</div>
           ) : (

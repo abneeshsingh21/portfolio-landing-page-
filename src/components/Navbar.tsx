@@ -23,6 +23,18 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   // Active section — scroll-based, finds section closest to top of viewport
   useEffect(() => {
     const sectionIds = navLinks.map(l => l.id);
@@ -164,39 +176,65 @@ export default function Navbar() {
           </a>
         </div>
 
-        {/* Mobile Hamburger */}
-        <button
-          className="md:hidden flex flex-col gap-[5px] z-20 relative focus:outline-none"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          <div className={`w-5 h-[1.5px] bg-white transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-[6.5px]' : ''}`}></div>
-          <div className={`w-5 h-[1.5px] bg-white transition-all duration-300 ${isOpen ? 'opacity-0' : 'opacity-100'}`}></div>
-          <div className={`w-5 h-[1.5px] bg-white transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-[6.5px]' : ''}`}></div>
-        </button>
+        {/* Mobile Header Actions (Resume Pill + 44px Hamburger) */}
+        <div className="flex md:hidden items-center gap-2.5">
+          <a
+            href="/resume.pdf"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-white/20 bg-white/[0.08] backdrop-blur-md text-white text-[11px] font-bold tracking-wider uppercase active:scale-95 transition-transform"
+          >
+            <span>CV</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-70">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
+
+          <button
+            aria-label="Toggle navigation menu"
+            className="w-11 h-11 flex flex-col items-center justify-center gap-[5px] z-20 relative focus:outline-none -mr-2 rounded-lg active:bg-white/10"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            <div className={`w-5 h-[1.5px] bg-white transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-[6.5px]' : ''}`}></div>
+            <div className={`w-5 h-[1.5px] bg-white transition-all duration-300 ${isOpen ? 'opacity-0' : 'opacity-100'}`}></div>
+            <div className={`w-5 h-[1.5px] bg-white transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-[6.5px]' : ''}`}></div>
+          </button>
+        </div>
       </nav>
 
       {/* Mobile Overlay */}
       <div
-        className={`fixed inset-0 bg-black/95 backdrop-blur-2xl z-[40] flex flex-col justify-center px-10 gap-6 md:hidden transition-all duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        className={`fixed inset-0 bg-black/95 backdrop-blur-2xl z-[40] flex flex-col justify-between px-8 pt-28 pb-10 md:hidden transition-all duration-300 overflow-y-auto ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
       >
-        {navLinks.map((link) => (
+        <div className="flex flex-col gap-4">
+          {navLinks.map((link) => (
+            <a
+              key={link.name}
+              href={link.href}
+              onClick={() => setIsOpen(false)}
+              className="text-[26px] font-bold text-white hover:text-white/50 active:text-white/40 transition-colors uppercase tracking-widest py-1"
+            >
+              {link.name}
+            </a>
+          ))}
+        </div>
+
+        <div className="flex flex-col gap-3.5 mt-8 border-t border-white/10 pt-6">
           <a
-            key={link.name}
-            href={link.href}
+            href="/resume.pdf"
+            target="_blank"
+            rel="noreferrer"
+            className="text-[16px] font-bold text-white hover:text-white/60 transition-colors flex items-center gap-2 py-1"
             onClick={() => setIsOpen(false)}
-            className="text-[28px] font-bold text-white hover:text-white/50 transition-colors uppercase tracking-widest"
           >
-            {link.name}
+            Resume (PDF) ↗
           </a>
-        ))}
-        <div className="flex flex-col gap-4 mt-6 border-t border-white/10 pt-8">
-          <a href="/resume.pdf" target="_blank" rel="noreferrer" className="text-[18px] font-bold text-white hover:text-white/60 transition-colors flex items-center gap-2" onClick={() => setIsOpen(false)}>
-            Resume ↗
-          </a>
-          <a href="https://asworks.studio" target="_blank" rel="noreferrer" className="text-[18px] font-bold text-white/60 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>ASWorks Studio</a>
-          <a href="https://github.com/abneeshsingh21" target="_blank" rel="noreferrer" className="text-[18px] font-bold text-white/60 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>GitHub</a>
-          <a href="https://linkedin.com/in/abneesh-singh001" target="_blank" rel="noreferrer" className="text-[18px] font-bold text-white/60 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>LinkedIn</a>
-          <a href="mailto:singhabneesh250@gmail.com" className="text-[18px] font-bold text-white hover:text-white/60 transition-colors" onClick={() => setIsOpen(false)}>singhabneesh250@gmail.com</a>
+          <a href="https://asworks.studio" target="_blank" rel="noreferrer" className="text-[15px] font-semibold text-white/60 hover:text-white transition-colors py-1" onClick={() => setIsOpen(false)}>ASWorks Studio ↗</a>
+          <a href="https://github.com/abneeshsingh21" target="_blank" rel="noreferrer" className="text-[15px] font-semibold text-white/60 hover:text-white transition-colors py-1" onClick={() => setIsOpen(false)}>GitHub ↗</a>
+          <a href="https://linkedin.com/in/abneesh-singh001" target="_blank" rel="noreferrer" className="text-[15px] font-semibold text-white/60 hover:text-white transition-colors py-1" onClick={() => setIsOpen(false)}>LinkedIn ↗</a>
+          <a href="mailto:singhabneesh250@gmail.com" className="text-[14px] font-medium text-white/80 hover:text-white transition-colors pt-2 border-t border-white/5" onClick={() => setIsOpen(false)}>singhabneesh250@gmail.com</a>
         </div>
       </div>
     </>

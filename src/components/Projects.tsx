@@ -130,7 +130,7 @@ function TiltCard({ children, onClick }: { children: React.ReactNode; onClick: (
       onClick={onClick}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="group w-full text-left block py-12 border-b border-white/10 hover:bg-white/[0.03] hover:pl-6 transition-[background,padding] duration-500 ease-out cursor-none"
+      className="group w-full text-left block py-8 sm:py-12 border-b border-white/10 hover:bg-white/[0.03] active:bg-white/[0.05] sm:hover:pl-6 transition-[background,padding] duration-500 ease-out"
       style={{ transformStyle: 'preserve-3d', transition: 'transform 0.15s ease, background 0.5s ease, padding 0.5s ease' }}
     >
       {children}
@@ -142,12 +142,12 @@ export default function Projects() {
   const [activeProject, setActiveProject] = useState<any>(null);
 
   return (
-    <div id="projects" className="w-full px-5 sm:px-8 md:px-10 py-32 min-h-screen flex flex-col justify-center relative" style={{ scrollMarginTop: '80px' }}>
+    <div id="projects" className="w-full px-5 sm:px-8 md:px-10 py-20 sm:py-32 min-h-screen flex flex-col justify-center relative" style={{ scrollMarginTop: '80px' }}>
       <div className="max-w-5xl mx-auto w-full flex flex-col">
 
         {/* Section Header */}
         <FadeIn>
-          <div className="flex items-center gap-6 mb-16">
+          <div className="flex items-center gap-6 mb-12 sm:mb-16">
             <div className="h-[1px] w-12 bg-white/30"></div>
             <h2 className="text-[12px] sm:text-[14px] font-medium text-white/50 tracking-[0.2em] uppercase">
               Portfolio
@@ -156,47 +156,56 @@ export default function Projects() {
         </FadeIn>
 
         <FadeIn delay={100}>
-          <h2 className="text-[32px] sm:text-[48px] md:text-[56px] font-bold text-white mb-8 tracking-tight" style={{ fontFamily: 'var(--font-heading)' }}>
+          <h2 className="text-[28px] sm:text-[48px] md:text-[56px] font-bold text-white mb-6 sm:mb-8 tracking-tight" style={{ fontFamily: 'var(--font-heading)' }}>
             Selected Works.
           </h2>
         </FadeIn>
 
-        <div className="flex flex-col border-t border-white/10 pt-8 mt-12">
+        <div className="flex flex-col border-t border-white/10 pt-4 sm:pt-8 mt-6 sm:mt-12">
           {projects.map((proj, idx) => (
             <FadeIn key={idx} delay={idx * 100}>
               <TiltCard onClick={() => setActiveProject(proj)}>
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start px-4 md:px-0">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-12 items-start px-2 sm:px-4 md:px-0">
 
                   {/* Left: Number + Title + Role */}
                   <div className="md:col-span-4 flex flex-col">
-                    <span className="text-white/15 text-[11px] font-mono mb-3 tracking-widest">
+                    <span className="text-white/20 text-[11px] font-mono mb-2 sm:mb-3 tracking-widest">
                       {String(idx + 1).padStart(2, '0')}
                     </span>
                     <h3
-                      className="text-[24px] sm:text-[32px] font-bold text-white mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/50 transition-all duration-300"
+                      className="text-[22px] sm:text-[32px] font-bold text-white mb-1.5 sm:mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/50 transition-all duration-300"
                       style={{ fontFamily: 'var(--font-heading)' }}
                     >
                       {proj.title}
                     </h3>
-                    <p className="text-white/40 text-[12px] uppercase tracking-widest font-medium">
+                    <p className="text-white/40 text-[11px] sm:text-[12px] uppercase tracking-widest font-medium">
                       {proj.role}
                     </p>
                   </div>
 
                   {/* Middle: Description & Tags */}
                   <div className="md:col-span-7 flex flex-col">
-                    <p className="text-white/80 text-[15px] sm:text-[16px] leading-relaxed font-light mb-8 group-hover:text-white transition-colors duration-300 text-shadow-lg">
+                    <p className="text-white/80 text-[14px] sm:text-[16px] leading-relaxed font-light mb-5 sm:mb-8 group-hover:text-white transition-colors duration-300 text-shadow-lg">
                       {proj.description}
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {proj.tags.map(tag => (
                         <span
                           key={tag}
-                          className="px-3 py-1 rounded-full border border-white/10 text-white/40 text-[11px] font-bold tracking-wider uppercase group-hover:border-white/25 group-hover:text-white/70 transition-colors duration-300"
+                          className="px-2.5 sm:px-3 py-1 rounded-full border border-white/10 text-white/40 text-[10px] sm:text-[11px] font-bold tracking-wider uppercase group-hover:border-white/25 group-hover:text-white/70 transition-colors duration-300"
                         >
                           {tag}
                         </span>
                       ))}
+                    </div>
+
+                    {/* Mobile discovery affordance */}
+                    <div className="flex md:hidden items-center gap-1.5 text-white/40 text-[10px] font-bold uppercase tracking-wider mt-4">
+                      <span>Explore Case Study</span>
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-70">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                      </svg>
                     </div>
                   </div>
 

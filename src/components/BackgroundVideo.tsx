@@ -37,7 +37,17 @@ export default function BackgroundVideo() {
     let destroyed = false;
     const LERP = 0.07;
 
-    // ── Frame extraction via playback ────────────────────────
+    // ── Touch / Mobile Detection: Bypass canvas frame extraction ──
+    const isTouchDevice =
+      window.matchMedia('(pointer: coarse)').matches ||
+      navigator.maxTouchPoints > 0;
+
+    if (isTouchDevice) {
+      // Direct native video playback on mobile — zero canvas memory overhead, 60fps hardware-accelerated
+      return;
+    }
+
+    // ── Frame extraction via playback (Desktop / Pointer fine only) ──
     const extractor = document.createElement('video');
     extractor.muted = true;
     extractor.playsInline = true;
@@ -185,10 +195,12 @@ export default function BackgroundVideo() {
 
   return (
     <>
-      {/* Fallback video — visible while frames are being extracted */}
+      {/* Video element — plays continuously on mobile; serves as fallback on desktop while scrubbing frames load */}
       <video
         ref={videoRef}
         src={VIDEO_URL}
+        autoPlay
+        loop
         muted
         playsInline
         preload="auto"

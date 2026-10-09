@@ -4,6 +4,7 @@ const links = [
   { label: 'Projects',                href: '#projects' },
   { label: 'Architecture',            href: '#architecture' },
   { label: 'Certifications',          href: '#certifications' },
+  { label: 'Download Resume (PDF)',   href: '/resume.pdf' },
   { label: 'ASWorks Marketplace',     href: 'https://asworks.studio' },
   { label: 'EPL on GitHub',           href: 'https://github.com/abneeshsingh21/EPL' },
   { label: 'NeuroShell — GitHub',     href: 'https://github.com/abneeshsingh21/neuroshell' },
@@ -16,8 +17,8 @@ export default function Footer() {
   return (
     <footer className="w-full relative z-10" style={{ background: 'linear-gradient(to top, #000 60%, transparent 100%)' }}>
       {/* Solid black base so text is always readable over the video */}
-      <div className="w-full bg-black/90 backdrop-blur-xl border-t border-white/10">
-        <div className="max-w-5xl mx-auto w-full px-6 sm:px-10 py-20">
+      <div className="w-full bg-black/90 backdrop-blur-xl border-t border-white/10 pb-safe">
+        <div className="max-w-5xl mx-auto w-full px-5 sm:px-10 py-12 sm:py-20">
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
             {/* Left: Identity */}
