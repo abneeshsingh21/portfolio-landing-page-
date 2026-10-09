@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const navLinks = [
   { name: 'About',          href: '#about',          id: 'about' },
@@ -10,16 +10,32 @@ const navLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
   const [activeSection, setActiveSection] = useState('');
+  const progressBarRef = useRef<HTMLDivElement>(null);
 
+  // High-performance scroll listener: throttled with requestAnimationFrame, direct DOM progress update
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-      const totalHeight = document.body.scrollHeight - window.innerHeight;
-      setScrollProgress(totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const isScrolledNow = window.scrollY > 40;
+          setScrolled(prev => (prev !== isScrolledNow ? isScrolledNow : prev));
+
+          if (progressBarRef.current) {
+            const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0;
+            progressBarRef.current.style.width = `${progress}%`;
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
-    window.addEventListener('scroll', handleScroll);
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -35,43 +51,46 @@ export default function Navbar() {
     };
   }, [isOpen]);
 
-  // Active section — scroll-based, finds section closest to top of viewport
+  // Active section — IntersectionObserver (zero layout thrashing, runs off main thread)
   useEffect(() => {
-    const sectionIds = navLinks.map(l => l.id);
+    const observers: IntersectionObserver[] = [];
+    navLinks.forEach((link) => {
+      const el = document.getElementById(link.id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setActiveSection(link.id);
+            }
+          });
+        },
+        { rootMargin: '-20% 0px -60% 0px' }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
 
-    const getActiveSection = () => {
-      const navHeight = 80;
-      let current = '';
-      for (const id of sectionIds) {
-        const el = document.getElementById(id);
-        if (!el) continue;
-        const top = el.getBoundingClientRect().top;
-        if (top - navHeight <= 80) {
-          current = id;
-        }
-      }
-      setActiveSection(current);
+    return () => {
+      observers.forEach(obs => obs.disconnect());
     };
-
-    window.addEventListener('scroll', getActiveSection, { passive: true });
-    getActiveSection(); // run on mount
-    return () => window.removeEventListener('scroll', getActiveSection);
   }, []);
 
   return (
     <>
-      {/* Scroll Progress Bar */}
-      <div className="fixed top-0 left-0 w-full h-[2px] z-[60]">
+      {/* Scroll Progress Bar — direct DOM width manipulation, 0 React re-renders */}
+      <div className="fixed top-0 left-0 w-full h-[2px] z-[60] pointer-events-none">
         <div
-          className="h-full bg-white/40 transition-all duration-150"
-          style={{ width: `${scrollProgress}%` }}
+          ref={progressBarRef}
+          className="h-full bg-white/40 will-change-[width]"
+          style={{ width: '0%' }}
         />
       </div>
 
       <nav
-        className={`fixed top-0 left-0 w-full z-50 px-6 sm:px-10 flex flex-row justify-between items-center transition-all duration-500 ${
+        className={`fixed top-0 left-0 w-full z-50 px-6 sm:px-10 flex flex-row justify-between items-center transition-all duration-300 ${
           scrolled
-            ? 'py-3 bg-black/70 backdrop-blur-2xl border-b border-white/[0.06] shadow-[0_1px_40px_rgba(0,0,0,0.6)]'
+            ? 'py-3 bg-black/85 sm:bg-black/70 backdrop-blur-md sm:backdrop-blur-2xl border-b border-white/[0.06] shadow-[0_1px_40px_rgba(0,0,0,0.6)]'
             : 'py-5 bg-transparent border-b border-transparent'
         }`}
       >

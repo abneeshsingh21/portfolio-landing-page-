@@ -106,6 +106,8 @@ function TiltCard({ children, onClick }: { children: React.ReactNode; onClick: (
   const cardRef = useRef<HTMLButtonElement>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // Bypass on mobile/touch to eliminate getBoundingClientRect layout thrashing
+    if (window.matchMedia('(pointer: coarse)').matches) return;
     const card = cardRef.current;
     if (!card) return;
     const rect = card.getBoundingClientRect();
@@ -119,6 +121,7 @@ function TiltCard({ children, onClick }: { children: React.ReactNode; onClick: (
   };
 
   const handleMouseLeave = () => {
+    if (window.matchMedia('(pointer: coarse)').matches) return;
     const card = cardRef.current;
     if (!card) return;
     card.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) translateZ(0px)';

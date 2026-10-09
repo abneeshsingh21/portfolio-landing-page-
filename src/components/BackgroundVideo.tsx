@@ -23,8 +23,22 @@ export default function BackgroundVideo() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [framesReady, setFramesReady] = useState(false);
+  const [isTouch, setIsTouch] = useState(false);
 
   useEffect(() => {
+    // ── Touch / Mobile Detection: Bypass canvas frame extraction ──
+    const isTouchDevice =
+      window.matchMedia('(pointer: coarse)').matches ||
+      navigator.maxTouchPoints > 0;
+
+    if (isTouchDevice) {
+      setIsTouch(true);
+      if (videoRef.current) {
+        videoRef.current.play().catch(() => {});
+      }
+      return;
+    }
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d', { alpha: false });
@@ -36,16 +50,6 @@ export default function BackgroundVideo() {
     let animId: number;
     let destroyed = false;
     const LERP = 0.07;
-
-    // ── Touch / Mobile Detection: Bypass canvas frame extraction ──
-    const isTouchDevice =
-      window.matchMedia('(pointer: coarse)').matches ||
-      navigator.maxTouchPoints > 0;
-
-    if (isTouchDevice) {
-      // Direct native video playback on mobile — zero canvas memory overhead, 60fps hardware-accelerated
-      return;
-    }
 
     // ── Frame extraction via playback (Desktop / Pointer fine only) ──
     const extractor = document.createElement('video');
@@ -215,25 +219,33 @@ export default function BackgroundVideo() {
           opacity: framesReady ? 0 : 1,
           transition: 'opacity 0.6s ease-out',
           pointerEvents: 'none',
+          transform: 'translateZ(0)',
+          WebkitTransform: 'translateZ(0)',
+          willChange: 'transform',
         }}
       />
 
-      {/* Canvas — takes over once frames are captured */}
-      <canvas
-        ref={canvasRef}
-        style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 0,
-          objectFit: 'cover',
-          objectPosition: '70% center',
-          width: '100%',
-          height: '100%',
-          opacity: framesReady ? 1 : 0,
-          transition: 'opacity 0.6s ease-out',
-          pointerEvents: 'none',
-        }}
-      />
+      {/* Canvas — desktop only: takes over once scrubbing frames are captured */}
+      {!isTouch && (
+        <canvas
+          ref={canvasRef}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 0,
+            objectFit: 'cover',
+            objectPosition: '70% center',
+            width: '100%',
+            height: '100%',
+            opacity: framesReady ? 1 : 0,
+            transition: 'opacity 0.6s ease-out',
+            pointerEvents: 'none',
+            transform: 'translateZ(0)',
+            WebkitTransform: 'translateZ(0)',
+            willChange: 'transform',
+          }}
+        />
+      )}
     </>
   );
 }

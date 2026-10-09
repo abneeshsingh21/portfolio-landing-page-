@@ -9,7 +9,12 @@ export default function Cursor() {
 
   useEffect(() => {
     // Touch devices — skip
-    if (window.matchMedia('(pointer: coarse)').matches) return;
+    if (
+      window.matchMedia('(pointer: coarse)').matches ||
+      navigator.maxTouchPoints > 0
+    ) {
+      return;
+    }
 
     let mouseX = 0, mouseY = 0;
     let ringX = 0, ringY = 0;
@@ -55,7 +60,10 @@ export default function Cursor() {
   }, []);
 
   // Hide on touch
-  if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
+  if (
+    typeof window !== 'undefined' &&
+    (window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0)
+  ) {
     return null;
   }
 

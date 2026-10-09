@@ -13,8 +13,8 @@ export default function FadeIn({ children, delay = 0 }: { children: React.ReactN
         }
       },
       {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
+        threshold: 0.05,
+        rootMargin: '0px 0px 60px 0px',
       }
     );
 
@@ -27,8 +27,9 @@ export default function FadeIn({ children, delay = 0 }: { children: React.ReactN
       ref={ref}
       style={{
         opacity: isVisible ? 1 : 0,
-        transform: isVisible ? 'translateY(0)' : 'translateY(40px)',
-        transition: `all 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`
+        transform: isVisible ? 'translateY(0)' : 'translateY(24px)',
+        transition: `opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
+        willChange: isVisible ? 'auto' : 'opacity, transform',
       }}
     >
       {children}
