@@ -1,54 +1,59 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import { prefersReducedMotion } from '../lib/site';
 
 interface UseCountUpOptions {
   target: number;
   duration?: number;
+  decimals?: number;
   prefix?: string;
   suffix?: string;
+  delay?: number;
 }
 
-export function useCountUp({ target, duration = 1800, prefix = '', suffix = '' }: UseCountUpOptions) {
+export function useCountUp({ target, duration = 1800, decimals = 0, prefix = '', suffix = '', delay = 0 }: UseCountUpOptions) {
   const ref = useRef<HTMLSpanElement>(null);
-  const observerRef = useRef<IntersectionObserver | null>(null);
-  const hasRun = useRef(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    const fmt = (n: number) =>
+      `${prefix}${n.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}${suffix}`;
 
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !hasRun.current) {
-          hasRun.current = true;
-          let start = 0;
-          const startTime = performance.now();
+    if (prefersReducedMotion()) {
+      el.textContent = fmt(target);
+      return;
+    }
 
-          const tick = (now: number) => {
-            const elapsed = now - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            // Ease out cubic
-            const eased = 1 - Math.pow(1 - progress, 3);
-            const current = Math.round(eased * target);
+    el.textContent = fmt(0);
+    let raf = 0;
+    let timer = 0;
+    const run = () => {
+      const start = performance.now();
+      const tick = (now: number) => {
+        const p = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 4);
+        el.textContent = fmt(eased * target);
+        if (p < 1) raf = requestAnimationFrame(tick);
+      };
+      raf = requestAnimationFrame(tick);
+    };
 
-            if (el) el.textContent = `${prefix}${current.toLocaleString()}${suffix}`;
-
-            if (progress < 1) requestAnimationFrame(tick);
-          };
-
-          requestAnimationFrame(tick);
-          observerRef.current?.disconnect();
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          io.disconnect();
+          timer = window.setTimeout(run, delay);
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.4 },
     );
-
-    observerRef.current.observe(el);
-
-    // Set initial value
-    el.textContent = `${prefix}0${suffix}`;
-
-    return () => observerRef.current?.disconnect();
-  }, [target, duration, prefix, suffix]);
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      clearTimeout(timer);
+      cancelAnimationFrame(raf);
+    };
+  }, [target, duration, decimals, prefix, suffix, delay]);
 
   return ref;
 }
