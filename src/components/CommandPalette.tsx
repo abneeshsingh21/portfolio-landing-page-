@@ -1,176 +1,240 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react';
+import Icon, { type IconName } from './Icon';
+import { useScrollLock } from '../hooks/useScrollLock';
+import { projects } from '../lib/data';
+import {
+  EMAIL,
+  EVENTS,
+  LINKS,
+  RESUME_URL,
+  copyEmail,
+  openExternal,
+  openProject,
+  scrollToId,
+} from '../lib/site';
 
-const commands = [
-  { id: 'projects',      group: 'Navigate',  label: 'Go to Projects',                        href: '#projects',                                                  icon: '◈' },
-  { id: 'about',         group: 'Navigate',  label: 'Go to About',                           href: '#about',                                                     icon: '◈' },
-  { id: 'architecture',  group: 'Navigate',  label: 'Go to Architecture',                    href: '#architecture',                                              icon: '◈' },
-  { id: 'certs',         group: 'Navigate',  label: 'Go to Certifications',                  href: '#certifications',                                            icon: '◈' },
-  { id: 'resume',        group: 'Navigate',  label: 'View / Download Resume (PDF)',          href: '/resume.pdf',                                                icon: '↓' },
-  { id: 'asworks',       group: 'Projects',  label: 'ASWorks — Digital Marketplace (Live)',  href: 'https://asworks.studio',                                     icon: '↗' },
-  { id: 'epl',           group: 'Projects',  label: 'EPL — English Programming Language',    href: 'https://github.com/abneeshsingh21/EPL',                      icon: '↗' },
-  { id: 'neuroshell',    group: 'Projects',  label: 'NeuroShell — AI Terminal Shell',        href: 'https://github.com/abneeshsingh21/neuroshell',               icon: '↗' },
-  { id: 'syting',        group: 'Projects',  label: 'Syting — Real-Time Discovery Platform', href: '#projects',                                                 icon: '◈' },
-  { id: 'langshift',     group: 'Projects',  label: 'LangShift — VS Code Marketplace',       href: 'https://marketplace.visualstudio.com/items?itemName=langshift.langshift', icon: '↗' },
-  { id: 'github',        group: 'Social',    label: 'Open GitHub Profile',                   href: 'https://github.com/abneeshsingh21',                         icon: '↗' },
-  { id: 'linkedin',      group: 'Social',    label: 'Open LinkedIn Profile',                 href: 'https://linkedin.com/in/abneesh-singh001',                  icon: '↗' },
-  { id: 'email',         group: 'Contact',   label: 'Send Email',                            href: 'mailto:singhabneesh250@gmail.com',                          icon: '→' },
-];
+interface Command {
+  id: string;
+  group: string;
+  label: string;
+  hint?: string;
+  icon: IconName;
+  keywords?: string;
+  run: () => void;
+}
+
+const isTyping = (el: EventTarget | null) =>
+  el instanceof HTMLElement && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
 
 export default function CommandPalette() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [search, setSearch] = useState('');
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const [active, setActive] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const restoreRef = useRef<HTMLElement | null>(null);
+  useScrollLock(open);
 
-  const filtered = commands.filter(c =>
-    c.label.toLowerCase().includes(search.toLowerCase()) ||
-    c.group.toLowerCase().includes(search.toLowerCase())
+  const commands = useMemo<Command[]>(
+    () => [
+      { id: 'nav-about', group: 'Navigate', label: 'About', icon: 'layers', run: () => scrollToId('about') },
+      { id: 'nav-work', group: 'Navigate', label: 'Selected work', icon: 'layers', keywords: 'projects portfolio', run: () => scrollToId('projects') },
+      { id: 'nav-arch', group: 'Navigate', label: 'Architecture & competencies', icon: 'layers', run: () => scrollToId('architecture') },
+      { id: 'nav-certs', group: 'Navigate', label: 'Credentials', icon: 'layers', keywords: 'certifications', run: () => scrollToId('certifications') },
+      { id: 'nav-contact', group: 'Navigate', label: 'Contact', icon: 'layers', keywords: 'hire message', run: () => scrollToId('contact') },
+      { id: 'act-copy', group: 'Actions', label: 'Copy email address', hint: EMAIL, icon: 'copy', keywords: 'mail contact', run: () => void copyEmail() },
+      { id: 'act-mail', group: 'Actions', label: 'Write an email', icon: 'mail', keywords: 'contact hire', run: () => (window.location.href = `mailto:${EMAIL}`) },
+      { id: 'act-resume', group: 'Actions', label: 'Open résumé (PDF)', icon: 'file', keywords: 'cv resume download', run: () => openExternal(RESUME_URL) },
+      ...projects.map<Command>((p) => ({
+        id: `proj-${p.id}`,
+        group: 'Case studies',
+        label: p.title,
+        hint: p.summary,
+        icon: p.icon,
+        keywords: `${p.tags.join(' ')} ${p.categories.join(' ')}`,
+        run: () => {
+          scrollToId('projects');
+          window.setTimeout(() => openProject(p.id), 450);
+        },
+      })),
+      { id: 'ext-github', group: 'Elsewhere', label: 'GitHub', hint: '@abneeshsingh21', icon: 'github', run: () => openExternal(LINKS.github) },
+      { id: 'ext-linkedin', group: 'Elsewhere', label: 'LinkedIn', icon: 'linkedin', run: () => openExternal(LINKS.linkedin) },
+      { id: 'ext-asworks', group: 'Elsewhere', label: 'ASWorks Studio', hint: 'asworks.studio', icon: 'bag', run: () => openExternal(LINKS.asworks) },
+      { id: 'ext-langshift', group: 'Elsewhere', label: 'LangShift on VS Code Marketplace', icon: 'vscode', run: () => openExternal(LINKS.langshift) },
+    ],
+    [],
   );
 
-  const grouped = filtered.reduce((acc, cmd) => {
-    if (!acc[cmd.group]) acc[cmd.group] = [];
-    acc[cmd.group].push(cmd);
-    return acc;
-  }, {} as Record<string, typeof commands>);
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return commands;
+    return commands.filter((c) => `${c.label} ${c.group} ${c.hint ?? ''} ${c.keywords ?? ''}`.toLowerCase().includes(q));
+  }, [commands, query]);
 
-  const flat = Object.values(grouped).flat();
+  const groups = useMemo(() => {
+    const map = new Map<string, Command[]>();
+    filtered.forEach((c) => map.set(c.group, [...(map.get(c.group) ?? []), c]));
+    return Array.from(map.entries());
+  }, [filtered]);
 
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-      e.preventDefault();
-      setIsOpen(o => !o);
-    }
-    if (e.key === 'Escape') setIsOpen(false);
+  const show = useCallback(() => {
+    restoreRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    setQuery('');
+    setActive(0);
+    setOpen(true);
   }, []);
 
-  const handleModalKeyDown = (e: React.KeyboardEvent) => {
+  const hide = useCallback(() => {
+    setOpen(false);
+    restoreRef.current?.focus?.();
+  }, []);
+
+  const execute = useCallback(
+    (cmd: Command | undefined) => {
+      if (!cmd) return;
+      hide();
+      window.setTimeout(cmd.run, 30);
+    },
+    [hide],
+  );
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        if (open) hide();
+        else show();
+      } else if (e.key === '/' && !open && !isTyping(e.target)) {
+        e.preventDefault();
+        show();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    window.addEventListener(EVENTS.openPalette, show);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener(EVENTS.openPalette, show);
+    };
+  }, [open, show, hide]);
+
+  useEffect(() => {
+    if (open) inputRef.current?.focus();
+  }, [open]);
+
+  useEffect(() => {
+    listRef.current?.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: 'nearest' });
+  }, [active, open]);
+
+  if (!open) return null;
+
+  const onKeyDown = (e: ReactKeyboardEvent) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setActiveIndex(i => Math.min(i + 1, flat.length - 1));
+      setActive((i) => (filtered.length ? (i + 1) % filtered.length : 0));
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      setActiveIndex(i => Math.max(i - 1, 0));
-    } else if (e.key === 'Enter' && flat[activeIndex]) {
-      const cmd = flat[activeIndex];
-      if (cmd.href.startsWith('http') || cmd.href.startsWith('mailto')) {
-        window.open(cmd.href, '_blank');
-      } else {
-        window.location.hash = cmd.href;
-      }
-      setIsOpen(false);
+      setActive((i) => (filtered.length ? (i - 1 + filtered.length) % filtered.length : 0));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      execute(filtered[active]);
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      hide();
+    } else if (e.key === 'Tab') {
+      e.preventDefault();
     }
   };
 
-  useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleKeyDown]);
-
-  useEffect(() => {
-    if (isOpen && inputRef.current) {
-      inputRef.current.focus();
-      setActiveIndex(0);
-    } else {
-      setSearch('');
-    }
-  }, [isOpen]);
-
-  useEffect(() => { setActiveIndex(0); }, [search]);
-
-  if (!isOpen) return null;
+  let flatIndex = -1;
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-start justify-center pt-8 sm:pt-[18vh] px-3 sm:px-4 pb-6" onKeyDown={handleModalKeyDown}>
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setIsOpen(false)} />
+    <div className="fixed inset-0 z-[350] flex items-start justify-center px-3 pt-[10vh] sm:px-4 sm:pt-[16vh]" onKeyDown={onKeyDown}>
+      <div className="anim-fade absolute inset-0 bg-black/50 backdrop-blur-[3px]" onClick={hide} aria-hidden="true" />
 
-      {/* Modal */}
       <div
-        className="relative w-full max-w-[560px] bg-[#0d0d0d]/95 border border-white/[0.08] rounded-2xl shadow-[0_24px_80px_rgba(0,0,0,0.8)] overflow-hidden backdrop-blur-2xl"
-        style={{ animation: 'cmdSlideUp 0.2s cubic-bezier(0.16,1,0.3,1)' }}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Command palette"
+        className="lg lg-strong anim-pop relative w-full max-w-[600px] overflow-hidden rounded-[26px]"
       >
-        {/* Search Input — 16px on mobile stops iOS Safari auto-zoom */}
-        <div className="flex items-center px-4 sm:px-5 border-b border-white/[0.06]">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/30 flex-shrink-0">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
+        <div className="flex items-center gap-3 px-5">
+          <Icon name="search" size={18} className="shrink-0 text-white/40" />
           <input
             ref={inputRef}
-            type="text"
-            placeholder="Search commands..."
-            className="w-full bg-transparent text-white placeholder-white/25 px-3 sm:px-4 py-3.5 sm:py-4 outline-none text-[16px] sm:text-[14px] font-medium tracking-wide"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setActive(0);
+            }}
+            placeholder="Search sections, projects, actions…"
+            className="h-[60px] w-full bg-transparent text-[16px] text-white outline-none placeholder:text-white/30 sm:text-[15px]"
+            role="combobox"
+            aria-expanded="true"
+            aria-controls="cmdk-list"
+            aria-activedescendant={filtered[active] ? `cmdk-${filtered[active].id}` : undefined}
+            autoComplete="off"
+            spellCheck={false}
           />
           <button
-            onClick={() => setIsOpen(false)}
-            className="text-[10px] bg-white/5 text-white/40 px-2.5 py-1.5 rounded-md border border-white/10 hover:bg-white/10 active:scale-95 transition-all font-bold tracking-widest uppercase flex-shrink-0"
+            type="button"
+            onClick={hide}
+            className="lg-chip font-code shrink-0 rounded-lg px-2 py-1 text-[10.5px] text-white/55 transition-colors hover:text-white"
           >
             ESC
           </button>
         </div>
+        <div className="hairline" />
 
-        {/* Results */}
-        <div ref={listRef} className="max-h-[48vh] sm:max-h-[360px] overflow-y-auto p-2" style={{ WebkitOverflowScrolling: 'touch' }}>
-          {flat.length === 0 ? (
-            <div className="text-center text-white/30 py-10 text-[13px] font-medium">No results found.</div>
-          ) : (
-            Object.entries(grouped).map(([group, cmds]) => (
-              <div key={group} className="mb-1">
-                <div className="px-3 py-2 text-[10px] text-white/25 uppercase tracking-[0.18em] font-bold">
-                  {group}
-                </div>
-                {cmds.map((cmd) => {
-                  const flatIdx = flat.findIndex(c => c.id === cmd.id);
-                  const isActive = flatIdx === activeIndex;
-                  return (
-                    <a
-                      key={cmd.id}
-                      href={cmd.href}
-                      target={cmd.href.startsWith('http') ? '_blank' : '_self'}
-                      rel="noreferrer"
-                      onClick={() => setIsOpen(false)}
-                      onMouseEnter={() => setActiveIndex(flatIdx)}
-                      className={`flex items-center justify-between w-full px-3 py-2.5 rounded-lg transition-all duration-100 group ${
-                        isActive ? 'bg-white/10 text-white' : 'text-white/50 hover:text-white'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className={`text-[13px] font-mono w-4 text-center ${isActive ? 'text-white/60' : 'text-white/20'}`}>
-                          {cmd.icon}
-                        </span>
-                        <span className="text-[13px] font-medium tracking-wide">{cmd.label}</span>
-                      </div>
-                      {isActive && (
-                        <span className="text-[10px] text-white/30 font-mono uppercase tracking-widest">↵ Enter</span>
-                      )}
-                    </a>
-                  );
-                })}
-              </div>
-            ))
+        <div ref={listRef} id="cmdk-list" role="listbox" className="max-h-[min(56vh,420px)] overflow-y-auto overscroll-contain p-2">
+          {filtered.length === 0 && (
+            <div className="px-4 py-12 text-center text-[13px] text-white/40">
+              Nothing matches “{query}”. Try “resume”, “AI” or “email”.
+            </div>
           )}
+          {groups.map(([group, cmds]) => (
+            <div key={group} className="mb-1" role="presentation">
+              <div className="px-3 pt-3 pb-1.5 text-[10.5px] font-semibold tracking-[0.18em] text-white/35 uppercase">{group}</div>
+              {cmds.map((cmd) => {
+                flatIndex++;
+                const idx = flatIndex;
+                const selected = idx === active;
+                return (
+                  <div
+                    key={cmd.id}
+                    id={`cmdk-${cmd.id}`}
+                    role="option"
+                    aria-selected={selected}
+                    onMouseMove={() => !selected && setActive(idx)}
+                    onClick={() => execute(cmd)}
+                    className={`flex cursor-pointer items-center gap-3 rounded-2xl px-3 py-2.5 transition-colors duration-150 ${
+                      selected ? 'bg-white/[0.09] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]' : 'text-white/65'
+                    }`}
+                  >
+                    <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-xl ${selected ? 'lg-chip text-white' : 'text-white/45'}`}>
+                      <Icon name={cmd.icon} size={15} />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-[14px] font-medium">{cmd.label}</span>
+                      {cmd.hint && <span className="block truncate text-[12px] text-white/40">{cmd.hint}</span>}
+                    </span>
+                    {selected && <Icon name="enter" size={14} className="shrink-0 text-white/45" />}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
         </div>
 
-        {/* Footer hint */}
-        <div className="flex items-center justify-between px-5 py-3 border-t border-white/[0.06]">
-          <div className="flex items-center gap-4 text-[10px] text-white/20 font-mono">
-            <span>↑↓ Navigate</span>
-            <span>↵ Open</span>
-            <span>ESC Close</span>
+        <div className="hairline" />
+        <div className="font-code flex items-center justify-between px-5 py-3 text-[10.5px] text-white/35">
+          <div className="flex items-center gap-4">
+            <span>↑↓ navigate</span>
+            <span>↵ open</span>
+            <span className="hidden sm:inline">/ or ⌘K anywhere</span>
           </div>
-          <span className="text-[10px] text-white/15 font-mono">{flat.length} results</span>
+          <span>{filtered.length} results</span>
         </div>
       </div>
-
-      <style>{`
-        @keyframes cmdSlideUp {
-          from { opacity: 0; transform: translateY(-8px) scale(0.98); }
-          to   { opacity: 1; transform: translateY(0) scale(1); }
-        }
-      `}</style>
     </div>
   );
 }

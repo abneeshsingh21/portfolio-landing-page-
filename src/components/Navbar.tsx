@@ -1,261 +1,253 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import Icon from './Icon';
+import { GlassButton, GlassLink } from './ui';
+import { useScrollLock } from '../hooks/useScrollLock';
+import { useActiveSection } from '../hooks/useActiveSection';
+import { navLinks } from '../lib/data';
+import { EMAIL, LINKS, RESUME_URL, copyEmail, openPalette, scrollToId } from '../lib/site';
 
-const navLinks = [
-  { name: 'About',          href: '#about',          id: 'about' },
-  { name: 'Projects',       href: '#projects',       id: 'projects' },
-  { name: 'Architecture',   href: '#architecture',   id: 'architecture' },
-  { name: 'Certifications', href: '#certifications', id: 'certifications' },
-];
+export function Monogram({ size = 36 }: { size?: number }) {
+  return (
+    <span
+      className="relative grid shrink-0 place-items-center rounded-full"
+      style={{
+        width: size,
+        height: size,
+        background: 'conic-gradient(from 200deg, #9fd0ff, #c7b2ff, #8ff0d6, #ffffff, #9fd0ff)',
+        padding: 1.2,
+      }}
+      aria-hidden="true"
+    >
+      <span
+        className="font-display grid h-full w-full place-items-center rounded-full text-[12px] font-bold text-white"
+        style={{
+          background: 'radial-gradient(circle at 30% 20%, rgba(255,255,255,0.35), rgba(20,22,30,0.92) 60%)',
+          fontSize: size * 0.34,
+          letterSpacing: '-0.02em',
+        }}
+      >
+        AS
+      </span>
+    </span>
+  );
+}
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const section = useActiveSection();
+  const active = section === 'top' ? '' : section;
+  const [hovered, setHovered] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState('');
-  const progressBarRef = useRef<HTMLDivElement>(null);
+  const [hidden, setHidden] = useState(false);
+  const [menu, setMenu] = useState(false);
+  const [indicator, setIndicator] = useState({ left: 0, width: 0, visible: false });
+  const linkRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  useScrollLock(menu);
 
-  // High-performance scroll listener: throttled with requestAnimationFrame, direct DOM progress update
+  // Scroll state: glass densifies after the hero, bar tucks away on scroll-down.
   useEffect(() => {
-    let ticking = false;
-
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const isScrolledNow = window.scrollY > 40;
-          setScrolled(prev => (prev !== isScrolledNow ? isScrolledNow : prev));
-
-          if (progressBarRef.current) {
-            const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const progress = totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0;
-            progressBarRef.current.style.width = `${progress}%`;
-          }
-          ticking = false;
-        });
-        ticking = true;
+    let lastY = window.scrollY;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const y = window.scrollY;
+      setScrolled(y > 24);
+      if (Math.abs(y - lastY) > 6) {
+        setHidden(y > lastY && y > 520);
+        lastY = y;
       }
     };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', onScroll);
+    };
   }, []);
 
-  // Lock body scroll when mobile menu is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
+  // Liquid indicator follows hover, rests on the active section.
+  const measure = useCallback(() => {
+    const key = hovered ?? active;
+    const el = key ? linkRefs.current[key] : null;
+    if (!el) {
+      setIndicator((s) => ({ ...s, visible: false }));
+      return;
     }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
+    setIndicator({ left: el.offsetLeft, width: el.offsetWidth, visible: true });
+  }, [hovered, active]);
 
-  // Active section — IntersectionObserver (zero layout thrashing, runs off main thread)
+  useLayoutEffect(() => {
+    measure();
+  }, [measure]);
+
   useEffect(() => {
-    const observers: IntersectionObserver[] = [];
-    navLinks.forEach((link) => {
-      const el = document.getElementById(link.id);
-      if (!el) return;
-      const obs = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              setActiveSection(link.id);
-            }
-          });
-        },
-        { rootMargin: '-20% 0px -60% 0px' }
-      );
-      obs.observe(el);
-      observers.push(obs);
-    });
+    window.addEventListener('resize', measure);
+    document.fonts?.ready.then(measure).catch(() => {});
+    return () => window.removeEventListener('resize', measure);
+  }, [measure]);
 
-    return () => {
-      observers.forEach(obs => obs.disconnect());
-    };
-  }, []);
+  useEffect(() => {
+    if (!menu) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setMenu(false);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [menu]);
+
+  const go = (id: string) => {
+    setMenu(false);
+    window.setTimeout(() => scrollToId(id), menu ? 60 : 0);
+  };
+
+  const pill = `lg lg-refract rounded-full ${scrolled || menu ? 'lg-dim' : ''}`;
 
   return (
     <>
-      {/* Scroll Progress Bar — direct DOM width manipulation, 0 React re-renders */}
-      <div className="fixed top-0 left-0 w-full h-[2px] z-[60] pointer-events-none">
-        <div
-          ref={progressBarRef}
-          className="h-full bg-white/40 will-change-[width]"
-          style={{ width: '0%' }}
-        />
-      </div>
-
-      <nav
-        className={`fixed top-0 left-0 w-full z-50 px-6 sm:px-10 flex flex-row justify-between items-center transition-all duration-300 ${
-          scrolled
-            ? 'py-3 bg-black/85 sm:bg-black/70 backdrop-blur-md sm:backdrop-blur-2xl border-b border-white/[0.06] shadow-[0_1px_40px_rgba(0,0,0,0.6)]'
-            : 'py-5 bg-transparent border-b border-transparent'
+      <header
+        className={`fixed inset-x-0 top-0 z-50 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          hidden && !menu ? '-translate-y-[130%]' : 'translate-y-0'
         }`}
       >
-        {/* Logo */}
-        <a href="#" className="flex flex-row gap-2.5 items-center group">
-          <span
-            className="text-[17px] sm:text-[19px] tracking-tight text-white font-bold group-hover:text-white/70 transition-colors duration-300"
-            style={{ fontFamily: 'var(--font-heading)' }}
-          >
-            Abneesh Singh
-          </span>
-          <span className="text-[18px] text-white/40 select-none group-hover:text-white/60 transition-colors" style={{ letterSpacing: '-0.02em' }}>
-            ✳︎
-          </span>
-        </a>
-
-        {/* Desktop Nav */}
-        <div className="hidden md:flex flex-row text-[13px] text-white/50 font-medium items-center gap-8 tracking-wide">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className={`relative uppercase tracking-widest text-[11px] font-bold transition-colors duration-200 group ${
-                activeSection === link.id ? 'text-white' : 'text-white/40 hover:text-white'
-              }`}
-            >
-              {link.name}
-              {/* Active underline dot */}
-              <span
-                className={`absolute -bottom-1 left-0 h-[1px] bg-white transition-all duration-300 ${
-                  activeSection === link.id ? 'w-full' : 'w-0 group-hover:w-full'
-                }`}
-              />
-            </a>
-          ))}
-          <div className="w-[1px] h-4 bg-white/10"></div>
-          <div className="px-2.5 py-1 rounded-md border border-white/15 bg-white/[0.04] text-white/40 text-[11px] font-mono tracking-wider flex items-center gap-1.5 cursor-pointer hover:border-white/30 hover:text-white/70 transition-all duration-200">
-            <span>⌘</span><span>K</span>
-          </div>
-        </div>
-
-        {/* Desktop CTA */}
-        <div className="hidden md:flex flex-row items-center gap-5">
+        <div className={`mx-auto flex w-full max-w-[1280px] items-center justify-between gap-3 px-3 transition-[padding] duration-500 sm:px-6 ${scrolled ? 'pt-3' : 'pt-4 sm:pt-6'}`}>
+          {/* Brand */}
           <a
-            href="https://github.com/abneeshsingh21"
-            target="_blank"
-            rel="noreferrer"
-            className="text-white/40 text-[11px] font-bold uppercase tracking-widest hover:text-white transition-colors duration-200"
+            href="#top"
+            onClick={(e) => {
+              e.preventDefault();
+              go('top');
+            }}
+            className={`${pill} lg-spec lg-press flex h-12 items-center gap-2.5 pr-4 pl-1.5 sm:pr-5`}
+            aria-label="Abneesh Singh — back to top"
           >
-            GitHub
-          </a>
-          <a
-            href="https://asworks.studio"
-            target="_blank"
-            rel="noreferrer"
-            className="text-white/40 text-[11px] font-bold uppercase tracking-widest hover:text-white transition-colors duration-200"
-          >
-            ASWorks
-          </a>
-          <a
-            href="https://linkedin.com/in/abneesh-singh001"
-            target="_blank"
-            rel="noreferrer"
-            className="text-white/40 text-[11px] font-bold uppercase tracking-widest hover:text-white transition-colors duration-200"
-          >
-            LinkedIn
+            <Monogram size={36} />
+            <span className="leading-none">
+              <span className="font-display block text-[14px] font-semibold tracking-[-0.02em] text-white">Abneesh Singh</span>
+              <span className="mt-1 hidden items-center gap-1.5 text-[10.5px] font-medium text-white/50 sm:flex">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400/70" />
+                  <span className="relative h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                </span>
+                Open to opportunities
+              </span>
+            </span>
           </a>
 
-          {/* Glassmorphic Resume Button */}
-          <a
-            href="/resume.pdf"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-white/20 bg-white/[0.07] backdrop-blur-md text-white text-[11px] font-bold tracking-[0.1em] uppercase hover:bg-white/15 hover:border-white/40 hover:scale-105 transition-all duration-200"
-          >
-            <span>Resume</span>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-80">
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-              <polyline points="15 3 21 3 21 9"></polyline>
-              <line x1="10" y1="14" x2="21" y2="3"></line>
-            </svg>
-          </a>
-
-          {/* Premium Hire Me CTA */}
-          <a
-            href="mailto:singhabneesh250@gmail.com"
-            className="group relative inline-flex items-center gap-2.5 overflow-hidden border border-white/20 text-white text-[11px] font-bold px-5 py-2 rounded-full tracking-[0.12em] uppercase hover:border-white/50 transition-all duration-300"
-            style={{ backdropFilter: 'blur(8px)' }}
-          >
-            {/* Shimmer sweep on hover */}
+          {/* Center links */}
+          <nav aria-label="Primary" className={`${pill} relative hidden h-12 items-center p-1 md:flex`} onMouseLeave={() => setHovered(null)}>
             <span
-              className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out"
+              aria-hidden="true"
+              className="absolute top-1 bottom-1 rounded-full"
               style={{
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
+                left: indicator.left,
+                width: indicator.width,
+                opacity: indicator.visible ? 1 : 0,
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.07))',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 0 rgba(255,255,255,0.06), 0 4px 14px -4px rgba(0,0,0,0.5)',
+                transition: 'left 0.5s cubic-bezier(0.34,1.3,0.64,1), width 0.5s cubic-bezier(0.34,1.3,0.64,1), opacity 0.3s ease',
               }}
             />
-            {/* Green availability dot */}
-            <span className="relative w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0" style={{ boxShadow: '0 0 6px rgba(74,222,128,0.8)' }}>
-              <span className="absolute inset-0 rounded-full bg-green-400 animate-ping opacity-75" />
-            </span>
-            <span className="relative">Let's Talk</span>
-          </a>
-        </div>
+            {navLinks.map((l) => (
+              <button
+                key={l.id}
+                ref={(el) => {
+                  linkRefs.current[l.id] = el;
+                }}
+                type="button"
+                onMouseEnter={() => setHovered(l.id)}
+                onFocus={() => setHovered(l.id)}
+                onBlur={() => setHovered(null)}
+                onClick={() => go(l.id)}
+                aria-current={active === l.id ? 'true' : undefined}
+                className={`relative z-[1] h-10 rounded-full px-4 text-[13px] font-medium transition-colors duration-300 lg:px-5 ${
+                  active === l.id || hovered === l.id ? 'text-white' : 'text-white/60'
+                }`}
+              >
+                {l.name}
+              </button>
+            ))}
+          </nav>
 
-        {/* Mobile Header Actions (Resume Pill + 44px Hamburger) */}
-        <div className="flex md:hidden items-center gap-2.5">
-          <a
-            href="/resume.pdf"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-white/20 bg-white/[0.08] backdrop-blur-md text-white text-[11px] font-bold tracking-wider uppercase active:scale-95 transition-transform"
-          >
-            <span>CV</span>
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-70">
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-              <polyline points="15 3 21 3 21 9"></polyline>
-              <line x1="10" y1="14" x2="21" y2="3"></line>
-            </svg>
-          </a>
-
-          <button
-            aria-label="Toggle navigation menu"
-            className="w-11 h-11 flex flex-col items-center justify-center gap-[5px] z-20 relative focus:outline-none -mr-2 rounded-lg active:bg-white/10"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            <div className={`w-5 h-[1.5px] bg-white transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-[6.5px]' : ''}`}></div>
-            <div className={`w-5 h-[1.5px] bg-white transition-all duration-300 ${isOpen ? 'opacity-0' : 'opacity-100'}`}></div>
-            <div className={`w-5 h-[1.5px] bg-white transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-[6.5px]' : ''}`}></div>
-          </button>
-        </div>
-      </nav>
-
-      {/* Mobile Overlay */}
-      <div
-        className={`fixed inset-0 bg-black/95 backdrop-blur-2xl z-[40] flex flex-col justify-between px-8 pt-28 pb-10 md:hidden transition-all duration-300 overflow-y-auto ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-      >
-        <div className="flex flex-col gap-4">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              onClick={() => setIsOpen(false)}
-              className="text-[26px] font-bold text-white hover:text-white/50 active:text-white/40 transition-colors uppercase tracking-widest py-1"
+          {/* Actions */}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={openPalette}
+              aria-label="Open command palette"
+              className={`${pill} lg-spec lg-press hidden h-12 items-center gap-2 px-4 text-white/70 hover:text-white sm:flex`}
             >
-              {link.name}
-            </a>
-          ))}
+              <Icon name="search" size={15} />
+              <span className="font-code flex items-center gap-0.5 text-[11px]">
+                <kbd className="lg-chip rounded-md px-1.5 py-0.5">⌘</kbd>
+                <kbd className="lg-chip rounded-md px-1.5 py-0.5">K</kbd>
+              </span>
+            </button>
+            <GlassLink href={`mailto:${EMAIL}`} variant="primary" size="md" className="hidden h-12 lg:inline-flex" external={false}>
+              Let’s talk
+              <Icon name="arrowUpRight" size={15} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </GlassLink>
+            <button
+              type="button"
+              onClick={() => setMenu((m) => !m)}
+              aria-expanded={menu}
+              aria-controls="mobile-menu"
+              aria-label={menu ? 'Close menu' : 'Open menu'}
+              className={`${pill} lg-press grid h-12 w-12 place-items-center md:hidden`}
+            >
+              <span className="relative block h-3 w-[18px]">
+                <span className={`absolute left-0 h-[1.5px] w-full rounded-full bg-white transition-all duration-300 ${menu ? 'top-[5px] rotate-45' : 'top-0'}`} />
+                <span className={`absolute left-0 h-[1.5px] w-full rounded-full bg-white transition-all duration-300 ${menu ? 'top-[5px] -rotate-45' : 'top-[10px]'}`} />
+              </span>
+            </button>
+          </div>
         </div>
+      </header>
 
-        <div className="flex flex-col gap-3.5 mt-8 border-t border-white/10 pt-6">
-          <a
-            href="/resume.pdf"
-            target="_blank"
-            rel="noreferrer"
-            className="text-[16px] font-bold text-white hover:text-white/60 transition-colors flex items-center gap-2 py-1"
-            onClick={() => setIsOpen(false)}
-          >
-            Resume (PDF) ↗
-          </a>
-          <a href="https://asworks.studio" target="_blank" rel="noreferrer" className="text-[15px] font-semibold text-white/60 hover:text-white transition-colors py-1" onClick={() => setIsOpen(false)}>ASWorks Studio ↗</a>
-          <a href="https://github.com/abneeshsingh21" target="_blank" rel="noreferrer" className="text-[15px] font-semibold text-white/60 hover:text-white transition-colors py-1" onClick={() => setIsOpen(false)}>GitHub ↗</a>
-          <a href="https://linkedin.com/in/abneesh-singh001" target="_blank" rel="noreferrer" className="text-[15px] font-semibold text-white/60 hover:text-white transition-colors py-1" onClick={() => setIsOpen(false)}>LinkedIn ↗</a>
-          <a href="mailto:singhabneesh250@gmail.com" className="text-[14px] font-medium text-white/80 hover:text-white transition-colors pt-2 border-t border-white/5" onClick={() => setIsOpen(false)}>singhabneesh250@gmail.com</a>
-        </div>
-      </div>
+      {/* Mobile sheet */}
+      {menu && (
+        <>
+          <div className="anim-fade fixed inset-0 z-[45] bg-black/45 backdrop-blur-[2px] md:hidden" onClick={() => setMenu(false)} aria-hidden="true" />
+          <div id="mobile-menu" className="lg lg-strong anim-drop fixed inset-x-3 top-[76px] z-[46] rounded-[28px] p-2 md:hidden">
+            <nav aria-label="Mobile" className="flex flex-col">
+              {navLinks.map((l, i) => (
+                <button
+                  key={l.id}
+                  type="button"
+                  onClick={() => go(l.id)}
+                  className="rise flex items-center justify-between rounded-2xl px-4 py-3.5 text-left active:bg-white/[0.06]"
+                  style={{ ['--d' as string]: `${60 + i * 45}ms` }}
+                >
+                  <span className="flex items-baseline gap-3">
+                    <span className="font-code text-[11px] text-white/35">0{i + 1}</span>
+                    <span className="font-display text-[24px] font-semibold text-white">{l.name}</span>
+                  </span>
+                  <Icon name="arrowRight" size={16} className={active === l.id ? 'text-white' : 'text-white/35'} />
+                </button>
+              ))}
+            </nav>
+            <div className="hairline my-2" />
+            <div className="grid grid-cols-2 gap-2 p-2">
+              <GlassLink href={RESUME_URL} external size="md" icon="file" magnetic={false}>
+                Résumé
+              </GlassLink>
+              <GlassButton size="md" icon="copy" magnetic={false} onClick={() => void copyEmail()}>
+                Copy email
+              </GlassButton>
+              <GlassLink href={LINKS.github} size="md" icon="github" magnetic={false}>
+                GitHub
+              </GlassLink>
+              <GlassLink href={LINKS.linkedin} size="md" icon="linkedin" magnetic={false}>
+                LinkedIn
+              </GlassLink>
+            </div>
+            <div className="p-2 pt-0">
+              <GlassLink href={`mailto:${EMAIL}`} external={false} variant="primary" size="lg" className="w-full" iconRight="arrowUpRight" magnetic={false}>
+                Let’s talk
+              </GlassLink>
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 }
