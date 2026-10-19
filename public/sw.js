@@ -1,4 +1,4 @@
-const CACHE_NAME = 'portfolio-pwa-v1';
+const CACHE_NAME = 'portfolio-pwa-v2';
 
 const PRECACHE_ASSETS = [
   '/',
@@ -15,14 +15,15 @@ const PRECACHE_ASSETS = [
   '/resume.pdf'
 ];
 
-// Install: precache core shell
+// Install: precache core shell & immediately skip waiting
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(PRECACHE_ASSETS).catch((err) => {
         console.warn('PWA precache warning:', err);
       });
-    }).then(() => self.skipWaiting())
+    })
   );
 });
 

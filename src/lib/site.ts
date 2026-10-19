@@ -92,10 +92,16 @@ export function openInstallPrompt() {
   window.dispatchEvent(new Event(EVENTS.openInstallPrompt));
 }
 
-/** Preloader shows once per session and never for reduced-motion users. */
+/** Preloader shows once per session and never for reduced-motion users.
+ * Can be explicitly tested/forced anytime via ?boot or ?preloader in the URL.
+ */
 export const SHOW_PRELOADER = (() => {
   if (typeof window === 'undefined') return false;
   try {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('boot') || params.has('preloader')) {
+      return true;
+    }
     return !sessionStorage.getItem('as:booted') && !prefersReducedMotion();
   } catch {
     return false;

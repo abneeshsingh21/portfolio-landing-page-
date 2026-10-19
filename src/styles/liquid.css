@@ -104,6 +104,23 @@
   box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.5), inset 0 1px 2px 0 rgba(255, 255, 255, 0.5);
 }
 
+.lg-preloader {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(180, 210, 255, 0.05) 45%,
+    rgba(160, 140, 255, 0.08) 100%
+  ), rgba(8, 12, 22, 0.60);
+  backdrop-filter: blur(36px) saturate(220%);
+  -webkit-backdrop-filter: blur(36px) saturate(220%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow:
+    0 30px 80px -15px rgba(0, 0, 0, 0.8),
+    0 0 50px -10px rgba(160, 200, 255, 0.2),
+    inset 0 1px 2px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 1px 0 rgba(255, 255, 255, 0.12);
+}
+
 .lg-chip {
   background: rgba(255, 255, 255, 0.055);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -241,6 +258,17 @@ html.refract .lg-refract {
 
 .lg-bright .lg-beam-glow {
   opacity: 0.22;
+}
+
+/* Always-active chromatic beam for loading screens & featured focal points */
+.lg-beam-active .lg-beam-ring {
+  opacity: 0.95;
+  animation-duration: 3.2s;
+}
+
+.lg-beam-active .lg-beam-glow {
+  opacity: 0.6;
+  animation-duration: 3.2s;
 }
 
 /* On hover / focus / rippling: full chromatic illumination */
