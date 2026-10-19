@@ -4,7 +4,7 @@ import { Container, GlassButton, GlassLink, Reveal, SectionHeading } from './ui'
 import { focusAreas } from '../lib/data';
 import { LINKS, RESUME_URL, copyEmail, scrollToId } from '../lib/site';
 
-const card = 'lg lg-dim lg-spec lg-glow rounded-[22px] sm:rounded-[30px] p-4.5 sm:p-7 lg:p-8';
+const card = 'lg-prism lg-spec lg-glow rounded-[22px] sm:rounded-[30px] p-4.5 sm:p-7 lg:p-8';
 
 const now = [
   { title: 'Operating ASWorks', body: 'A live commercial marketplace at asworks.studio', live: true, href: LINKS.asworks },
@@ -50,7 +50,7 @@ export default function About() {
                 <p className="text-[11.5px] text-white/50 sm:text-[12.5px]">Agentic AI &amp; Systems Engineer</p>
               </div>
             </div>
-            <div className="lg-chip mt-4 sm:mt-6 rounded-xl sm:rounded-2xl p-3 sm:p-4">
+            <div className="lg-chip mt-4 sm:mt-6 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/15 shadow-[inset_0_1px_1px_rgba(255,255,255,0.25)]">
               <div className="flex items-start gap-2.5 sm:gap-3">
                 <span className="mt-0.5 text-[#c7b2ff]">
                   <Icon name="graduation" size={16} />

@@ -18,9 +18,9 @@ export default function Experience() {
 
           <div className="grid gap-3.5 sm:gap-5 md:grid-cols-2">
             {competencies.map((c, i) => (
-              <Reveal key={c.number} delay={(i % 2) * 90} className="lg lg-dim lg-spec lg-glow group relative flex flex-col overflow-hidden rounded-[22px] p-4.5 sm:rounded-[30px] sm:p-8">
+              <Reveal key={c.number} delay={(i % 2) * 90} className="lg-prism lg-spec lg-glow group relative flex flex-col overflow-hidden rounded-[22px] p-4.5 sm:rounded-[30px] sm:p-8">
                 <div className="flex items-start justify-between">
-                  <span className="lg-chip grid h-10 w-10 sm:h-12 sm:w-12 place-items-center rounded-xl sm:rounded-2xl text-white/85 transition-transform duration-500 group-hover:scale-105">
+                  <span className="lg-chip grid h-10 w-10 sm:h-12 sm:w-12 place-items-center rounded-xl sm:rounded-2xl text-white/85 border border-white/15 shadow-[inset_0_1px_1px_rgba(255,255,255,0.25)] transition-transform duration-500 group-hover:scale-105">
                     <Icon name={c.icon} size={19} />
                   </span>
                   <span className="font-display text-[32px] sm:text-[44px] leading-none font-semibold tracking-[-0.05em] text-white/[0.08] transition-colors duration-500 group-hover:text-white/20">
@@ -31,7 +31,7 @@ export default function Experience() {
                 <p className="mt-2.5 sm:mt-3 text-[13.5px] leading-[1.7] text-white/55 sm:text-[14.5px] sm:leading-[1.8]">{c.description}</p>
                 <div className="mt-auto flex flex-wrap gap-1.5 sm:gap-2 pt-4 sm:pt-7">
                   {c.tags.map((t) => (
-                    <span key={t} className="lg-chip rounded-full px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-[11.5px] text-white/60">
+                    <span key={t} className="lg-chip rounded-full px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-[11.5px] text-white/60 border border-white/10">
                       {t}
                     </span>
                   ))}
@@ -41,7 +41,7 @@ export default function Experience() {
           </div>
 
           {/* Principles */}
-          <Reveal className="lg lg-dim lg-glow relative mt-4 overflow-hidden rounded-[22px] p-4.5 sm:mt-5 sm:rounded-[30px] sm:p-8">
+          <Reveal className="lg-prism lg-glow relative mt-4 overflow-hidden rounded-[22px] p-4.5 sm:mt-5 sm:rounded-[30px] sm:p-8">
             <div className="flex items-center justify-between gap-4">
               <p className="text-[10.5px] font-semibold tracking-[0.22em] text-white/45 uppercase sm:text-[11px]">How I build</p>
               <span className="font-code text-[10.5px] text-white/30 sm:text-[11px]">04 principles</span>
@@ -52,7 +52,7 @@ export default function Experience() {
                 {principles.map((p, i) => (
                   <li key={p.title} className="relative">
                     <span
-                      className="font-code relative grid h-[28px] w-[28px] sm:h-[30px] sm:w-[30px] place-items-center rounded-full text-[10.5px] sm:text-[11px] text-[#07070b]"
+                      className="font-code relative grid h-[28px] w-[28px] sm:h-[30px] sm:w-[30px] place-items-center rounded-full text-[10.5px] sm:text-[11px] text-[#07070b] font-bold shadow-[0_0_12px_rgba(159,208,255,0.4)]"
                       style={{ background: ['#9fd0ff', '#8ff0d6', '#c7b2ff', '#ffc6a8'][i], boxShadow: '0 0 0 5px rgba(13,14,20,0.9)' }}
                     >
                       {i + 1}
@@ -73,7 +73,7 @@ export default function Experience() {
           <SectionHeading index="04" eyebrow="Credentials" title="Always" accent="learning." />
           <div className="grid gap-3.5 sm:gap-5 md:grid-cols-3">
             {certifications.map((c, i) => (
-              <Reveal key={c.title} delay={i * 80} className="lg lg-dim lg-spec lg-glow group flex flex-col rounded-[22px] p-4.5 sm:rounded-[28px] sm:p-7">
+              <Reveal key={c.title} delay={i * 80} className="lg-prism lg-spec lg-glow group flex flex-col rounded-[22px] p-4.5 sm:rounded-[28px] sm:p-7">
                 <div className="flex items-center justify-between">
                   <span className="lg-chip grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-xl sm:rounded-2xl text-[#c7b2ff]">
                     <Icon name="award" size={17} />

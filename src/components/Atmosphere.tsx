@@ -37,28 +37,35 @@ export function Ambient() {
       {/* Darken + cool the video so white type and glass read cleanly */}
       <div
         className="absolute inset-0"
-        style={{ background: 'linear-gradient(180deg, rgba(5,5,10,0.35) 0%, rgba(5,5,10,0.18) 40%, rgba(5,5,10,0.48) 100%)' }}
+        style={{ background: 'linear-gradient(180deg, rgba(4,6,12,0.32) 0%, rgba(4,6,12,0.15) 40%, rgba(4,6,12,0.42) 100%)' }}
       />
 
-      {/* Light sources for the glass to refract */}
-      <div className="orb" style={orb('rgba(120,170,255,0.95)', 0.28, '28s', { width: '55vmax', height: '55vmax', top: '-18vmax', left: '-14vmax' })} />
+      {/* Primary central-field caustics that shine directly through scrolling glass cards */}
       <div
         className="orb"
-        style={orb('rgba(180,140,255,0.95)', 0.24, '34s', { width: '48vmax', height: '48vmax', top: '30vh', right: '-20vmax', animationDelay: '-8s' })}
+        style={orb('rgba(120,190,255,0.95)', 0.38, '32s', { width: '52vmax', height: '52vmax', top: '10vh', left: '5vw' })}
       />
       <div
         className="orb"
-        style={orb('rgba(110,240,210,0.85)', 0.18, '40s', { width: '40vmax', height: '40vmax', bottom: '-20vmax', left: '20vw', animationDelay: '-16s' })}
+        style={orb('rgba(195,145,255,0.9)', 0.34, '38s', { width: '48vmax', height: '48vmax', top: '45vh', right: '5vw', animationDelay: '-10s' })}
+      />
+      <div
+        className="orb"
+        style={orb('rgba(130,245,215,0.85)', 0.28, '42s', { width: '44vmax', height: '44vmax', top: '70vh', left: '25vw', animationDelay: '-18s' })}
+      />
+      <div
+        className="orb"
+        style={orb('rgba(255,180,130,0.6)', 0.22, '36s', { width: '38vmax', height: '38vmax', top: '-10vmax', right: '15vw', animationDelay: '-6s' })}
       />
 
       {/* Vignette */}
       <div
         className="absolute inset-0"
-        style={{ background: 'radial-gradient(ellipse at 50% 40%, transparent 0%, rgba(0,0,0,0.15) 55%, rgba(0,0,0,0.6) 100%)' }}
+        style={{ background: 'radial-gradient(ellipse at 50% 40%, transparent 0%, rgba(0,0,0,0.12) 55%, rgba(0,0,0,0.55) 100%)' }}
       />
 
       {/* Film grain — desktop only (feTurbulence rasterisation is costly on mobile GPUs) */}
-      <div className="absolute inset-0 hidden opacity-[0.045] sm:block" style={{ backgroundImage: GRAIN, backgroundSize: '160px 160px' }} />
+      <div className="absolute inset-0 hidden opacity-[0.04] sm:block" style={{ backgroundImage: GRAIN, backgroundSize: '160px 160px' }} />
     </div>
   );
 }

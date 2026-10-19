@@ -151,13 +151,13 @@ export default function CommandPalette() {
 
   return (
     <div className="fixed inset-0 z-[350] flex items-start justify-center px-3 pt-[10vh] sm:px-4 sm:pt-[16vh]" onKeyDown={onKeyDown}>
-      <div className="anim-fade absolute inset-0 bg-black/50 backdrop-blur-[3px]" onClick={hide} aria-hidden="true" />
+      <div className="anim-fade absolute inset-0 bg-[#020306]/70 backdrop-blur-2xl" onClick={hide} aria-hidden="true" />
 
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Command palette"
-        className="lg lg-strong anim-pop relative w-full max-w-[600px] overflow-hidden rounded-[26px]"
+        className="lg-preloader lg-spec anim-pop relative w-full max-w-[600px] overflow-hidden rounded-[26px] shadow-[0_30px_90px_rgba(0,0,0,0.85),inset_0_1.5px_1px_0_rgba(255,255,255,0.45)] border border-white/20"
       >
         <div className="flex items-center gap-3 px-5">
           <Icon name="search" size={18} className="shrink-0 text-white/40" />

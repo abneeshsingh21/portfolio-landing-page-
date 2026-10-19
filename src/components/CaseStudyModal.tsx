@@ -77,19 +77,19 @@ export default function CaseStudyModal({ project, index, total, onClose, onNavig
 
   return (
     <div className="fixed inset-0 z-[300] flex items-end justify-end sm:items-stretch">
-      <div className={`absolute inset-0 bg-black/55 backdrop-blur-[4px] ${closing ? 'anim-fade-out' : 'anim-fade'}`} onClick={requestClose} aria-hidden="true" />
+      <div className={`absolute inset-0 bg-[#020306]/75 backdrop-blur-2xl ${closing ? 'anim-fade-out' : 'anim-fade'}`} onClick={requestClose} aria-hidden="true" />
 
       <div
         ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="case-title"
-        className={`lg lg-strong relative flex h-[92dvh] w-full flex-col overflow-hidden rounded-t-[30px] sm:h-full sm:max-w-[880px] sm:rounded-t-none sm:rounded-l-[34px] ${
+        className={`lg-preloader lg-spec relative flex h-[92dvh] w-full flex-col overflow-hidden rounded-t-[30px] sm:h-full sm:max-w-[880px] sm:rounded-t-none sm:rounded-l-[36px] shadow-[0_30px_90px_rgba(0,0,0,0.85),inset_0_1.5px_1px_0_rgba(255,255,255,0.45)] ${
           closing ? 'anim-sheet-out' : 'anim-sheet'
         }`}
       >
         {/* Top bar */}
-        <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
+        <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4 border-b border-white/[0.08]">
           <div className="flex items-center gap-1">
             <button type="button" onClick={() => onNavigate(-1)} aria-label="Previous project" className="lg-press grid h-10 w-10 place-items-center rounded-full text-white/60 transition-colors hover:bg-white/[0.07] hover:text-white">
               <Icon name="chevronLeft" size={18} />
@@ -101,18 +101,17 @@ export default function CaseStudyModal({ project, index, total, onClose, onNavig
               <Icon name="chevronRight" size={18} />
             </button>
           </div>
-          <button ref={closeRef} type="button" onClick={requestClose} aria-label="Close case study" className="lg lg-spec lg-press grid h-10 w-10 place-items-center rounded-full text-white/80 hover:text-white">
+          <button ref={closeRef} type="button" onClick={requestClose} aria-label="Close case study" className="lg lg-spec lg-press grid h-10 w-10 place-items-center rounded-full text-white/80 hover:text-white border border-white/15">
             <Icon name="x" size={17} />
           </button>
         </div>
-        <div className="hairline" />
 
         <div ref={bodyRef} className="flex-1 overflow-y-auto overscroll-contain">
           {/* Hero */}
           <div key={project.id} className="anim-fade relative px-6 pt-10 pb-10 sm:px-12 sm:pt-14">
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute -top-40 -right-32 h-[460px] w-[460px] rounded-full opacity-60"
+              className="pointer-events-none absolute -top-40 -right-32 h-[460px] w-[460px] rounded-full opacity-60 blur-3xl"
               style={{ background: `radial-gradient(circle, ${project.accent}40 0%, transparent 65%)` }}
             />
             <div className="relative flex items-center gap-3">

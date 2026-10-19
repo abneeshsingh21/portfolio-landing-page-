@@ -101,7 +101,7 @@ export default function Navbar() {
     window.setTimeout(() => scrollToId(id), menu ? 60 : 0);
   };
 
-  const pill = `lg lg-refract rounded-full ${scrolled || menu ? 'bg-[#090b16]/65 sm:bg-[#0a0c16]/55 backdrop-blur-2xl border border-white/15 shadow-[0_10px_32px_rgba(0,0,0,0.38)]' : ''}`;
+  const pill = `lg lg-refract lg-prism rounded-full ${scrolled || menu ? 'bg-[#090b16]/70 sm:bg-[#0a0c16]/60 backdrop-blur-2xl border border-white/20 shadow-[0_12px_36px_rgba(0,0,0,0.45)]' : ''}`;
 
   return (
     <>
@@ -138,17 +138,15 @@ export default function Navbar() {
           <nav aria-label="Primary" className={`${pill} relative hidden h-12 items-center p-1 md:flex`} onMouseLeave={() => setHovered(null)}>
             <span
               aria-hidden="true"
-              className="absolute top-1 bottom-1 rounded-full overflow-hidden"
+              className="lg-mercury absolute top-1 bottom-1 rounded-full overflow-hidden"
               style={{
                 left: indicator.left,
                 width: indicator.width,
                 opacity: indicator.visible ? 1 : 0,
-                background: 'linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06))',
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.35), 0 4px 14px -4px rgba(0,0,0,0.5)',
-                transition: 'left 0.5s cubic-bezier(0.34,1.3,0.64,1), width 0.5s cubic-bezier(0.34,1.3,0.64,1), opacity 0.3s ease',
+                transition: 'left 0.45s cubic-bezier(0.34,1.4,0.64,1), width 0.45s cubic-bezier(0.34,1.4,0.64,1), opacity 0.25s ease',
               }}
             >
-              <BeamEffect />
+              <BeamEffect className="lg-beam-active opacity-60" />
             </span>
             {navLinks.map((l) => (
               <button

@@ -74,17 +74,20 @@ function ProjectCard({ project, index, featured, onOpen }: { project: Project; i
       <div ref={tiltRef} className="h-full">
         <article
           onPointerEnter={() => void loadModal()}
-          className="lg lg-dim lg-spec lg-glow group relative flex h-full flex-col overflow-hidden rounded-[22px] p-4.5 sm:rounded-[30px] sm:p-8"
+          className="lg-prism lg-spec lg-glow group relative flex h-full flex-col overflow-hidden rounded-[22px] p-4.5 sm:rounded-[30px] sm:p-8"
         >
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute -top-28 -right-28 h-80 w-80 rounded-full opacity-30 transition-opacity duration-700 group-hover:opacity-80"
-            style={{ background: `radial-gradient(circle, ${project.accent}55 0%, transparent 65%)` }}
+            className="pointer-events-none absolute -top-28 -right-28 h-80 w-80 rounded-full opacity-40 transition-opacity duration-700 group-hover:opacity-90 blur-3xl"
+            style={{ background: `radial-gradient(circle, ${project.accent}70 0%, transparent 65%)` }}
           />
 
           <header className="relative flex items-start justify-between gap-3 sm:gap-4">
             <div className="flex items-center gap-3 sm:gap-3.5">
-              <span className="lg-chip grid h-10 w-10 sm:h-12 sm:w-12 shrink-0 place-items-center rounded-xl sm:rounded-2xl" style={{ color: project.accent }}>
+              <span
+                className="lg-chip grid h-10 w-10 sm:h-12 sm:w-12 shrink-0 place-items-center rounded-xl sm:rounded-2xl border border-white/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)]"
+                style={{ color: project.accent }}
+              >
                 <Icon name={project.icon} size={18} />
               </span>
               <div className="leading-tight">
@@ -206,14 +209,14 @@ export default function Projects() {
                       }}
                       className={`group lg-press relative inline-flex h-[34px] sm:h-9 shrink-0 items-center gap-1.5 rounded-full px-3.5 sm:px-4 text-[12px] sm:text-[12.5px] font-medium transition-all duration-300 select-none overflow-hidden ${
                         on
-                          ? 'bg-white/[0.14] text-white font-semibold border border-white/25 shadow-[0_0_16px_rgba(159,208,255,0.25)]'
+                          ? 'lg-mercury text-white font-semibold shadow-[0_4px_16px_rgba(159,208,255,0.3)]'
                           : 'text-white/65 hover:text-white hover:bg-white/[0.06] border border-transparent'
                       }`}
                     >
-                      {on && <BeamEffect />}
+                      {on && <BeamEffect className="lg-beam-active opacity-60" />}
                       <RippleEffect />
                       <span className="relative z-[1]">{c}</span>
-                      <span className={`relative z-[1] font-code text-[10px] rounded-full px-1.5 py-0.5 ${on ? 'text-white/90 bg-white/15' : 'text-white/40 bg-white/5'}`}>{count}</span>
+                      <span className={`relative z-[1] font-code text-[10px] rounded-full px-1.5 py-0.5 ${on ? 'text-white/90 bg-white/20' : 'text-white/40 bg-white/5'}`}>{count}</span>
                     </button>
                   );
                 })}

@@ -223,12 +223,12 @@ export default function Hero() {
 
         {/* Stats */}
         <div className="rise mt-8 sm:mt-16" style={d(700)}>
-          <div className="lg lg-dim grid grid-cols-2 overflow-hidden rounded-[20px] sm:rounded-[28px] md:grid-cols-4">
+          <div className="lg-prism grid grid-cols-2 overflow-hidden rounded-[20px] sm:rounded-[28px] md:grid-cols-4">
             {heroStats.map((s, i) => (
               <div
                 key={s.label}
-                className={`${i % 2 === 0 ? 'border-r border-white/[0.07]' : ''} ${i < 2 ? 'border-b border-white/[0.07] md:border-b-0' : ''} ${
-                  i === 1 ? 'md:border-r md:border-white/[0.07]' : ''
+                className={`${i % 2 === 0 ? 'border-r border-white/[0.08]' : ''} ${i < 2 ? 'border-b border-white/[0.08] md:border-b-0' : ''} ${
+                  i === 1 ? 'md:border-r md:border-white/[0.08]' : ''
                 }`}
               >
                 <Stat stat={s} index={i} />
