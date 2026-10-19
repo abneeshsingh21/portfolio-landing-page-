@@ -1,7 +1,7 @@
 import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react';
 import Icon from './Icon';
 import ProjectVisual from './ProjectVisual';
-import { Container, Reveal, SectionHeading } from './ui';
+import { Container, GlassLink, Reveal, SectionHeading } from './ui';
 import { useTilt } from '../hooks/usePointerFx';
 import { timeAgo, useGithubStats } from '../hooks/useGithubStats';
 import { CATEGORIES, projects, type Category, type Project } from '../lib/data';
@@ -95,15 +95,14 @@ function ProjectCard({ project, index, featured, onOpen }: { project: Project; i
               </div>
             </div>
             {external ? (
-              <a
+              <GlassLink
                 href={external}
-                target="_blank"
-                rel="noreferrer noopener"
+                size="icon-sm"
+                variant="glass"
                 aria-label={`Open ${project.title} in a new tab`}
-                className="lg lg-spec lg-press relative z-[2] grid h-9 w-9 sm:h-10 sm:w-10 shrink-0 place-items-center rounded-full text-white/80 hover:text-white"
-              >
-                <Icon name="arrowUpRight" size={15} />
-              </a>
+                className="relative z-[2] sm:h-10 sm:w-10"
+                icon="arrowUpRight"
+              />
             ) : (
               <span className="lg-chip relative z-[2] inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10.5px] sm:text-[11px] text-white/60">
                 <Icon name="lock" size={11} /> Private

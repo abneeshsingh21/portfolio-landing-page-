@@ -44,21 +44,30 @@ interface Shared {
   className?: string;
 }
 
-/** Restart the liquid ripple from the exact press point. */
+/** Restart the liquid drop shockwave from the exact press point. */
 function ripple(e: ReactPointerEvent<HTMLElement>) {
   const el = e.currentTarget;
   const r = el.getBoundingClientRect();
-  el.style.setProperty('--rx', `${e.clientX - r.left}px`);
-  el.style.setProperty('--ry', `${e.clientY - r.top}px`);
+  const x = e.clientX > 0 ? e.clientX - r.left : r.width / 2;
+  const y = e.clientY > 0 ? e.clientY - r.top : r.height / 2;
+  el.style.setProperty('--rx', `${x.toFixed(1)}px`);
+  el.style.setProperty('--ry', `${y.toFixed(1)}px`);
   el.classList.remove('is-rippling');
   void el.offsetWidth;
   el.classList.add('is-rippling');
+  window.setTimeout(() => {
+    el.classList.remove('is-rippling');
+  }, 750);
 }
 
 function Inner({ icon, iconRight, children, size = 'md' }: Pick<Shared, 'icon' | 'iconRight' | 'children' | 'size'>) {
   const iconSize = size === 'lg' ? 17 : size === 'sm' || size === 'icon-sm' ? 14 : 16;
   return (
     <>
+      <span className="lg-beam" aria-hidden="true">
+        <span className="lg-beam-ring" />
+        <span className="lg-beam-glow" />
+      </span>
       <span className="lg-sheen" aria-hidden="true" />
       <span className="lg-ripple" aria-hidden="true" />
       <span className={`relative z-[1] inline-flex items-center ${GAPS[size]}`}>
