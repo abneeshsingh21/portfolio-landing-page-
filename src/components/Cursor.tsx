@@ -1,117 +1,92 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { canHover, prefersReducedMotion } from '../lib/site';
 
-type CursorState = 'default' | 'hover' | 'drag';
-
+/**
+ * Liquid lens cursor: an instant dot plus an inertial glass ring that morphs
+ * over interactive elements (and shows a label on `[data-cursor="view"]`).
+ * All updates are direct DOM writes — zero React re-renders while moving.
+ */
 export default function Cursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
-  const [cursorState, setCursorState] = useState<CursorState>('default');
+  const labelRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    // Touch devices — skip
-    if (
-      window.matchMedia('(pointer: coarse)').matches ||
-      navigator.maxTouchPoints > 0
-    ) {
-      return;
-    }
+    if (!canHover() || prefersReducedMotion()) return;
+    const dot = dotRef.current;
+    const ring = ringRef.current;
+    const label = labelRef.current;
+    if (!dot || !ring || !label) return;
 
-    let mouseX = 0, mouseY = 0;
-    let ringX = 0, ringY = 0;
-    let animId: number;
+    document.documentElement.classList.add('has-cursor');
+    let mx = -100;
+    let my = -100;
+    let rx = -100;
+    let ry = -100;
+    let raf = 0;
+    let state = '';
 
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-
-      // Dot follows instantly
-      if (dotRef.current) {
-        dotRef.current.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
-      }
-
-      // Detect cursor context
-      const target = e.target as HTMLElement;
-      const isLink = target.closest('a') || target.closest('button') || target.closest('[role="button"]');
-      const isDraggable = target.closest('[data-drag]');
-
-      if (isDraggable) setCursorState('drag');
-      else if (isLink) setCursorState('hover');
-      else setCursorState('default');
+    const setState = (next: string, text = '') => {
+      if (next === state) return;
+      state = next;
+      ring.dataset.state = next;
+      dot.dataset.state = next;
+      label.textContent = text;
     };
 
-    // Ring follows with inertia
-    const animateRing = () => {
-      ringX += (mouseX - ringX) * 0.12;
-      ringY += (mouseY - ringY) * 0.12;
-
-      if (ringRef.current) {
-        ringRef.current.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
-      }
-      animId = requestAnimationFrame(animateRing);
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+      mx = e.clientX;
+      my = e.clientY;
+      dot.style.transform = `translate3d(${mx}px, ${my}px, 0) translate(-50%, -50%)`;
+      ring.style.opacity = '1';
+      dot.style.opacity = '1';
+      const t = e.target instanceof Element ? e.target : null;
+      const view = t?.closest<HTMLElement>('[data-cursor]');
+      if (view) setState('view', view.dataset.cursor ?? 'View');
+      else if (t?.closest('input, textarea, select')) setState('text');
+      else if (t?.closest('a, button, [role="button"], label, summary')) setState('link');
+      else setState('default');
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    animId = requestAnimationFrame(animateRing);
+    const loop = () => {
+      rx += (mx - rx) * 0.18;
+      ry += (my - ry) * 0.18;
+      ring.style.transform = `translate3d(${rx.toFixed(2)}px, ${ry.toFixed(2)}px, 0) translate(-50%, -50%)`;
+      raf = requestAnimationFrame(loop);
+    };
+
+    const hide = () => {
+      ring.style.opacity = '0';
+      dot.style.opacity = '0';
+    };
+    const down = () => ring.classList.add('is-down');
+    const up = () => ring.classList.remove('is-down');
+
+    window.addEventListener('pointermove', onMove, { passive: true });
+    document.addEventListener('pointerleave', hide);
+    window.addEventListener('blur', hide);
+    window.addEventListener('pointerdown', down);
+    window.addEventListener('pointerup', up);
+    raf = requestAnimationFrame(loop);
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      cancelAnimationFrame(animId);
+      document.documentElement.classList.remove('has-cursor');
+      cancelAnimationFrame(raf);
+      window.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerleave', hide);
+      window.removeEventListener('blur', hide);
+      window.removeEventListener('pointerdown', down);
+      window.removeEventListener('pointerup', up);
     };
   }, []);
 
-  // Hide on touch
-  if (
-    typeof window !== 'undefined' &&
-    (window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0)
-  ) {
-    return null;
-  }
-
-  const isHover = cursorState === 'hover';
-  const isDrag = cursorState === 'drag';
-
   return (
-    <>
-      {/* Dot — instant, mix-blend-mode for inversion effect */}
-      <div
-        ref={dotRef}
-        className="fixed top-0 left-0 pointer-events-none z-[1000]"
-        style={{
-          width: isHover ? '0px' : '6px',
-          height: isHover ? '0px' : '6px',
-          borderRadius: '50%',
-          backgroundColor: 'white',
-          mixBlendMode: 'difference',
-          transition: 'width 0.2s ease, height 0.2s ease',
-          willChange: 'transform',
-        }}
-      />
-
-      {/* Ring — inertia follower */}
-      <div
-        ref={ringRef}
-        className="fixed top-0 left-0 pointer-events-none z-[999]"
-        style={{
-          width: isDrag ? '64px' : isHover ? '44px' : '32px',
-          height: isDrag ? '64px' : isHover ? '44px' : '32px',
-          borderRadius: '50%',
-          border: isHover ? '1.5px solid rgba(255,255,255,0.9)' : '1px solid rgba(255,255,255,0.35)',
-          backgroundColor: isHover ? 'rgba(255,255,255,0.08)' : 'transparent',
-          backdropFilter: isHover ? 'blur(4px)' : 'none',
-          mixBlendMode: isHover ? 'normal' : 'normal',
-          transition: 'width 0.3s cubic-bezier(0.16,1,0.3,1), height 0.3s cubic-bezier(0.16,1,0.3,1), border 0.2s ease, background-color 0.2s ease',
-          willChange: 'transform',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        {isDrag && (
-          <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '9px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-            DRAG
-          </span>
-        )}
+    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[1000] hidden [@media(hover:hover)_and_(pointer:fine)]:block">
+      <div ref={ringRef} className="cursor-ring" style={{ opacity: 0 }}>
+        <span ref={labelRef} className="cursor-label" />
       </div>
-    </>
+      <div ref={dotRef} className="cursor-dot" style={{ opacity: 0 }} />
+    </div>
   );
 }

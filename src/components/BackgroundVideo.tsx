@@ -1,251 +1,155 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { canHover, prefersReducedMotion } from '../lib/site';
 
 const VIDEO_URL =
   'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260530_042513_df96a13b-6155-4f6e-8b93-c9dee66fba08.mp4';
 
+const MAX_FRAMES = 120;
+const CAPTURE_WIDTH = 800;
+
+type FrameMeta = { mediaTime: number };
+type VideoWithRVFC = HTMLVideoElement & {
+  requestVideoFrameCallback: (cb: (now: number, meta: FrameMeta) => void) => number;
+};
+
 /**
- * BackgroundVideo — Play-through frame extraction for smooth mouse scrubbing.
+ * Cinematic background with pointer scrubbing on desktop.
  *
- * Why previous approaches were rough:
- * - Setting video.currentTime = X forces the browser to seek.
- *   Seeking jumps to the nearest keyframe (I-frame), then decodes forward.
- *   This is ALWAYS janky — no amount of lerp fixes it.
- * - Extracting frames VIA seeking just captures the same keyframes.
- *
- * This approach:
- * 1. Plays the video at 2x speed (hidden) to trigger SEQUENTIAL decode.
- *    Sequential decode produces EVERY frame — not just keyframes.
- * 2. Captures each decoded frame to a small off-screen canvas.
- * 3. Stores all frames in an array.
- * 4. Renders via <canvas> at 60fps with lerp — zero seeking, zero jank.
+ * The visible <video> plays its first pass normally while frames are captured
+ * from it (one download; sequential decode yields every frame, so no keyframe
+ * jank). When the pass ends the canvas takes over and the pointer scrubs
+ * through the captured frames with eased interpolation. Frame count and
+ * resolution are capped to keep memory bounded. Touch, low-memory, save-data
+ * and reduced-motion visitors simply get the looping video.
  */
 export default function BackgroundVideo() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [framesReady, setFramesReady] = useState(false);
-  const [isTouch, setIsTouch] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [scrub, setScrub] = useState(false);
 
   useEffect(() => {
-    // ── Touch / Mobile Detection: Bypass canvas frame extraction ──
-    const isTouchDevice =
-      window.matchMedia('(pointer: coarse)').matches ||
-      navigator.maxTouchPoints > 0;
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video) return;
 
-    if (isTouchDevice) {
-      setIsTouch(true);
-      if (videoRef.current) {
-        videoRef.current.play().catch(() => {});
-      }
+    const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
+    const capable =
+      !!canvas &&
+      canHover() &&
+      !prefersReducedMotion() &&
+      !nav.connection?.saveData &&
+      (nav.deviceMemory ?? 8) >= 4 &&
+      'requestVideoFrameCallback' in HTMLVideoElement.prototype;
+
+    const loopForever = () => {
+      video.loop = true;
+      video.play().catch(() => {});
+    };
+
+    const ctx = capable ? canvas.getContext('2d', { alpha: false }) : null;
+    if (!capable || !ctx) {
+      loopForever();
       return;
     }
 
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d', { alpha: false });
-    if (!ctx) return;
-
+    const v = video as VideoWithRVFC;
     const frames: HTMLCanvasElement[] = [];
-    let targetFrame = 0;
-    let currentFrame = 0;
-    let animId: number;
     let destroyed = false;
-    const LERP = 0.07;
+    let raf = 0;
+    let target = 0;
+    let current = 0;
+    let lastCaptured = -Infinity;
+    let lastDrawn = -1;
+    let minGap = 0;
+    let w = 0;
+    let h = 0;
 
-    // ── Frame extraction via playback (Desktop / Pointer fine only) ──
-    const extractor = document.createElement('video');
-    extractor.muted = true;
-    extractor.playsInline = true;
-    extractor.preload = 'auto';
-    // Do NOT set crossOrigin — avoids CORS requirement.
-    // canvas.drawImage(video) works cross-origin (taints canvas, which is fine).
-    extractor.src = VIDEO_URL;
-
-    // Capture one frame to a small off-screen canvas
-    const captureFrame = (w: number, h: number) => {
-      const fc = document.createElement('canvas');
-      fc.width = w;
-      fc.height = h;
-      const fctx = fc.getContext('2d', { alpha: false });
-      if (fctx) {
-        fctx.drawImage(extractor, 0, 0, w, h);
+    const capture = (_now: number, meta: FrameMeta) => {
+      if (destroyed) return;
+      if (frames.length < MAX_FRAMES && meta.mediaTime - lastCaptured >= minGap) {
+        const fc = document.createElement('canvas');
+        fc.width = w;
+        fc.height = h;
+        fc.getContext('2d', { alpha: false })?.drawImage(video, 0, 0, w, h);
+        frames.push(fc);
+        lastCaptured = meta.mediaTime;
       }
-      return fc;
+      if (!video.ended) v.requestVideoFrameCallback(capture);
     };
 
-    const extractFrames = async () => {
-      // Wait until playable
-      await new Promise<void>((resolve) => {
-        if (extractor.readyState >= 3) return resolve();
-        extractor.addEventListener('canplay', () => resolve(), { once: true });
-      });
-      if (destroyed) return;
-
-      // Determine capture resolution (cap at 960px wide for memory)
-      const vw = extractor.videoWidth;
-      const vh = extractor.videoHeight;
-      const scale = Math.min(1, 960 / vw);
-      const w = Math.round(vw * scale);
-      const h = Math.round(vh * scale);
-
+    const onMeta = () => {
+      const vw = video.videoWidth || CAPTURE_WIDTH;
+      const vh = video.videoHeight || 450;
+      const scale = Math.min(1, CAPTURE_WIDTH / vw);
+      w = Math.round(vw * scale);
+      h = Math.round(vh * scale);
       canvas.width = w;
       canvas.height = h;
+      minGap = (video.duration || 10) / MAX_FRAMES;
+      v.requestVideoFrameCallback(capture);
+    };
 
-      // Play at 2x to extract faster
-      extractor.playbackRate = 2;
+    const onPointer = (e: PointerEvent) => {
+      if (frames.length) target = (e.clientX / window.innerWidth) * (frames.length - 1);
+    };
 
-      // Set up frame capture — use requestVideoFrameCallback if available
-      const hasRVFC = 'requestVideoFrameCallback' in HTMLVideoElement.prototype;
-
-      if (hasRVFC) {
-        const rvfcCapture = () => {
-          if (destroyed || extractor.ended || extractor.paused) return;
-          frames.push(captureFrame(w, h));
-          (extractor as any).requestVideoFrameCallback(rvfcCapture);
-        };
-        (extractor as any).requestVideoFrameCallback(rvfcCapture);
-      } else {
-        // Fallback: capture at ~30fps via setInterval
-        const interval = setInterval(() => {
-          if (destroyed || extractor.ended || extractor.paused) {
-            clearInterval(interval);
-            return;
-          }
-          frames.push(captureFrame(w, h));
-        }, 1000 / 30);
-        extractor.addEventListener('ended', () => clearInterval(interval), { once: true });
+    const render = () => {
+      if (destroyed) return;
+      const diff = target - current;
+      if (Math.abs(diff) > 0.02) current += diff * 0.075;
+      const idx = Math.round(Math.max(0, Math.min(current, frames.length - 1)));
+      if (idx !== lastDrawn && frames[idx]) {
+        ctx.drawImage(frames[idx], 0, 0, w, h);
+        lastDrawn = idx;
       }
+      raf = requestAnimationFrame(render);
+    };
 
-      // Start playback
-      try {
-        await extractor.play();
-      } catch {
-        return; // autoplay blocked — fallback to video element
+    const onEnded = () => {
+      if (destroyed) return;
+      if (frames.length < 8) {
+        loopForever();
+        return;
       }
-
-      // Wait for video to finish playing
-      await new Promise<void>((resolve) => {
-        extractor.addEventListener('ended', () => resolve(), { once: true });
-      });
-
-      if (destroyed || frames.length < 5) return;
-
-      // Draw initial middle frame
-      const mid = Math.floor(frames.length / 2);
-      currentFrame = mid;
-      targetFrame = mid;
-      ctx.drawImage(frames[mid], 0, 0, canvas.width, canvas.height);
-
-      setFramesReady(true);
-      startRenderLoop();
+      current = frames.length - 1;
+      target = current;
+      ctx.drawImage(frames[current], 0, 0, w, h);
+      setScrub(true);
+      raf = requestAnimationFrame(render);
     };
 
-    // ── Mouse tracking ───────────────────────────────────────
-    const handleMouseMove = (e: MouseEvent) => {
-      if (frames.length === 0) return;
-      const normalized = e.clientX / window.innerWidth;
-      targetFrame = normalized * (frames.length - 1);
-    };
-
-    // ── 60fps render loop with lerp ──────────────────────────
-    const startRenderLoop = () => {
-      let lastIdx = -1;
-      const render = () => {
-        if (destroyed) return;
-
-        const diff = targetFrame - currentFrame;
-        if (Math.abs(diff) > 0.05) {
-          currentFrame += diff * LERP;
-        }
-
-        const idx = Math.round(
-          Math.max(0, Math.min(currentFrame, frames.length - 1))
-        );
-
-        // Only redraw if frame actually changed
-        if (idx !== lastIdx && frames[idx]) {
-          ctx.drawImage(frames[idx], 0, 0, canvas.width, canvas.height);
-          lastIdx = idx;
-        }
-
-        animId = requestAnimationFrame(render);
-      };
-      animId = requestAnimationFrame(render);
-    };
-
-    // ── Fallback mouse tracking for the video element ────────
-    const handleMouseMoveFallback = (e: MouseEvent) => {
-      const video = videoRef.current;
-      if (!video || framesReady) return;
-      if (!video.duration || isNaN(video.duration)) return;
-      const normalized = e.clientX / window.innerWidth;
-      video.currentTime = normalized * video.duration;
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mousemove', handleMouseMoveFallback);
-    extractFrames();
+    video.loop = false;
+    if (video.readyState >= 1) onMeta();
+    else video.addEventListener('loadedmetadata', onMeta, { once: true });
+    video.addEventListener('ended', onEnded, { once: true });
+    window.addEventListener('pointermove', onPointer, { passive: true });
+    video.play().catch(() => loopForever());
 
     return () => {
       destroyed = true;
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mousemove', handleMouseMoveFallback);
-      cancelAnimationFrame(animId);
-      extractor.pause();
-      extractor.src = '';
-      // Release frame canvases
+      cancelAnimationFrame(raf);
+      video.removeEventListener('loadedmetadata', onMeta);
+      video.removeEventListener('ended', onEnded);
+      window.removeEventListener('pointermove', onPointer);
       frames.length = 0;
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
+
+  const layer = 'pointer-events-none fixed inset-0 z-0 h-full w-full object-cover transition-opacity duration-700';
 
   return (
-    <>
-      {/* Video element — plays continuously on mobile; serves as fallback on desktop while scrubbing frames load */}
+    <div aria-hidden="true">
       <video
         ref={videoRef}
         src={VIDEO_URL}
-        autoPlay
-        loop
         muted
         playsInline
+        autoPlay
         preload="auto"
-        style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 0,
-          objectFit: 'cover',
-          objectPosition: '70% center',
-          width: '100%',
-          height: '100%',
-          opacity: framesReady ? 0 : 1,
-          transition: 'opacity 0.6s ease-out',
-          pointerEvents: 'none',
-          transform: 'translateZ(0)',
-          WebkitTransform: 'translateZ(0)',
-          willChange: 'transform',
-        }}
+        className={layer}
+        style={{ objectPosition: '70% center', opacity: scrub ? 0 : 1 }}
       />
-
-      {/* Canvas — desktop only: takes over once scrubbing frames are captured */}
-      {!isTouch && (
-        <canvas
-          ref={canvasRef}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 0,
-            objectFit: 'cover',
-            objectPosition: '70% center',
-            width: '100%',
-            height: '100%',
-            opacity: framesReady ? 1 : 0,
-            transition: 'opacity 0.6s ease-out',
-            pointerEvents: 'none',
-            transform: 'translateZ(0)',
-            WebkitTransform: 'translateZ(0)',
-            willChange: 'transform',
-          }}
-        />
-      )}
-    </>
+      <canvas ref={canvasRef} className={layer} style={{ objectPosition: '70% center', opacity: scrub ? 1 : 0 }} />
+    </div>
   );
 }
