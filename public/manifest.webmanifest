@@ -1,0 +1,18 @@
+{
+  "name": "Abneesh Singh — Agentic AI & Systems Engineer",
+  "short_name": "Abneesh Singh",
+  "description": "Portfolio of Abneesh Singh — Agentic AI & Systems Engineer specializing in C++, SQL, Generative AI, and Agentic Systems.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050508",
+  "theme_color": "#080911",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
