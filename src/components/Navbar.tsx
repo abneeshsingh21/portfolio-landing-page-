@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Icon from './Icon';
-import { GlassButton, GlassLink } from './ui';
+import { BeamEffect, GlassButton, GlassLink, RippleEffect } from './ui';
+import { ripple } from '../hooks/usePointerFx';
 import { useScrollLock } from '../hooks/useScrollLock';
 import { useActiveSection } from '../hooks/useActiveSection';
 import { navLinks } from '../lib/data';
@@ -137,16 +138,18 @@ export default function Navbar() {
           <nav aria-label="Primary" className={`${pill} relative hidden h-12 items-center p-1 md:flex`} onMouseLeave={() => setHovered(null)}>
             <span
               aria-hidden="true"
-              className="absolute top-1 bottom-1 rounded-full"
+              className="absolute top-1 bottom-1 rounded-full overflow-hidden"
               style={{
                 left: indicator.left,
                 width: indicator.width,
                 opacity: indicator.visible ? 1 : 0,
-                background: 'linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.07))',
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 0 rgba(255,255,255,0.06), 0 4px 14px -4px rgba(0,0,0,0.5)',
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06))',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.35), 0 4px 14px -4px rgba(0,0,0,0.5)',
                 transition: 'left 0.5s cubic-bezier(0.34,1.3,0.64,1), width 0.5s cubic-bezier(0.34,1.3,0.64,1), opacity 0.3s ease',
               }}
-            />
+            >
+              <BeamEffect />
+            </span>
             {navLinks.map((l) => (
               <button
                 key={l.id}
@@ -157,13 +160,15 @@ export default function Navbar() {
                 onMouseEnter={() => setHovered(l.id)}
                 onFocus={() => setHovered(l.id)}
                 onBlur={() => setHovered(null)}
+                onPointerDown={ripple}
                 onClick={() => go(l.id)}
                 aria-current={active === l.id ? 'true' : undefined}
-                className={`relative z-[1] h-10 rounded-full px-4 text-[13px] font-medium transition-colors duration-300 lg:px-5 ${
+                className={`group lg-press relative z-[1] h-10 rounded-full px-4 text-[13px] font-medium transition-colors duration-300 overflow-hidden lg:px-5 ${
                   active === l.id || hovered === l.id ? 'text-white' : 'text-white/60'
                 }`}
               >
-                {l.name}
+                <RippleEffect />
+                <span className="relative z-[1]">{l.name}</span>
               </button>
             ))}
           </nav>
@@ -173,11 +178,14 @@ export default function Navbar() {
             <button
               type="button"
               onClick={openPalette}
+              onPointerDown={ripple}
               aria-label="Open command palette"
-              className={`${pill} lg-spec lg-press hidden h-12 items-center gap-2 px-4 text-white/70 hover:text-white sm:flex`}
+              className={`${pill} lg-spec lg-press group relative hidden h-12 items-center gap-2 px-4 text-white/70 hover:text-white sm:flex overflow-visible`}
             >
-              <Icon name="search" size={15} />
-              <span className="font-code flex items-center gap-0.5 text-[11px]">
+              <BeamEffect />
+              <RippleEffect />
+              <Icon name="search" size={15} className="relative z-[1]" />
+              <span className="font-code relative z-[1] flex items-center gap-0.5 text-[11px]">
                 <kbd className="lg-chip rounded-md px-1.5 py-0.5">⌘</kbd>
                 <kbd className="lg-chip rounded-md px-1.5 py-0.5">K</kbd>
               </span>
@@ -189,12 +197,15 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setMenu((m) => !m)}
+              onPointerDown={ripple}
               aria-expanded={menu}
               aria-controls="mobile-menu"
               aria-label={menu ? 'Close menu' : 'Open menu'}
-              className={`${pill} lg-press grid h-12 w-12 place-items-center md:hidden`}
+              className={`${pill} lg-press group relative grid h-12 w-12 place-items-center md:hidden overflow-visible`}
             >
-              <span className="relative block h-3 w-[18px]">
+              <BeamEffect />
+              <RippleEffect />
+              <span className="relative z-[1] block h-3 w-[18px]">
                 <span className={`absolute left-0 h-[1.5px] w-full rounded-full bg-white transition-all duration-300 ${menu ? 'top-[5px] rotate-45' : 'top-0'}`} />
                 <span className={`absolute left-0 h-[1.5px] w-full rounded-full bg-white transition-all duration-300 ${menu ? 'top-[5px] -rotate-45' : 'top-[10px]'}`} />
               </span>

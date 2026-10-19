@@ -90,10 +90,18 @@
 }
 
 .lg-bright {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(230, 238, 255, 0.9));
-  color: #06060c !important;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 8px 24px -4px rgba(255, 255, 255, 0.25), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(200, 225, 255, 0.08) 100%);
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.45), inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.35);
+}
+
+.lg-bright:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.20) 0%, rgba(200, 225, 255, 0.12) 100%);
+  border-color: rgba(255, 255, 255, 0.36);
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.5), inset 0 1px 2px 0 rgba(255, 255, 255, 0.5);
 }
 
 .lg-chip {
@@ -228,11 +236,11 @@ html.refract .lg-refract {
 
 /* Primary buttons reveal an ambient idle border beam that flares on hover */
 .lg-bright .lg-beam-ring {
-  opacity: 0.55;
+  opacity: 0.5;
 }
 
 .lg-bright .lg-beam-glow {
-  opacity: 0.35;
+  opacity: 0.22;
 }
 
 /* On hover / focus / rippling: full chromatic illumination */
@@ -243,7 +251,7 @@ a:hover .lg-beam-ring,
 button:focus-visible .lg-beam-ring,
 a:focus-visible .lg-beam-ring,
 .is-rippling .lg-beam-ring {
-  opacity: 1;
+  opacity: 0.95;
   animation-duration: 2.4s;
 }
 
@@ -254,17 +262,17 @@ a:hover .lg-beam-glow,
 button:focus-visible .lg-beam-glow,
 a:focus-visible .lg-beam-glow,
 .is-rippling .lg-beam-glow {
-  opacity: 0.85;
+  opacity: 0.5;
   animation-duration: 2.4s;
 }
 
 .is-rippling .lg-beam-ring {
-  filter: brightness(1.4);
+  filter: brightness(1.25);
 }
 
 .is-rippling .lg-beam-glow {
-  opacity: 1;
-  filter: blur(12px) brightness(1.35);
+  opacity: 0.65;
+  filter: blur(10px) brightness(1.2);
 }
 
 /* ─── Tactile Button Dynamics ────────────────────────────────── */
@@ -340,7 +348,7 @@ a:hover .lg-sheen::after {
   z-index: 1;
 }
 
-/* 1. Epicenter High-Intensity Flash */
+/* 1. Epicenter Gentle Liquid Droplet Flash */
 .lg-ripple::before {
   content: '';
   position: absolute;
@@ -351,10 +359,9 @@ a:hover .lg-sheen::after {
   border-radius: 9999px;
   background: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(159, 208, 255, 0.7) 35%,
-    rgba(199, 178, 255, 0.3) 65%,
-    transparent 100%
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(159, 208, 255, 0.25) 45%,
+    transparent 75%
   );
   transform: translate(-50%, -50%);
   opacity: 0;
@@ -372,13 +379,12 @@ a:hover .lg-sheen::after {
   border-radius: 9999px;
   background: radial-gradient(
     circle,
-    transparent 40%,
-    rgba(199, 178, 255, 0.35) 50%,
-    rgba(159, 208, 255, 0.65) 65%,
-    rgba(140, 240, 210, 0.45) 80%,
+    transparent 50%,
+    rgba(199, 178, 255, 0.20) 65%,
+    rgba(159, 208, 255, 0.32) 78%,
+    rgba(140, 240, 210, 0.20) 90%,
     transparent 100%
   );
-  box-shadow: 0 0 16px 2px rgba(159, 208, 255, 0.45), inset 0 0 12px rgba(199, 178, 255, 0.35);
   transform: translate(-50%, -50%);
   opacity: 0;
   pointer-events: none;
@@ -394,35 +400,35 @@ a:hover .lg-sheen::after {
 
 @keyframes liquid-flash {
   0% {
-    opacity: 0.95;
+    opacity: 0.55;
     width: 0;
     height: 0;
   }
   35% {
-    opacity: 0.7;
-    width: 65px;
-    height: 65px;
+    opacity: 0.35;
+    width: 60px;
+    height: 60px;
   }
   100% {
     opacity: 0;
-    width: 150px;
-    height: 150px;
+    width: 140px;
+    height: 140px;
   }
 }
 
 @keyframes liquid-shockwave {
   0% {
-    opacity: 1;
+    opacity: 0.65;
     width: 0;
     height: 0;
   }
   40% {
-    opacity: 0.85;
+    opacity: 0.45;
   }
   100% {
     opacity: 0;
-    width: 380px;
-    height: 380px;
+    width: 360px;
+    height: 360px;
   }
 }
 

@@ -85,3 +85,19 @@ export function useSpecularTracking() {
     };
   }, []);
 }
+
+/** Restart the liquid drop shockwave from the exact press point. */
+export function ripple(e: { currentTarget: HTMLElement; clientX: number; clientY: number }) {
+  const el = e.currentTarget;
+  const r = el.getBoundingClientRect();
+  const x = e.clientX > 0 ? e.clientX - r.left : r.width / 2;
+  const y = e.clientY > 0 ? e.clientY - r.top : r.height / 2;
+  el.style.setProperty('--rx', `${x.toFixed(1)}px`);
+  el.style.setProperty('--ry', `${y.toFixed(1)}px`);
+  el.classList.remove('is-rippling');
+  void el.offsetWidth;
+  el.classList.add('is-rippling');
+  window.setTimeout(() => {
+    el.classList.remove('is-rippling');
+  }, 750);
+}

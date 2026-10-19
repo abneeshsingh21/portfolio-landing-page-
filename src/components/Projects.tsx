@@ -1,8 +1,8 @@
 import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react';
 import Icon from './Icon';
 import ProjectVisual from './ProjectVisual';
-import { Container, GlassLink, Reveal, SectionHeading } from './ui';
-import { useTilt } from '../hooks/usePointerFx';
+import { BeamEffect, Container, GlassLink, Reveal, RippleEffect, SectionHeading } from './ui';
+import { ripple, useTilt } from '../hooks/usePointerFx';
 import { timeAgo, useGithubStats } from '../hooks/useGithubStats';
 import { CATEGORIES, projects, type Category, type Project } from '../lib/data';
 import { EVENTS } from '../lib/site';
@@ -199,18 +199,21 @@ export default function Projects() {
                       key={c}
                       type="button"
                       aria-pressed={on}
+                      onPointerDown={ripple}
                       onClick={(e) => {
                         setFilter(c);
                         e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                       }}
-                      className={`lg-press inline-flex h-[34px] sm:h-9 shrink-0 items-center gap-1.5 rounded-full px-3.5 sm:px-4 text-[12px] sm:text-[12.5px] font-medium transition-all duration-300 select-none ${
+                      className={`group lg-press relative inline-flex h-[34px] sm:h-9 shrink-0 items-center gap-1.5 rounded-full px-3.5 sm:px-4 text-[12px] sm:text-[12.5px] font-medium transition-all duration-300 select-none overflow-hidden ${
                         on
-                          ? 'lg-bright shadow-sm font-semibold'
-                          : 'text-white/65 hover:text-white hover:bg-white/[0.06]'
+                          ? 'bg-white/[0.14] text-white font-semibold border border-white/25 shadow-[0_0_16px_rgba(159,208,255,0.25)]'
+                          : 'text-white/65 hover:text-white hover:bg-white/[0.06] border border-transparent'
                       }`}
                     >
-                      {c}
-                      <span className={`font-code text-[10px] rounded-full px-1.5 py-0.5 ${on ? 'text-black/55 bg-black/10' : 'text-white/40 bg-white/5'}`}>{count}</span>
+                      {on && <BeamEffect />}
+                      <RippleEffect />
+                      <span className="relative z-[1]">{c}</span>
+                      <span className={`relative z-[1] font-code text-[10px] rounded-full px-1.5 py-0.5 ${on ? 'text-white/90 bg-white/15' : 'text-white/40 bg-white/5'}`}>{count}</span>
                     </button>
                   );
                 })}
