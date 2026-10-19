@@ -237,18 +237,6 @@ export default function Hero() {
           </div>
         </div>
       </Container>
-
-      {/* Scroll cue */}
-      <button
-        type="button"
-        onClick={() => scrollToId('about')}
-        className="rise absolute inset-x-0 bottom-10 mx-auto hidden w-fit flex-col items-center gap-2 text-white/35 transition-colors hover:text-white/70 2xl:flex"
-        style={d(900)}
-        aria-label="Scroll to About"
-      >
-        <span className="text-[10px] font-semibold tracking-[0.3em] uppercase">Scroll</span>
-        <span className="h-10 w-px" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.5), transparent)" }} />
-      </button>
     </section>
   );
 }

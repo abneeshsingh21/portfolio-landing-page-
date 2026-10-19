@@ -193,11 +193,10 @@ export function SplitWords({ text, start = 0, step = 45, className = '' }: { tex
   return (
     <>
       {words.map((w, i) => (
-        <span key={`${w}-${i}`} className="word">
-          <span className={className} style={{ ['--wd' as string]: `${start + i * step}ms` }}>
+        <span key={`${w}-${i}`} className="word inline-block mr-[0.28em] last:mr-0">
+          <span className={`inline-block ${className}`} style={{ ['--wd' as string]: `${start + i * step}ms` }}>
             {w}
           </span>
-          {i < words.length - 1 ? ' ' : ''}
         </span>
       ))}
     </>
@@ -240,9 +239,14 @@ export function SectionHeading({
             <span className="sr-only">
               {title} {accent}
             </span>
-            <span aria-hidden="true">
-              <SplitWords text={title} start={80} />{' '}
-              {accent && <SplitWords text={accent} start={140 + title.split(' ').length * 45} className="font-accent text-iridescent" />}
+            <span aria-hidden="true" className="inline">
+              <SplitWords text={title} start={80} />
+              {accent && (
+                <>
+                  <span className="inline-block w-[0.28em]" aria-hidden="true" />
+                  <SplitWords text={accent} start={140 + title.split(' ').length * 45} className="font-accent text-iridescent" />
+                </>
+              )}
             </span>
           </h2>
         </Reveal>

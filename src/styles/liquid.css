@@ -281,6 +281,11 @@ a:hover .lg-sheen::after {
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
+  margin-right: 0.28em;
+}
+
+.word:last-child {
+  margin-right: 0;
 }
 
 .word > span {
