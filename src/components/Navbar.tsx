@@ -51,8 +51,8 @@ export default function Navbar() {
       raf = 0;
       const y = window.scrollY;
       setScrolled(y > 24);
-      if (Math.abs(y - lastY) > 6) {
-        setHidden(y > lastY && y > 520);
+      if (Math.abs(y - lastY) > 8) {
+        setHidden(y > lastY && y > 240);
         lastY = y;
       }
     };
@@ -100,7 +100,7 @@ export default function Navbar() {
     window.setTimeout(() => scrollToId(id), menu ? 60 : 0);
   };
 
-  const pill = `lg lg-refract rounded-full ${scrolled || menu ? 'lg-dim' : ''}`;
+  const pill = `lg lg-refract rounded-full ${scrolled || menu ? 'bg-[#070913]/94 sm:bg-[#0a0c12]/80 backdrop-blur-2xl border-white/15 shadow-[0_12px_40px_rgba(0,0,0,0.7)]' : ''}`;
 
   return (
     <>

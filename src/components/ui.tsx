@@ -229,13 +229,13 @@ export function SectionHeading({
   aside?: ReactNode;
 }) {
   return (
-    <div className="mb-10 flex flex-col gap-6 sm:mb-14 md:flex-row md:items-end md:justify-between">
+    <div className="mb-7 flex flex-col gap-4 sm:mb-14 sm:gap-6 md:flex-row md:items-end md:justify-between">
       <div className="max-w-3xl">
         <Reveal>
           <Eyebrow index={index}>{eyebrow}</Eyebrow>
         </Reveal>
         <Reveal delay={60}>
-          <h2 className="font-display txt-shadow mt-5 text-[40px] leading-[1.02] font-semibold text-white sm:text-[56px] md:text-[64px]">
+          <h2 className="font-display txt-shadow mt-3.5 sm:mt-5 text-[28px] sm:text-[48px] md:text-[64px] leading-[1.06] font-semibold text-white">
             <span className="sr-only">
               {title} {accent}
             </span>
@@ -252,7 +252,7 @@ export function SectionHeading({
         </Reveal>
         {description && (
           <Reveal delay={140}>
-            <p className="mt-5 max-w-xl text-[15px] leading-[1.75] text-white/60 sm:text-[16px]">{description}</p>
+            <p className="mt-3 sm:mt-5 max-w-xl text-[13.5px] leading-[1.7] text-white/60 sm:text-[16px]">{description}</p>
           </Reveal>
         )}
       </div>
@@ -262,5 +262,5 @@ export function SectionHeading({
 }
 
 export function Container({ children, className = '' }: { children: ReactNode; className?: string }) {
-  return <div className={`mx-auto w-full max-w-[1200px] px-5 sm:px-8 ${className}`}>{children}</div>;
+  return <div className={`mx-auto w-full max-w-[1200px] px-4 sm:px-8 ${className}`}>{children}</div>;
 }

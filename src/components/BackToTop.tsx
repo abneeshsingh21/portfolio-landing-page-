@@ -37,8 +37,8 @@ export default function BackToTop() {
       type="button"
       aria-label="Back to top"
       onClick={() => scrollToId('top')}
-      className={`lg lg-spec lg-press group fixed right-4 bottom-5 z-40 grid h-12 w-12 place-items-center rounded-full text-white transition-opacity duration-300 sm:right-6 sm:bottom-6 ${
-        show ? 'opacity-100 pointer-events-auto' : 'pointer-events-none opacity-0'
+      className={`lg lg-spec lg-press group fixed right-3.5 bottom-3.5 z-30 grid h-10 w-10 place-items-center rounded-full text-white backdrop-blur-xl bg-[#060810]/85 border border-white/20 shadow-xl transition-all duration-300 sm:right-6 sm:bottom-6 sm:h-12 sm:w-12 ${
+        show ? 'opacity-100 pointer-events-auto translate-y-0' : 'pointer-events-none opacity-0 translate-y-2'
       }`}
     >
       <svg className="absolute inset-0 -rotate-90" viewBox="0 0 48 48" aria-hidden="true">

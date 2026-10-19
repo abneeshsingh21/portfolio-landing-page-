@@ -4,34 +4,34 @@ import { Container } from './ui';
 import { navLinks, projects } from '../lib/data';
 import { EMAIL, LINKS, RESUME_URL, openPalette, openProject, scrollToId } from '../lib/site';
 
-const linkCls = 'group inline-flex items-center gap-1.5 py-1 text-[13.5px] text-white/60 transition-colors hover:text-white';
+const linkCls = 'group inline-flex items-center gap-1 py-0.5 text-[12px] text-white/60 transition-colors hover:text-white sm:gap-1.5 sm:py-1 sm:text-[13.5px]';
 
 export default function Footer() {
   return (
-    <footer className="relative pt-10 pb-8">
+    <footer className="relative pt-6 pb-6 sm:pt-10 sm:pb-8">
       <Container>
-        <div className="lg lg-dim rounded-[36px] p-7 sm:p-12">
-          <div className="grid gap-10 md:grid-cols-12">
+        <div className="lg lg-dim rounded-[24px] p-5 sm:rounded-[36px] sm:p-12">
+          <div className="grid gap-7 md:grid-cols-12 md:gap-10">
             <div className="md:col-span-5">
               <div className="flex items-center gap-3">
-                <Monogram size={44} />
+                <Monogram size={38} />
                 <div>
-                  <p className="font-display text-[19px] font-semibold text-white">Abneesh Singh</p>
-                  <p className="text-[12.5px] text-white/50">Agentic AI &amp; Systems Engineer</p>
+                  <p className="font-display text-[17px] font-semibold text-white sm:text-[19px]">Abneesh Singh</p>
+                  <p className="text-[11.5px] text-white/50 sm:text-[12.5px]">Agentic AI &amp; Systems Engineer</p>
                 </div>
               </div>
-              <p className="mt-6 max-w-sm text-[14px] leading-[1.8] text-white/55">
+              <p className="mt-3.5 sm:mt-6 max-w-sm text-[13px] leading-[1.65] text-white/55 sm:text-[14px] sm:leading-[1.8]">
                 Building high-performance systems and practical AI applications at the intersection of C++, SQL and Generative AI.
               </p>
-              <a href={`mailto:${EMAIL}`} className="mt-6 inline-flex items-center gap-2 text-[14px] font-medium text-white underline decoration-white/25 underline-offset-4 transition-colors hover:decoration-white">
-                <Icon name="mail" size={15} /> {EMAIL}
+              <a href={`mailto:${EMAIL}`} className="mt-4 sm:mt-6 inline-flex items-center gap-2 text-[13px] sm:text-[14px] font-medium text-white underline decoration-white/25 underline-offset-4 transition-colors hover:decoration-white">
+                <Icon name="mail" size={14} /> {EMAIL}
               </a>
             </div>
 
-            <nav aria-label="Footer" className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:col-span-7">
+            <nav aria-label="Footer" className="grid grid-cols-3 gap-2.5 sm:gap-8 md:col-span-7">
               <div>
-                <p className="text-[11px] font-semibold tracking-[0.2em] text-white/35 uppercase">Navigate</p>
-                <ul className="mt-4 flex flex-col gap-1">
+                <p className="text-[10px] font-semibold tracking-[0.2em] text-white/35 uppercase sm:text-[11px]">Navigate</p>
+                <ul className="mt-2.5 sm:mt-4 flex flex-col gap-0.5 sm:gap-1">
                   {navLinks.map((l) => (
                     <li key={l.id}>
                       <button type="button" onClick={() => scrollToId(l.id)} className={linkCls}>
@@ -42,8 +42,8 @@ export default function Footer() {
                 </ul>
               </div>
               <div>
-                <p className="text-[11px] font-semibold tracking-[0.2em] text-white/35 uppercase">Work</p>
-                <ul className="mt-4 flex flex-col gap-1">
+                <p className="text-[10px] font-semibold tracking-[0.2em] text-white/35 uppercase sm:text-[11px]">Work</p>
+                <ul className="mt-2.5 sm:mt-4 flex flex-col gap-0.5 sm:gap-1">
                   {projects.map((p) => (
                     <li key={p.id}>
                       <button
@@ -61,8 +61,8 @@ export default function Footer() {
                 </ul>
               </div>
               <div>
-                <p className="text-[11px] font-semibold tracking-[0.2em] text-white/35 uppercase">Elsewhere</p>
-                <ul className="mt-4 flex flex-col gap-1">
+                <p className="text-[10px] font-semibold tracking-[0.2em] text-white/35 uppercase sm:text-[11px]">Elsewhere</p>
+                <ul className="mt-2.5 sm:mt-4 flex flex-col gap-0.5 sm:gap-1">
                   {[
                     { label: 'GitHub', href: LINKS.github },
                     { label: 'LinkedIn', href: LINKS.linkedin },
@@ -73,7 +73,7 @@ export default function Footer() {
                     <li key={l.label}>
                       <a href={l.href} target="_blank" rel="noreferrer noopener" className={linkCls}>
                         {l.label}
-                        <Icon name="arrowUpRight" size={12} className="opacity-40 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:opacity-100" />
+                        <Icon name="arrowUpRight" size={11} className="opacity-40 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:opacity-100" />
                       </a>
                     </li>
                   ))}
@@ -82,9 +82,9 @@ export default function Footer() {
             </nav>
           </div>
 
-          <div className="hairline my-9" />
+          <div className="hairline my-6 sm:my-9" />
 
-          <div className="flex flex-col gap-4 text-[12px] text-white/40 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 text-[11px] sm:text-[12px] text-white/40 sm:flex-row sm:items-center sm:justify-between">
             <p>© {new Date().getFullYear()} Abneesh Singh. All rights reserved.</p>
             <div className="flex items-center gap-4">
               <span>Built with React · TypeScript · Vite</span>

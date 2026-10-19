@@ -25,22 +25,22 @@ function Stat({ stat, index }: { stat: (typeof heroStats)[number]; index: number
     duration: 1600,
   });
   return (
-    <div className="group relative flex flex-col px-5 py-5 sm:px-7 sm:py-6">
-      <span className="font-display text-[32px] leading-none font-semibold tracking-[-0.05em] text-white tabular-nums sm:text-[42px]">
+    <div className="group relative flex flex-col px-4 py-4 sm:px-7 sm:py-6">
+      <span className="font-display text-[26px] leading-none font-semibold tracking-[-0.05em] text-white tabular-nums sm:text-[42px]">
         {stat.text ? (
-          <span className="inline-flex items-center gap-2.5">
+          <span className="inline-flex items-center gap-2 sm:gap-2.5">
             {stat.text}
-            <span className="relative flex h-2.5 w-2.5">
+            <span className="relative flex h-2 w-2 sm:h-2.5 sm:w-2.5">
               <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400/60" />
-              <span className="relative h-2.5 w-2.5 rounded-full bg-emerald-400" />
+              <span className="relative h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-emerald-400" />
             </span>
           </span>
         ) : (
           <span ref={ref} />
         )}
       </span>
-      <span className="mt-2.5 text-[12.5px] font-medium text-white/80">{stat.label}</span>
-      <span className="mt-0.5 text-[11px] text-white/40">{stat.sub}</span>
+      <span className="mt-2 text-[11.5px] font-medium text-white/80 sm:mt-2.5 sm:text-[12.5px]">{stat.label}</span>
+      <span className="mt-0.5 text-[10.5px] text-white/40 sm:text-[11px]">{stat.sub}</span>
     </div>
   );
 }
@@ -178,14 +178,14 @@ export default function Hero() {
             </p>
             </div>
 
-            <div className="rise mt-9 flex flex-wrap items-center gap-3" style={d(520)}>
-              <GlassButton variant="primary" size="lg" iconRight="arrowRight" onClick={() => scrollToId('projects')}>
+            <div className="rise mt-6 sm:mt-9 flex flex-wrap items-center gap-2.5 sm:gap-3" style={d(520)}>
+              <GlassButton variant="primary" size="md" className="sm:h-[52px] sm:px-7" iconRight="arrowRight" onClick={() => scrollToId('projects')}>
                 View projects
               </GlassButton>
-              <GlassLink href={RESUME_URL} external size="lg" icon="download">
+              <GlassLink href={RESUME_URL} external size="md" className="sm:h-[52px] sm:px-7" icon="download">
                 Résumé
               </GlassLink>
-              <GlassButton size="lg" icon="copy" onClick={() => void copyEmail()} aria-label="Copy email address">
+              <GlassButton size="md" className="sm:h-[52px] sm:px-7" icon="copy" onClick={() => void copyEmail()} aria-label="Copy email address">
                 <span className="hidden sm:inline">Copy email</span>
                 <span className="sm:hidden">Email</span>
               </GlassButton>
@@ -222,8 +222,8 @@ export default function Hero() {
         </div>
 
         {/* Stats */}
-        <div className="rise mt-14 sm:mt-20" style={d(700)}>
-          <div className="lg lg-dim grid grid-cols-2 overflow-hidden rounded-[28px] md:grid-cols-4">
+        <div className="rise mt-8 sm:mt-16" style={d(700)}>
+          <div className="lg lg-dim grid grid-cols-2 overflow-hidden rounded-[20px] sm:rounded-[28px] md:grid-cols-4">
             {heroStats.map((s, i) => (
               <div
                 key={s.label}
