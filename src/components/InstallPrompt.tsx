@@ -119,9 +119,9 @@ export default function InstallPrompt() {
       {visible && !showIOSGuide && (
         <aside
           aria-label="Install Portfolio App"
-          className="anim-drop fixed inset-x-3 bottom-20 z-40 sm:bottom-6 sm:inset-x-auto sm:right-6 sm:w-[380px]"
+          className="anim-drop fixed inset-x-3 bottom-16 z-40 sm:bottom-6 sm:inset-x-auto sm:right-6 sm:w-[380px]"
         >
-          <div className="lg lg-strong relative flex items-center justify-between gap-3 rounded-2xl p-3 shadow-2xl backdrop-blur-xl border border-white/15 bg-[#050508]/85">
+          <div className="lg lg-strong relative flex items-center justify-between gap-3 rounded-2xl p-3 shadow-2xl backdrop-blur-2xl border border-white/15 bg-[#090c18]/65">
             <div className="flex items-center gap-3 min-w-0">
               <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-white/20 shadow-md">
                 <img

@@ -100,7 +100,7 @@ export default function Navbar() {
     window.setTimeout(() => scrollToId(id), menu ? 60 : 0);
   };
 
-  const pill = `lg lg-refract rounded-full ${scrolled || menu ? 'bg-[#070913]/94 sm:bg-[#0a0c12]/80 backdrop-blur-2xl border-white/15 shadow-[0_12px_40px_rgba(0,0,0,0.7)]' : ''}`;
+  const pill = `lg lg-refract rounded-full ${scrolled || menu ? 'bg-[#090b16]/65 sm:bg-[#0a0c16]/55 backdrop-blur-2xl border border-white/15 shadow-[0_10px_32px_rgba(0,0,0,0.38)]' : ''}`;
 
   return (
     <>

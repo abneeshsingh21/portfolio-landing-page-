@@ -37,24 +37,24 @@ export function Ambient() {
       {/* Darken + cool the video so white type and glass read cleanly */}
       <div
         className="absolute inset-0"
-        style={{ background: 'linear-gradient(180deg, rgba(5,5,10,0.5) 0%, rgba(5,5,10,0.3) 40%, rgba(5,5,10,0.72) 100%)' }}
+        style={{ background: 'linear-gradient(180deg, rgba(5,5,10,0.35) 0%, rgba(5,5,10,0.18) 40%, rgba(5,5,10,0.48) 100%)' }}
       />
 
       {/* Light sources for the glass to refract */}
-      <div className="orb" style={orb('rgba(120,170,255,0.9)', 0.22, '28s', { width: '55vmax', height: '55vmax', top: '-18vmax', left: '-14vmax' })} />
+      <div className="orb" style={orb('rgba(120,170,255,0.95)', 0.28, '28s', { width: '55vmax', height: '55vmax', top: '-18vmax', left: '-14vmax' })} />
       <div
         className="orb"
-        style={orb('rgba(180,140,255,0.9)', 0.18, '34s', { width: '48vmax', height: '48vmax', top: '30vh', right: '-20vmax', animationDelay: '-8s' })}
+        style={orb('rgba(180,140,255,0.95)', 0.24, '34s', { width: '48vmax', height: '48vmax', top: '30vh', right: '-20vmax', animationDelay: '-8s' })}
       />
       <div
         className="orb"
-        style={orb('rgba(110,240,210,0.8)', 0.1, '40s', { width: '40vmax', height: '40vmax', bottom: '-20vmax', left: '20vw', animationDelay: '-16s' })}
+        style={orb('rgba(110,240,210,0.85)', 0.18, '40s', { width: '40vmax', height: '40vmax', bottom: '-20vmax', left: '20vw', animationDelay: '-16s' })}
       />
 
       {/* Vignette */}
       <div
         className="absolute inset-0"
-        style={{ background: 'radial-gradient(ellipse at 50% 40%, transparent 0%, rgba(0,0,0,0.22) 55%, rgba(0,0,0,0.85) 100%)' }}
+        style={{ background: 'radial-gradient(ellipse at 50% 40%, transparent 0%, rgba(0,0,0,0.15) 55%, rgba(0,0,0,0.6) 100%)' }}
       />
 
       {/* Film grain — desktop only (feTurbulence rasterisation is costly on mobile GPUs) */}
