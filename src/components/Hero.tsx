@@ -1,172 +1,254 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import Icon from './Icon';
+import HeroTerminal from './HeroTerminal';
+import { Container, GlassButton, GlassLink } from './ui';
+import { useCountUp } from '../hooks/useCountUp';
 import { useTypewriter } from '../hooks/useTypewriter';
+import { heroStats } from '../lib/data';
+import { INTRO_DELAY, LINKS, RESUME_URL, canHover, copyEmail, prefersReducedMotion, scrollToId } from '../lib/site';
 
-const stats = [
-  { value: '4K+', label: 'Global Downloads' },
-  { value: '2.5K+', label: 'Offline Phrases' },
-  { value: 'Live', label: 'Commercial SaaS' },
-  { value: '25+', label: 'Language Targets' },
-];
+const PHRASES = [
+  'generative AI & agentic systems.',
+  'high-performance C++ engines.',
+  'compilers & developer tooling.',
+  'scalable production platforms.',
+] as const;
 
-export default function Hero() {
-  const { displayed, done } = useTypewriter(
-    'Architecting Generative AI & Agentic Systems, High-Performance C++, and Scalable Platforms. What are we building next?'
+const d = (ms: number) => ({ ['--d' as string]: `${INTRO_DELAY + ms}ms` });
+
+function Stat({ stat, index }: { stat: (typeof heroStats)[number]; index: number }) {
+  const ref = useCountUp({
+    target: stat.value ?? 0,
+    decimals: stat.decimals ?? 0,
+    suffix: stat.suffix ?? '',
+    delay: INTRO_DELAY + 500 + index * 120,
+    duration: 1600,
+  });
+  return (
+    <div className="group relative flex flex-col px-5 py-5 sm:px-7 sm:py-6">
+      <span className="font-display text-[32px] leading-none font-semibold tracking-[-0.05em] text-white tabular-nums sm:text-[42px]">
+        {stat.text ? (
+          <span className="inline-flex items-center gap-2.5">
+            {stat.text}
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400/60" />
+              <span className="relative h-2.5 w-2.5 rounded-full bg-emerald-400" />
+            </span>
+          </span>
+        ) : (
+          <span ref={ref} />
+        )}
+      </span>
+      <span className="mt-2.5 text-[12.5px] font-medium text-white/80">{stat.label}</span>
+      <span className="mt-0.5 text-[11px] text-white/40">{stat.sub}</span>
+    </div>
   );
-  const [showContent, setShowContent] = useState(false);
-  const [copied, setCopied] = useState(false);
+}
+
+/**
+ * Scroll + pointer parallax for the hero. The headline drifts and fades as you
+ * scroll away, the live demo floats on its own plane, and a soft light follows
+ * the cursor for the glass to refract. Only transform/opacity are written, from
+ * a single rAF loop that sleeps once everything has settled.
+ */
+function useHeroMotion() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const copyRef = useRef<HTMLDivElement>(null);
+  const demoRef = useRef<HTMLDivElement>(null);
+  const lightRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const t = setTimeout(() => setShowContent(true), 300);
-    return () => clearTimeout(t);
+    if (prefersReducedMotion()) return;
+    const section = sectionRef.current;
+    if (!section) return;
+    const hover = canHover();
+    let raf = 0;
+    const t = { px: 0, py: 0, lx: window.innerWidth * 0.7, ly: window.innerHeight * 0.35 };
+    const c = { ...t };
+
+    const frame = () => {
+      raf = 0;
+      const p = Math.min(1, Math.max(0, window.scrollY / (window.innerHeight * 0.9)));
+      let moving = false;
+      for (const k of ['px', 'py', 'lx', 'ly'] as const) {
+        const d = t[k] - c[k];
+        if (Math.abs(d) > 0.05) {
+          c[k] += d * 0.08;
+          moving = true;
+        }
+      }
+      if (copyRef.current) {
+        copyRef.current.style.transform = `translate3d(${(c.px * -10).toFixed(2)}px, ${(c.py * -8 - p * 90).toFixed(2)}px, 0)`;
+        copyRef.current.style.opacity = String(1 - p * 0.95);
+      }
+      if (demoRef.current) {
+        demoRef.current.style.transform = `translate3d(${(c.px * 16).toFixed(2)}px, ${(c.py * 12 - p * 150).toFixed(2)}px, 0)`;
+      }
+      if (lightRef.current) {
+        lightRef.current.style.transform = `translate3d(${(c.lx - 350).toFixed(1)}px, ${(c.ly - 350).toFixed(1)}px, 0)`;
+      }
+      if (moving) raf = requestAnimationFrame(frame);
+    };
+    const kick = () => {
+      if (!raf) raf = requestAnimationFrame(frame);
+    };
+    const onPointer = (e: PointerEvent) => {
+      const r = section.getBoundingClientRect();
+      if (r.bottom < 0) return;
+      t.px = (e.clientX / window.innerWidth - 0.5) * 2;
+      t.py = (e.clientY / window.innerHeight - 0.5) * 2;
+      t.lx = e.clientX - r.left;
+      t.ly = e.clientY - r.top;
+      kick();
+    };
+    const onScroll = () => {
+      if (window.scrollY < window.innerHeight * 1.2) kick();
+    };
+
+    kick();
+    if (hover) window.addEventListener('pointermove', onPointer, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('pointermove', onPointer);
+      window.removeEventListener('scroll', onScroll);
+    };
   }, []);
 
-  const handleCopy = (e: React.MouseEvent) => {
-    e.preventDefault();
-    navigator.clipboard.writeText('singhabneesh250@gmail.com');
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  return { sectionRef, copyRef, demoRef, lightRef };
+}
+
+export default function Hero() {
+  const typed = useTypewriter(PHRASES, { startDelay: INTRO_DELAY + 900 });
+  const { sectionRef, copyRef, demoRef, lightRef } = useHeroMotion();
 
   return (
-    <div className="min-h-[100dvh] relative w-full flex flex-col justify-between pt-24 sm:pt-32 pb-10 sm:pb-16 px-5 sm:px-10 z-[5]">
-      
-      {/* Main content — bottom left */}
-      <div className="flex-1 flex flex-col justify-end">
-        <div className="max-w-2xl relative z-10">
-
-          {/* Status badge */}
-          <div
-            className="inline-flex items-center gap-2 mb-6 sm:mb-8 px-3.5 py-1.5 rounded-full border border-white/10 bg-white/[0.04] backdrop-blur-sm"
-            style={{
-              opacity: showContent ? 1 : 0,
-              transform: showContent ? 'translateY(0)' : 'translateY(8px)',
-              transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
-            }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
-            <span className="text-white/60 text-[11px] font-bold uppercase tracking-widest">Available for opportunities</span>
-          </div>
-
-          {/* Identity line - sharp and readable */}
-          <div
-            className="mb-4 text-white font-bold text-shadow-lg tracking-tight"
-            style={{ fontSize: 'clamp(18px, 3.2vw, 24px)', lineHeight: 1.3, opacity: 1 }}
-          >
-            Hey, I'm <span className="text-white">Abneesh Singh</span> —<br />
-            <span className="text-white/80 font-semibold text-[15px] sm:text-[18px]">Agentic AI &amp; Systems Engineer</span>
-          </div>
-
-          {/* Typewriter */}
-          <p
-            className="text-white mb-8 font-medium min-h-[56px] sm:min-h-[64px] text-shadow-lg"
-            style={{ fontSize: 'clamp(16px, 3.5vw, 24px)', lineHeight: 1.45 }}
-          >
-            {displayed}
-            {!done && (
-              <span
-                className="inline-block w-[2px] h-[1.1em] bg-white align-middle ml-[2px]"
-                style={{ animation: 'blink 1s step-end infinite' }}
-              ></span>
-            )}
-          </p>
-
-          {/* CTA Buttons */}
-          <div
-            className="flex flex-wrap gap-3 mb-8 sm:mb-10"
-            style={{
-              opacity: showContent ? 1 : 0,
-              transform: showContent ? 'translateY(0)' : 'translateY(12px)',
-              transition: 'opacity 0.6s 0.2s ease-out, transform 0.6s 0.2s cubic-bezier(0.16,1,0.3,1)',
-            }}
-          >
-            <a
-              href="#projects"
-              className="inline-flex items-center justify-center gap-2 bg-white text-black text-[13px] font-bold px-6 py-3 min-h-[44px] rounded-full hover:bg-white/90 hover:scale-105 active:scale-95 transition-all duration-200"
-            >
-              View Projects
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </a>
-            <a
-              href="/resume.pdf"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md text-white border border-white/20 text-[13px] font-bold px-6 py-3 min-h-[44px] rounded-full hover:bg-white/20 hover:scale-105 active:scale-95 transition-all duration-200"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-              Download Resume
-            </a>
-            <a
-              href="https://asworks.studio"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center justify-center gap-2 bg-transparent text-white/70 border border-white/10 text-[13px] font-medium px-5 py-3 min-h-[44px] rounded-full hover:text-white hover:border-white/30 active:scale-95 transition-all duration-200"
-            >
-              ASWorks Studio
-            </a>
-            <a
-              href="mailto:singhabneesh250@gmail.com"
-              onClick={handleCopy}
-              className="inline-flex items-center justify-center gap-2 bg-transparent text-white/50 border border-white/10 text-[13px] font-medium px-5 py-3 min-h-[44px] rounded-full hover:text-white hover:border-white/30 active:scale-95 transition-all duration-200"
-            >
-              {copied ? '✓ Copied!' : 'singhabneesh250@gmail.com'}
-            </a>
-          </div>
-
-          {/* Social row */}
-          <div
-            className="flex flex-wrap items-center gap-x-4 gap-y-2 sm:gap-6"
-            style={{
-              opacity: showContent ? 1 : 0,
-              transition: 'opacity 0.6s 0.4s ease-out',
-            }}
-          >
-            <a href="https://github.com/abneeshsingh21" target="_blank" rel="noreferrer" className="text-white/35 text-[11px] uppercase tracking-widest font-bold hover:text-white transition-colors duration-200 py-1">GitHub</a>
-            <span className="w-1 h-1 rounded-full bg-white/20 hidden sm:inline-block"></span>
-            <a href="https://linkedin.com/in/abneesh-singh001" target="_blank" rel="noreferrer" className="text-white/35 text-[11px] uppercase tracking-widest font-bold hover:text-white transition-colors duration-200 py-1">LinkedIn</a>
-            <span className="w-1 h-1 rounded-full bg-white/20 hidden sm:inline-block"></span>
-            <a href="https://asworks.studio" target="_blank" rel="noreferrer" className="text-white/35 text-[11px] uppercase tracking-widest font-bold hover:text-white transition-colors duration-200 py-1">asworks.studio</a>
-            <span className="w-1 h-1 rounded-full bg-white/20 hidden sm:inline-block"></span>
-            <a href="https://marketplace.visualstudio.com/items?itemName=langshift.langshift" target="_blank" rel="noreferrer" className="text-white/35 text-[11px] uppercase tracking-widest font-bold hover:text-white transition-colors duration-200 py-1">VS Code Extension</a>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Panel — responsive 2x2 grid on mobile, continuous row on desktop */}
+    <section ref={sectionRef} id="top" className="relative flex min-h-[100svh] flex-col pt-28 pb-10 sm:pt-36 lg:pt-40">
+      {/* Cursor-following light the glass refracts */}
       <div
-        className="relative z-10 mt-12 sm:mt-16 border-t border-white/10"
+        ref={lightRef}
+        aria-hidden="true"
+        className="pointer-events-none absolute top-0 left-0 -z-10 hidden h-[700px] w-[700px] rounded-full md:block"
         style={{
-          opacity: showContent ? 1 : 0,
-          transform: showContent ? 'translateY(0)' : 'translateY(16px)',
-          transition: 'opacity 0.6s 0.5s ease-out, transform 0.6s 0.5s ease-out',
+          background: 'radial-gradient(circle, rgba(159,208,255,0.2) 0%, rgba(199,178,255,0.12) 35%, transparent 68%)',
+          transform: 'translate3d(60vw, 0, 0)',
         }}
-      >
-        <div className="grid grid-cols-2 gap-y-6 gap-x-4 pt-6 pb-2 sm:flex sm:items-stretch sm:divide-x sm:divide-white/10 sm:gap-0 sm:py-6">
-          {stats.map((s, i) => (
-            <div key={i} className="flex flex-col sm:flex-1 sm:pr-8 group">
-              <span
-                className="text-white text-[28px] sm:text-[40px] font-bold tracking-tighter leading-none mb-1.5"
-                style={{ fontFamily: 'var(--font-heading)' }}
-              >
-                {s.value}
-              </span>
-              <span className="text-white/40 text-[10px] sm:text-[11px] uppercase tracking-[0.16em] font-bold">{s.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      />
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 right-10 hidden md:flex flex-col items-center gap-2" style={{ opacity: 0.25 }}>
-        <span className="text-white text-[9px] uppercase tracking-[0.25em] font-bold" style={{ writingMode: 'vertical-rl' }}>Scroll</span>
-        <div className="w-[1px] h-10 bg-gradient-to-b from-white/60 to-transparent"></div>
-      </div>
-    </div>
+      <Container className="flex flex-1 flex-col">
+        <div className="grid flex-1 items-center gap-14 lg:grid-cols-12 lg:gap-10">
+          {/* Copy */}
+          <div className="lg:col-span-7">
+            <div ref={copyRef} style={{ willChange: 'transform' }}>
+            <div className="rise" style={d(0)}>
+              <span className="lg lg-spec inline-flex items-center gap-2.5 rounded-full py-1.5 pr-4 pl-1.5">
+                <span className="lg-bright inline-flex h-6 items-center gap-1.5 rounded-full px-2.5 text-[10.5px] font-bold tracking-[0.06em] uppercase">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  Open to work
+                </span>
+                <span className="text-[12.5px] text-white/75">Agentic AI &amp; Systems Engineer</span>
+              </span>
+            </div>
+
+            <h1 className="font-display txt-shadow mt-7 text-[clamp(44px,7.4vw,96px)] leading-[0.98] font-semibold text-white">
+              <span className="line-mask">
+                <span className="line-rise" style={d(80)}>
+                  Architecting
+                </span>
+              </span>
+              <span className="line-mask">
+                <span className="line-rise" style={d(170)}>
+                  <span className="font-accent text-iridescent">intelligent</span> systems
+                </span>
+              </span>
+              <span className="line-mask">
+                <span className="line-rise text-fade" style={d(260)}>
+                  at machine speed.
+                </span>
+              </span>
+            </h1>
+
+            <p className="rise mt-7 max-w-[560px] text-[16px] leading-[1.7] text-white/70 sm:text-[18px]" style={d(420)}>
+              Hey, I’m <span className="font-semibold text-white">Abneesh Singh</span>. I build{' '}
+              <span className="text-white">
+                {typed}
+                <span className="caret text-[#9fd0ff]" />
+              </span>
+              <br className="hidden sm:block" /> <span className="text-white/50">What are we building next?</span>
+            </p>
+            </div>
+
+            <div className="rise mt-9 flex flex-wrap items-center gap-3" style={d(520)}>
+              <GlassButton variant="primary" size="lg" iconRight="arrowRight" onClick={() => scrollToId('projects')}>
+                View projects
+              </GlassButton>
+              <GlassLink href={RESUME_URL} external size="lg" icon="download">
+                Résumé
+              </GlassLink>
+              <GlassButton size="lg" icon="copy" onClick={() => void copyEmail()} aria-label="Copy email address">
+                <span className="hidden sm:inline">Copy email</span>
+                <span className="sm:hidden">Email</span>
+              </GlassButton>
+            </div>
+
+            <div className="rise mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12.5px] text-white/45" style={d(620)}>
+              {[
+                { label: 'GitHub', href: LINKS.github, icon: 'github' as const },
+                { label: 'LinkedIn', href: LINKS.linkedin, icon: 'linkedin' as const },
+                { label: 'asworks.studio', href: LINKS.asworks, icon: 'globe' as const },
+                { label: 'VS Code extension', href: LINKS.langshift, icon: 'vscode' as const },
+              ].map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="group inline-flex items-center gap-1.5 py-1 transition-colors hover:text-white"
+                >
+                  <Icon name={s.icon} size={13} />
+                  {s.label}
+                  <Icon name="arrowUpRight" size={11} className="opacity-0 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:opacity-70" />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Live demo */}
+          <div className="rise hidden lg:col-span-5 lg:block" style={d(360)}>
+            <div ref={demoRef} style={{ willChange: 'transform' }}>
+              <HeroTerminal startDelay={INTRO_DELAY} />
+            </div>
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="rise mt-14 sm:mt-20" style={d(700)}>
+          <div className="lg lg-dim grid grid-cols-2 overflow-hidden rounded-[28px] md:grid-cols-4">
+            {heroStats.map((s, i) => (
+              <div
+                key={s.label}
+                className={`${i % 2 === 0 ? 'border-r border-white/[0.07]' : ''} ${i < 2 ? 'border-b border-white/[0.07] md:border-b-0' : ''} ${
+                  i === 1 ? 'md:border-r md:border-white/[0.07]' : ''
+                }`}
+              >
+                <Stat stat={s} index={i} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </Container>
+
+      {/* Scroll cue */}
+      <button
+        type="button"
+        onClick={() => scrollToId('about')}
+        className="rise absolute inset-x-0 bottom-10 mx-auto hidden w-fit flex-col items-center gap-2 text-white/35 transition-colors hover:text-white/70 2xl:flex"
+        style={d(900)}
+        aria-label="Scroll to About"
+      >
+        <span className="text-[10px] font-semibold tracking-[0.3em] uppercase">Scroll</span>
+        <span className="h-10 w-px" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.5), transparent)" }} />
+      </button>
+    </section>
   );
 }
