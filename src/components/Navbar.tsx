@@ -4,7 +4,7 @@ import { GlassButton, GlassLink } from './ui';
 import { useScrollLock } from '../hooks/useScrollLock';
 import { useActiveSection } from '../hooks/useActiveSection';
 import { navLinks } from '../lib/data';
-import { EMAIL, LINKS, RESUME_URL, copyEmail, openPalette, scrollToId } from '../lib/site';
+import { EMAIL, LINKS, RESUME_URL, openInstallPrompt, openPalette, scrollToId } from '../lib/site';
 
 export function Monogram({ size = 36 }: { size?: number }) {
   return (
@@ -230,8 +230,16 @@ export default function Navbar() {
               <GlassLink href={RESUME_URL} external size="md" icon="file" magnetic={false}>
                 Résumé
               </GlassLink>
-              <GlassButton size="md" icon="copy" magnetic={false} onClick={() => void copyEmail()}>
-                Copy email
+              <GlassButton
+                size="md"
+                icon="download"
+                magnetic={false}
+                onClick={() => {
+                  setMenu(false);
+                  openInstallPrompt();
+                }}
+              >
+                Install App
               </GlassButton>
               <GlassLink href={LINKS.github} size="md" icon="github" magnetic={false}>
                 GitHub

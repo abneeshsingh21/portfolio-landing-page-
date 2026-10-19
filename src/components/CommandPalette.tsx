@@ -9,6 +9,7 @@ import {
   RESUME_URL,
   copyEmail,
   openExternal,
+  openInstallPrompt,
   openProject,
   scrollToId,
 } from '../lib/site';
@@ -45,6 +46,7 @@ export default function CommandPalette() {
       { id: 'act-copy', group: 'Actions', label: 'Copy email address', hint: EMAIL, icon: 'copy', keywords: 'mail contact', run: () => void copyEmail() },
       { id: 'act-mail', group: 'Actions', label: 'Write an email', icon: 'mail', keywords: 'contact hire', run: () => (window.location.href = `mailto:${EMAIL}`) },
       { id: 'act-resume', group: 'Actions', label: 'Open résumé (PDF)', icon: 'file', keywords: 'cv resume download', run: () => openExternal(RESUME_URL) },
+      { id: 'act-install', group: 'Actions', label: 'Install Portfolio App', hint: 'Add to home screen', icon: 'download', keywords: 'pwa mobile application download icon home screen install', run: () => openInstallPrompt() },
       ...projects.map<Command>((p) => ({
         id: `proj-${p.id}`,
         group: 'Case studies',

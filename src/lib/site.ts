@@ -73,10 +73,11 @@ export async function copyEmail() {
   return ok;
 }
 
-/** Cross-component events (palette ⇄ navbar ⇄ projects) */
+/** Cross-component events (palette ⇄ navbar ⇄ projects ⇄ pwa install) */
 export const EVENTS = {
   openPalette: 'app:open-palette',
   openProject: 'app:open-project',
+  openInstallPrompt: 'app:open-install-prompt',
 } as const;
 
 export function openProject(id: string) {
@@ -85,6 +86,10 @@ export function openProject(id: string) {
 
 export function openPalette() {
   window.dispatchEvent(new Event(EVENTS.openPalette));
+}
+
+export function openInstallPrompt() {
+  window.dispatchEvent(new Event(EVENTS.openInstallPrompt));
 }
 
 /** Preloader shows once per session and never for reduced-motion users. */

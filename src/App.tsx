@@ -5,6 +5,7 @@ import Cursor from './components/Cursor';
 import Preloader from './components/Preloader';
 import CommandPalette from './components/CommandPalette';
 import Toaster from './components/Toaster';
+import InstallPrompt from './components/InstallPrompt';
 import BackToTop from './components/BackToTop';
 import { ScrollProgress, SectionRail } from './components/Chrome';
 import Navbar from './components/Navbar';
@@ -39,6 +40,7 @@ export default function App() {
       <Cursor />
       <CommandPalette />
       <Toaster />
+      <InstallPrompt />
       <ScrollProgress />
 
       <BackgroundVideo />
