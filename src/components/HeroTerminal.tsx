@@ -166,7 +166,7 @@ export default function HeroTerminal({ startDelay = 0 }: { startDelay?: number }
       </div>
 
       {/* Floating proof points */}
-      <div className="lg lg-dim float-slow absolute -bottom-7 -left-8 hidden items-center gap-3 rounded-2xl py-3 pr-5 pl-3 xl:flex">
+      <div className="lg lg-dim float-slow absolute -bottom-7 -left-8 z-10 hidden items-center gap-3 rounded-2xl py-3 pr-5 pl-3 xl:flex">
         <span className="lg-chip grid h-9 w-9 place-items-center rounded-xl text-[#9fd0ff]">
           <Icon name="book" size={16} />
         </span>
@@ -176,7 +176,7 @@ export default function HeroTerminal({ startDelay = 0 }: { startDelay?: number }
         </span>
       </div>
       <div
-        className="lg lg-dim float-slow absolute -top-6 -right-5 hidden items-center gap-2 rounded-full py-2 pr-4 pl-2.5 xl:flex"
+        className="lg lg-dim float-slow absolute -top-6 -right-5 z-10 hidden items-center gap-2 rounded-full py-2 pr-4 pl-2.5 xl:flex"
         style={{ animationDelay: '-3.5s' }}
       >
         <span className="relative flex h-2 w-2">
