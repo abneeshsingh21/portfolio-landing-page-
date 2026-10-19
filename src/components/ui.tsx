@@ -256,7 +256,7 @@ export function SectionHeading({
           </Reveal>
         )}
       </div>
-      {aside && <Reveal delay={180}>{aside}</Reveal>}
+      {aside && <Reveal delay={180} className="w-full md:w-auto shrink-0">{aside}</Reveal>}
     </div>
   );
 }

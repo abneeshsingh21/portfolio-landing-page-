@@ -186,25 +186,36 @@ export default function Projects() {
           accent="works."
           description="Languages, AI tooling and commercial platforms — each one designed, engineered and shipped end to end."
           aside={
-            <div role="group" aria-label="Filter projects" className="lg flex max-w-full gap-1 overflow-x-auto rounded-full p-1">
-              {CATEGORIES.map((c) => {
-                const on = filter === c;
-                const count = c === 'All' ? projects.length : projects.filter((p) => p.categories.includes(c)).length;
-                return (
-                  <button
-                    key={c}
-                    type="button"
-                    aria-pressed={on}
-                    onClick={() => setFilter(c)}
-                    className={`lg-press inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full px-4 text-[12.5px] font-medium transition-colors duration-300 ${
-                      on ? 'lg-bright' : 'text-white/60 hover:text-white'
-                    }`}
-                  >
-                    {c}
-                    <span className={`font-code text-[10px] ${on ? 'text-black/45' : 'text-white/30'}`}>{count}</span>
-                  </button>
-                );
-              })}
+            <div className="relative max-w-full">
+              <div
+                role="group"
+                aria-label="Filter projects"
+                className="lg lg-spec no-scrollbar flex max-w-full items-center gap-1 overflow-x-auto rounded-full p-1 scroll-smooth overscroll-x-contain [-webkit-overflow-scrolling:touch]"
+              >
+                {CATEGORIES.map((c) => {
+                  const on = filter === c;
+                  const count = c === 'All' ? projects.length : projects.filter((p) => p.categories.includes(c)).length;
+                  return (
+                    <button
+                      key={c}
+                      type="button"
+                      aria-pressed={on}
+                      onClick={(e) => {
+                        setFilter(c);
+                        e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                      }}
+                      className={`lg-press inline-flex h-[34px] sm:h-9 shrink-0 items-center gap-1.5 rounded-full px-3.5 sm:px-4 text-[12px] sm:text-[12.5px] font-medium transition-all duration-300 select-none ${
+                        on
+                          ? 'lg-bright shadow-sm font-semibold'
+                          : 'text-white/65 hover:text-white hover:bg-white/[0.06]'
+                      }`}
+                    >
+                      {c}
+                      <span className={`font-code text-[10px] rounded-full px-1.5 py-0.5 ${on ? 'text-black/55 bg-black/10' : 'text-white/40 bg-white/5'}`}>{count}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           }
         />
