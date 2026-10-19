@@ -1,186 +1,146 @@
-import React from 'react';
-import FadeIn from './FadeIn';
-import { useCountUp } from '../hooks/useCountUp';
+import Icon from './Icon';
+import { Monogram } from './Navbar';
+import { Container, GlassButton, GlassLink, Reveal, SectionHeading } from './ui';
+import { focusAreas } from '../lib/data';
+import { LINKS, RESUME_URL, copyEmail, scrollToId } from '../lib/site';
 
-const metrics = [
-  { target: 4000, prefix: '', suffix: '+', label: 'Global Downloads',    sub: 'EPL Ecosystem' },
-  { target: 2500, prefix: '', suffix: '+', label: 'Offline Phrases',     sub: 'NeuroShell Engine' },
-  { target: 25,   prefix: '', suffix: '+', label: 'Language Targets',    sub: 'LangShift Transpiler' },
-  { target: 100,  prefix: '', suffix: '%', label: 'Commercial Uptime',   sub: 'asworks.studio' },
+const card = 'lg lg-dim lg-spec lg-glow rounded-[30px] p-6 sm:p-8';
+
+const now = [
+  { title: 'Operating ASWorks', body: 'A live commercial marketplace at asworks.studio', live: true, href: LINKS.asworks },
+  { title: 'Growing the EPL ecosystem', body: '4,000+ global downloads and counting', href: LINKS.epl },
+  { title: 'B.Tech CSE · AI & ML', body: 'Jagran Lakecity University · expected 2027' },
 ];
-
-const stack = ['C++', 'Python', 'SQL (PostgreSQL)', 'Generative AI', 'Agentic AI', 'Multi-LLM Routing', 'System Design', 'Next.js', 'FastAPI', 'Docker'];
-
-function MetricCard({ target, prefix, suffix, label, sub, index }: {
-  target: number; prefix: string; suffix: string;
-  label: string; sub: string; index: number;
-}) {
-  const ref = useCountUp({ target, prefix, suffix });
-  const isRightIn2Col = index % 2 === 1;
-  const isBottomIn2Col = index >= 2;
-  const isLastIn4Col = index === 3;
-
-  return (
-    <div className={`flex flex-col p-5 sm:p-8 ${
-      !isRightIn2Col ? 'border-r border-white/10' : ''
-    } ${
-      !isBottomIn2Col ? 'border-b border-white/10 md:border-b-0' : ''
-    } ${
-      !isLastIn4Col ? 'md:border-r md:border-white/10' : 'md:border-r-0'
-    } hover:bg-white/[0.02] transition-colors duration-300`}>
-      <span
-        ref={ref}
-        className="text-white text-[26px] sm:text-[36px] font-bold tracking-tighter mb-1"
-        style={{ fontFamily: 'var(--font-heading)' }}
-      />
-      <span className="text-white/70 text-[12px] sm:text-[13px] font-semibold mb-1">{label}</span>
-      <span className="text-white/30 text-[10px] sm:text-[11px] uppercase tracking-wider font-medium">{sub}</span>
-    </div>
-  );
-}
-
-function MetricsRow() {
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-0 border border-white/10 rounded-xl overflow-hidden mb-16 sm:mb-20">
-      {metrics.map((m, i) => (
-        <MetricCard key={i} {...m} index={i} />
-      ))}
-    </div>
-  );
-}
 
 export default function About() {
   return (
-    <div id="about" className="w-full px-5 sm:px-10 py-20 sm:py-32 relative" style={{ scrollMarginTop: '80px' }}>
-      <div className="max-w-5xl mx-auto w-full flex flex-col">
+    <section id="about" className="relative scroll-mt-24 py-20 sm:py-28">
+      <Container>
+        <SectionHeading
+          index="01"
+          eyebrow="About"
+          title="Engineering at the boundary of"
+          accent="machine performance & human intent."
+        />
 
-        {/* Section Header */}
-        <FadeIn>
-          <div className="flex items-center gap-5 mb-12 sm:mb-16">
-            <div className="h-[1px] w-10 bg-white/30"></div>
-            <span className="text-[11px] font-bold text-white/40 tracking-[0.2em] uppercase">About</span>
-          </div>
-        </FadeIn>
+        <div className="grid gap-4 sm:gap-5 lg:grid-cols-12">
+          {/* Lead */}
+          <Reveal className={`${card} lg:col-span-8`}>
+            <p className="text-[19px] leading-[1.65] font-light text-white/85 sm:text-[22px]">
+              I’m a software engineer and open-source creator focused on{' '}
+              <span className="font-medium text-white">high-performance systems</span> and{' '}
+              <span className="font-medium text-white">practical AI</span>. With strong roots in C++, SQL and modern Generative AI,
+              my goal is to make computing intuitive and accessible.
+            </p>
+            <div className="hairline my-7" />
+            <p className="text-[15px] leading-[1.85] text-white/60 sm:text-[16px]">
+              I created <span className="text-white">EPL</span> (English Programming Language), an open-source language that lets
+              anyone code in plain English and has reached over 4,000 global downloads — and{' '}
+              <span className="text-white">NeuroShell</span>, an intelligent terminal that pairs a native C++ engine with AI to turn
+              plain English into safe command-line execution.
+            </p>
+          </Reveal>
 
-        {/* Pull Quote */}
-        <FadeIn delay={100}>
-          <h2
-            className="text-[26px] sm:text-[40px] md:text-[52px] font-bold text-white leading-[1.15] tracking-tight mb-8 max-w-4xl text-shadow-lg"
-            style={{ fontFamily: 'var(--font-heading)' }}
-          >
-            Engineering at the boundary of{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/30">
-              machine performance
-            </span>{' '}
-            and{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/30">
-              human intent.
-            </span>
-          </h2>
-        </FadeIn>
-
-        {/* Metrics Row */}
-        <FadeIn delay={150}>
-          <MetricsRow />
-        </FadeIn>
-
-        {/* 12-Column Bio Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 sm:gap-12 border-t border-white/10 pt-12 sm:pt-16">
-
-          {/* Left: Identity & Education */}
-          <div className="md:col-span-4 flex flex-col">
-            <FadeIn delay={200}>
-              <h3 className="text-[20px] font-bold text-white mb-1 text-shadow">Abneesh Singh</h3>
-              <p className="text-[11px] text-white/50 uppercase tracking-[0.2em] font-bold mb-4 text-shadow">
-                Agentic AI &amp; Systems Engineer
-              </p>
-
-              {/* Education Box */}
-              <div className="p-4 rounded-xl border border-white/10 bg-white/[0.02] mb-8">
-                <p className="text-white/90 text-[12px] font-semibold leading-relaxed">
-                  B.Tech in Computer Science
-                </p>
-                <p className="text-white/50 text-[11px] tracking-wide">
-                  Specialization: Artificial Intelligence &amp; Machine Learning
-                </p>
-                <p className="text-white/30 text-[10px] uppercase tracking-wider mt-1 font-mono">
-                  Jagran Lakecity University · Expected 2027
-                </p>
+          {/* Profile */}
+          <Reveal delay={90} className={`${card} flex flex-col lg:col-span-4`}>
+            <div className="flex items-center gap-4">
+              <Monogram size={56} />
+              <div>
+                <p className="font-display text-[20px] font-semibold text-white">Abneesh Singh</p>
+                <p className="text-[12.5px] text-white/50">Agentic AI &amp; Systems Engineer</p>
               </div>
-
-              <div className="flex flex-col gap-3">
-                {[
-                  'High-Performance C++ Systems',
-                  'Generative & Agentic AI',
-                  'Relational Databases & SQL',
-                  'Developer Tooling & Compilers'
-                ].map((s) => (
-                  <div key={s} className="flex items-center gap-3 text-[12px] sm:text-[13px] text-white/70 font-medium tracking-wide uppercase text-shadow">
-                    <div className="w-1 h-1 rounded-full bg-white/40 flex-shrink-0"></div>
-                    {s}
-                  </div>
-                ))}
-              </div>
-            </FadeIn>
-          </div>
-
-          {/* Right: Bio paragraphs */}
-          <div className="md:col-span-8 flex flex-col sm:flex-row gap-6 sm:gap-10">
-            <FadeIn delay={300}>
-              <div className="flex-1">
-                <p className="text-white/90 text-[15px] sm:text-[16px] leading-[1.9] font-light mb-0 text-shadow-lg">
-                  I am a software engineer and open-source creator focused on building high-performance systems and practical AI applications. With strong roots in C++, SQL, and modern Generative AI, my goal is to make computing intuitive and accessible. I created EPL (English Programming Language), an open-source language allowing anyone to code in plain English that has reached over 4,000 global downloads, and NeuroShell, an intelligent terminal shell combining a native C++ engine with AI to turn plain English into safe command-line executions.
-                </p>
-              </div>
-            </FadeIn>
-
-            <FadeIn delay={400}>
-              <div className="flex-1 flex flex-col">
-                <p className="text-white/90 text-[15px] sm:text-[16px] leading-[1.9] font-light mb-10 text-shadow-lg">
-                  Beyond developer tools, I build and operate production-grade web and mobile platforms. I launched ASWorks (asworks.studio)—a live commercial digital marketplace with secure dual-gateway payments and automated digital fulfillment—and engineered Syting, a privacy-first real-time discovery platform backed by a robust PostgreSQL architecture. Whether designing agentic workflows, optimizing database queries, or writing core systems, I focus on software that is reliable, scalable, and genuinely useful.
-                </p>
-                <div className="mt-auto">
-                  <a
-                    href="mailto:singhabneesh250@gmail.com"
-                    className="group inline-flex items-center gap-3 text-[13px] text-white font-bold uppercase tracking-widest hover:text-white/60 transition-colors duration-200"
-                  >
-                    <span className="border-b border-white/30 group-hover:border-transparent transition-colors pb-1">
-                      Start a conversation
-                    </span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform">
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                  </a>
+            </div>
+            <div className="lg-chip mt-6 rounded-2xl p-4">
+              <div className="flex items-start gap-3">
+                <span className="mt-0.5 text-[#c7b2ff]">
+                  <Icon name="graduation" size={18} />
+                </span>
+                <div>
+                  <p className="text-[13.5px] font-semibold text-white">B.Tech in Computer Science</p>
+                  <p className="mt-0.5 text-[12.5px] text-white/55">Specialisation: Artificial Intelligence &amp; Machine Learning</p>
+                  <p className="font-code mt-2 text-[10.5px] tracking-wide text-white/35 uppercase">Jagran Lakecity University · 2027</p>
                 </div>
               </div>
-            </FadeIn>
+            </div>
+            <div className="mt-auto flex flex-wrap gap-2 pt-6">
+              <GlassLink href={RESUME_URL} external size="sm" icon="file" magnetic={false}>
+                Résumé
+              </GlassLink>
+              <GlassButton size="sm" variant="ghost" icon="copy" magnetic={false} onClick={() => void copyEmail()}>
+                Copy email
+              </GlassButton>
+            </div>
+          </Reveal>
+
+          {/* Right now */}
+          <Reveal delay={60} className={`${card} lg:col-span-5`}>
+            <p className="text-[11px] font-semibold tracking-[0.22em] text-white/45 uppercase">Right now</p>
+            <ul className="mt-5 flex flex-col gap-1">
+              {now.map((n) => {
+                const inner = (
+                  <>
+                    <span className="relative mt-1.5 flex h-2 w-2 shrink-0">
+                      {n.live && <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400/60" />}
+                      <span className={`relative h-2 w-2 rounded-full ${n.live ? 'bg-emerald-400' : 'bg-white/30'}`} />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-[15px] font-medium text-white">{n.title}</span>
+                      <span className="block text-[13px] text-white/50">{n.body}</span>
+                    </span>
+                    {n.href && <Icon name="arrowUpRight" size={15} className="mt-1 text-white/30 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />}
+                  </>
+                );
+                return (
+                  <li key={n.title}>
+                    {n.href ? (
+                      <a href={n.href} target="_blank" rel="noreferrer noopener" className="group -mx-3 flex gap-4 rounded-2xl px-3 py-3 transition-colors hover:bg-white/[0.05]">
+                        {inner}
+                      </a>
+                    ) : (
+                      <div className="-mx-3 flex gap-4 px-3 py-3">{inner}</div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </Reveal>
+
+          {/* Platforms */}
+          <Reveal delay={120} className={`${card} flex flex-col lg:col-span-7`}>
+            <p className="text-[15px] leading-[1.85] text-white/65 sm:text-[16px]">
+              Beyond developer tools, I build and operate production-grade web and mobile platforms. I launched{' '}
+              <span className="text-white">ASWorks</span> — a live commercial marketplace with secure dual-gateway payments and
+              automated digital fulfilment — and engineered <span className="text-white">Syting</span>, a privacy-first real-time
+              discovery platform on a robust PostgreSQL architecture.
+            </p>
+            <p className="mt-4 text-[15px] leading-[1.85] text-white/65 sm:text-[16px]">
+              Whether designing agentic workflows, optimising queries or writing core systems, I focus on software that is reliable,
+              scalable and genuinely useful.
+            </p>
+            <button
+              type="button"
+              onClick={() => scrollToId('contact')}
+              className="group mt-auto inline-flex w-fit items-center gap-2 pt-7 text-[14px] font-semibold text-white"
+            >
+              <span className="border-b border-white/25 pb-0.5 transition-colors group-hover:border-white">Start a conversation</span>
+              <Icon name="arrowRight" size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
+            </button>
+          </Reveal>
+
+          {/* Focus areas */}
+          <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:col-span-12 lg:grid-cols-4">
+            {focusAreas.map((f, i) => (
+              <Reveal key={f.title} delay={i * 70} className="lg lg-dim lg-spec lg-glow group rounded-[26px] p-5 sm:p-6">
+                <span className="lg-chip grid h-11 w-11 place-items-center rounded-2xl text-white/80 transition-colors duration-300 group-hover:text-white">
+                  <Icon name={f.icon} size={19} />
+                </span>
+                <p className="mt-5 text-[14.5px] font-semibold text-white sm:text-[15.5px]">{f.title}</p>
+                <p className="mt-1 text-[12.5px] leading-relaxed text-white/50 sm:text-[13px]">{f.body}</p>
+              </Reveal>
+            ))}
           </div>
         </div>
-
-        {/* Tech Stack */}
-        <FadeIn delay={500}>
-          <div className="mt-20 pt-12 border-t border-white/10">
-            <p className="text-[11px] text-white/30 uppercase tracking-[0.2em] font-bold mb-8">Core Stack</p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-              {stack.map((tech, i) => (
-                <div
-                  key={tech}
-                  className="group flex items-center gap-3 border border-white/[0.07] rounded-xl px-4 py-3 hover:border-white/20 hover:bg-white/[0.03] transition-all duration-300"
-                >
-                  <span className="text-[10px] font-mono text-white/15 group-hover:text-white/30 transition-colors duration-300 w-4 flex-shrink-0">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <span className="text-white/60 text-[12px] font-bold tracking-wider uppercase group-hover:text-white/90 transition-colors duration-300">
-                    {tech}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </FadeIn>
-
-      </div>
-    </div>
+      </Container>
+    </section>
   );
 }
