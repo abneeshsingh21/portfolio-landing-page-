@@ -1,155 +1,96 @@
-import React from 'react';
-import FadeIn from './FadeIn';
-
-const competencies = [
-  {
-    number: '01',
-    title: 'High-Performance C++ Systems',
-    description: 'Engineering ultra-fast, memory-conscious core runtime engines and native interoperability bridges using modern C++20 and pybind11 for near-instant execution.',
-    tags: ['C++', 'pybind11', 'CMake', 'System Design']
-  },
-  {
-    number: '02',
-    title: 'Generative AI & Agentic Systems',
-    description: 'Architecting intelligent autonomous pipelines, multi-LLM routing networks (Ollama, Claude, GPT-4o), and Zero-Trust safety shields that block destructive actions.',
-    tags: ['Agentic AI', 'Generative AI', 'Multi-LLM Routing', 'Zero-Trust Safety']
-  },
-  {
-    number: '03',
-    title: 'Relational Databases & SQL',
-    description: 'Designing normalized schemas, query optimizations, Row Level Security (RLS) policies, and high-throughput real-time data channels with PostgreSQL.',
-    tags: ['PostgreSQL', 'SQL Optimization', 'Database Schema', 'Real-Time Data']
-  },
-  {
-    number: '04',
-    title: 'Developer Tooling & Compilers',
-    description: 'Building multi-backend compilers (LLVM, WebAssembly), AST parsers, official VS Code extensions, and production-grade commercial software marketplaces.',
-    tags: ['LLVM', 'WebAssembly', 'Compiler Design', 'Next.js 15']
-  }
-];
-
-const certifications = [
-  {
-    title: 'Anthropic Claude Code in Action',
-    issuer: 'Anthropic',
-    year: '2026',
-    icon: '◈'
-  },
-  {
-    title: 'AWS EC2 Fundamentals',
-    issuer: 'KodeKloud',
-    year: '2025',
-    icon: '◈'
-  },
-  {
-    title: 'Cloud Computing Fundamentals',
-    issuer: 'KodeKloud',
-    year: '2025',
-    icon: '◈'
-  }
-];
+import Icon from './Icon';
+import { Container, Reveal, SectionHeading } from './ui';
+import { certifications, competencies, principles } from '../lib/data';
 
 export default function Experience() {
   return (
-    <div className="w-full px-5 sm:px-8 md:px-10 pb-24 sm:pb-40 relative">
-      <div className="max-w-5xl mx-auto w-full flex flex-col">
+    <>
+      {/* Architecture */}
+      <section id="architecture" className="relative scroll-mt-24 py-20 sm:py-28">
+        <Container>
+          <SectionHeading
+            index="03"
+            eyebrow="Core competencies"
+            title="Architecture,"
+            accent="by design."
+            description="I architect reliable, high-performance systems at the intersection of modern C++ efficiency, relational database design and Generative AI workflows — building intuitive developer tools and scalable platforms with real-world impact."
+          />
 
-        {/* ── Architecture Section ── */}
-        <FadeIn>
-          <div id="architecture" className="py-16 sm:py-20 border-t border-white/10" style={{ scrollMarginTop: '80px' }}>
-
-            {/* Section header */}
-            <div className="flex items-center gap-6 mb-12 sm:mb-16">
-              <div className="h-[1px] w-12 bg-white/30"></div>
-              <span className="text-[12px] font-bold text-white/40 tracking-[0.2em] uppercase">Core Competencies</span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 sm:gap-12 items-start">
-              {/* Left: Title + Philosophy */}
-              <div className="md:col-span-4 flex flex-col md:sticky md:top-24">
-                <h2 className="text-[28px] sm:text-[48px] font-bold text-white tracking-tight mb-4 sm:mb-6 leading-[1.1]" style={{ fontFamily: 'var(--font-heading)' }}>
-                  Architecture.
-                </h2>
-                <p className="text-white/60 text-[14px] sm:text-[15px] leading-[1.8] font-light text-shadow-lg">
-                  I architect reliable, high-performance systems at the intersection of modern C++ efficiency, relational database design, and Generative AI workflows—building intuitive developer tools and scalable platforms that deliver real-world impact.
-                </p>
-              </div>
-
-              {/* Right: Competency Cards */}
-              <div className="md:col-span-8 flex flex-col gap-0 border-t border-white/10">
-                {competencies.map((c, i) => (
-                  <div
-                    key={i}
-                    className="group flex flex-col py-7 sm:py-10 border-b border-white/10 hover:bg-white/[0.02] active:bg-white/[0.03] sm:hover:px-6 transition-all duration-500 ease-out"
-                  >
-                    <div className="flex items-start justify-between mb-3 sm:mb-4">
-                      <div className="flex items-center gap-3 sm:gap-4">
-                        <span className="text-[11px] font-bold text-white/20 tracking-[0.2em] font-mono">{c.number}</span>
-                        <h3 className="text-[15px] sm:text-[18px] font-bold text-white uppercase tracking-wider group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/50 transition-all duration-300">
-                          {c.title}
-                        </h3>
-                      </div>
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/20 group-hover:text-white/50 flex-shrink-0 mt-1 transition-colors duration-300 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">
-                        <line x1="7" y1="17" x2="17" y2="7"></line>
-                        <polyline points="7 7 17 7 17 17"></polyline>
-                      </svg>
-                    </div>
-                    <p className="text-white/60 text-[13px] sm:text-[15px] leading-[1.8] font-light mb-5 sm:mb-6 text-shadow">
-                      {c.description}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {c.tags.map(tag => (
-                        <span key={tag} className="px-2.5 sm:px-3 py-1 rounded border border-white/10 text-white/40 text-[10px] sm:text-[11px] font-bold tracking-widest uppercase group-hover:border-white/20 group-hover:text-white/60 transition-colors duration-300">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="grid gap-4 sm:gap-5 md:grid-cols-2">
+            {competencies.map((c, i) => (
+              <Reveal key={c.number} delay={(i % 2) * 90} className="lg lg-dim lg-spec lg-glow group relative flex flex-col overflow-hidden rounded-[30px] p-6 sm:p-8">
+                <div className="flex items-start justify-between">
+                  <span className="lg-chip grid h-12 w-12 place-items-center rounded-2xl text-white/85 transition-transform duration-500 group-hover:scale-105">
+                    <Icon name={c.icon} size={21} />
+                  </span>
+                  <span className="font-display text-[44px] leading-none font-semibold tracking-[-0.05em] text-white/[0.08] transition-colors duration-500 group-hover:text-white/20">
+                    {c.number}
+                  </span>
+                </div>
+                <h3 className="font-display mt-8 text-[22px] leading-tight font-semibold text-white sm:text-[26px]">{c.title}</h3>
+                <p className="mt-3 text-[14.5px] leading-[1.8] text-white/55">{c.description}</p>
+                <div className="mt-auto flex flex-wrap gap-2 pt-7">
+                  {c.tags.map((t) => (
+                    <span key={t} className="lg-chip rounded-full px-3 py-1.5 text-[11.5px] text-white/60">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </Reveal>
+            ))}
           </div>
-        </FadeIn>
 
-        {/* ── Certifications Section ── */}
-        <FadeIn delay={150}>
-          <div id="certifications" className="py-16 sm:py-20 border-t border-white/10" style={{ scrollMarginTop: '80px' }}>
-
-            <div className="flex items-center gap-6 mb-12 sm:mb-16">
-              <div className="h-[1px] w-12 bg-white/30"></div>
-              <span className="text-[12px] font-bold text-white/40 tracking-[0.2em] uppercase">Credentials</span>
+          {/* Principles */}
+          <Reveal className="lg lg-dim lg-glow relative mt-4 overflow-hidden rounded-[30px] p-6 sm:mt-5 sm:p-8">
+            <div className="flex items-center justify-between gap-4">
+              <p className="text-[11px] font-semibold tracking-[0.22em] text-white/45 uppercase">How I build</p>
+              <span className="font-code text-[11px] text-white/30">04 principles</span>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 sm:gap-12 items-start">
-              {/* Left title */}
-              <div className="md:col-span-4">
-                <h2 className="text-[28px] sm:text-[48px] font-bold text-white tracking-tight leading-[1.1]" style={{ fontFamily: 'var(--font-heading)' }}>
-                  Certified.
-                </h2>
-              </div>
-
-              {/* Right: Cert cards */}
-              <div className="md:col-span-8 flex flex-col gap-0 border-t border-white/10">
-                {certifications.map((cert, i) => (
-                  <div key={i} className="group flex items-center justify-between py-6 sm:py-8 border-b border-white/10 hover:bg-white/[0.02] active:bg-white/[0.03] sm:hover:px-6 transition-all duration-500 ease-out">
-                    <div className="flex items-center gap-4 sm:gap-6">
-                      <span className="text-white/20 text-[18px] sm:text-[20px] group-hover:text-white/50 transition-colors duration-300 font-mono">{cert.icon}</span>
-                      <div>
-                        <h4 className="text-[15px] sm:text-[18px] font-bold text-white mb-0.5 sm:mb-1 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/50 transition-all duration-300">
-                          {cert.title}
-                        </h4>
-                        <p className="text-[11px] sm:text-[12px] text-white/40 uppercase tracking-widest font-medium">{cert.issuer}</p>
-                      </div>
-                    </div>
-                    <span className="text-[12px] sm:text-[13px] text-white/30 font-mono tracking-widest flex-shrink-0 ml-3">{cert.year}</span>
-                  </div>
+            <div className="relative mt-7">
+              <span aria-hidden="true" className="hairline absolute top-[15px] right-0 left-0 hidden lg:block" />
+              <ol className="relative grid gap-7 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+                {principles.map((p, i) => (
+                  <li key={p.title} className="relative">
+                    <span
+                      className="font-code relative grid h-[30px] w-[30px] place-items-center rounded-full text-[11px] text-[#07070b]"
+                      style={{ background: ['#9fd0ff', '#8ff0d6', '#c7b2ff', '#ffc6a8'][i], boxShadow: '0 0 0 5px rgba(13,14,20,0.9)' }}
+                    >
+                      {i + 1}
+                    </span>
+                    <p className="font-display mt-4 text-[18px] font-semibold text-white">{p.title}</p>
+                    <p className="mt-1.5 text-[13.5px] leading-[1.7] text-white/55">{p.body}</p>
+                  </li>
                 ))}
-              </div>
+              </ol>
             </div>
-          </div>
-        </FadeIn>
+          </Reveal>
+        </Container>
+      </section>
 
-      </div>
-    </div>
+      {/* Credentials */}
+      <section id="certifications" className="relative scroll-mt-24 py-20 sm:py-28">
+        <Container>
+          <SectionHeading index="04" eyebrow="Credentials" title="Always" accent="learning." />
+          <div className="grid gap-4 sm:gap-5 md:grid-cols-3">
+            {certifications.map((c, i) => (
+              <Reveal key={c.title} delay={i * 80} className="lg lg-dim lg-spec lg-glow group flex flex-col rounded-[28px] p-6 sm:p-7">
+                <div className="flex items-center justify-between">
+                  <span className="lg-chip grid h-11 w-11 place-items-center rounded-2xl text-[#c7b2ff]">
+                    <Icon name="award" size={19} />
+                  </span>
+                  <span className="font-code lg-chip rounded-full px-2.5 py-1 text-[11px] text-white/55">{c.year}</span>
+                </div>
+                <p className="mt-8 text-[11px] font-semibold tracking-[0.2em] text-white/40 uppercase">{c.issuer}</p>
+                <h3 className="font-display mt-2 text-[21px] leading-snug font-semibold text-white">{c.title}</h3>
+                <div className="mt-auto flex items-center gap-2 pt-6 text-[12px] text-white/45">
+                  <Icon name="check" size={13} stroke={2.4} className="text-[#8ff0d6]" />
+                  Certification completed
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </Container>
+      </section>
+    </>
   );
 }

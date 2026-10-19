@@ -1,88 +1,113 @@
-import React from 'react';
+import Icon from './Icon';
+import { Monogram } from './Navbar';
+import { Container } from './ui';
+import { navLinks, projects } from '../lib/data';
+import { EMAIL, LINKS, RESUME_URL, openPalette, openProject, scrollToId } from '../lib/site';
 
-const links = [
-  { label: 'Projects',                href: '#projects' },
-  { label: 'Architecture',            href: '#architecture' },
-  { label: 'Certifications',          href: '#certifications' },
-  { label: 'Download Resume (PDF)',   href: '/resume.pdf' },
-  { label: 'ASWorks Marketplace',     href: 'https://asworks.studio' },
-  { label: 'EPL on GitHub',           href: 'https://github.com/abneeshsingh21/EPL' },
-  { label: 'NeuroShell — GitHub',     href: 'https://github.com/abneeshsingh21/neuroshell' },
-  { label: 'LangShift — Marketplace', href: 'https://marketplace.visualstudio.com/items?itemName=langshift.langshift' },
-  { label: 'LinkedIn',                href: 'https://linkedin.com/in/abneesh-singh001' },
-  { label: 'GitHub Profile',          href: 'https://github.com/abneeshsingh21' },
-];
+const linkCls = 'group inline-flex items-center gap-1.5 py-1 text-[13.5px] text-white/60 transition-colors hover:text-white';
 
 export default function Footer() {
   return (
-    <footer className="w-full relative z-10" style={{ background: 'linear-gradient(to top, #000 60%, transparent 100%)' }}>
-      {/* Solid black base so text is always readable over the video */}
-      <div className="w-full bg-black/90 backdrop-blur-xl border-t border-white/10 pb-safe">
-        <div className="max-w-5xl mx-auto w-full px-5 sm:px-10 py-12 sm:py-20">
-
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
-            {/* Left: Identity */}
-            <div className="md:col-span-5 flex flex-col">
-              <div className="flex items-center gap-2.5 mb-5">
-                <span
-                  className="text-[22px] font-bold text-white tracking-tight"
-                  style={{ fontFamily: 'var(--font-heading)' }}
-                >
-                  Abneesh Singh
-                </span>
-                <span className="text-white/30 text-[18px] select-none">✳︎</span>
+    <footer className="relative pt-10 pb-8">
+      <Container>
+        <div className="lg lg-dim rounded-[36px] p-7 sm:p-12">
+          <div className="grid gap-10 md:grid-cols-12">
+            <div className="md:col-span-5">
+              <div className="flex items-center gap-3">
+                <Monogram size={44} />
+                <div>
+                  <p className="font-display text-[19px] font-semibold text-white">Abneesh Singh</p>
+                  <p className="text-[12.5px] text-white/50">Agentic AI &amp; Systems Engineer</p>
+                </div>
               </div>
-              <p className="text-white/55 text-[14px] leading-[1.8] font-light max-w-xs mb-8">
-                Agentic AI &amp; Systems Engineer building high-performance systems and practical AI applications at the intersection of C++, SQL, and Generative AI.
+              <p className="mt-6 max-w-sm text-[14px] leading-[1.8] text-white/55">
+                Building high-performance systems and practical AI applications at the intersection of C++, SQL and Generative AI.
               </p>
-              <a
-                href="mailto:singhabneesh250@gmail.com"
-                className="text-white/70 text-[13px] font-semibold hover:text-white transition-colors duration-200 underline underline-offset-4 decoration-white/30 hover:decoration-white/80 w-fit"
-              >
-                singhabneesh250@gmail.com
+              <a href={`mailto:${EMAIL}`} className="mt-6 inline-flex items-center gap-2 text-[14px] font-medium text-white underline decoration-white/25 underline-offset-4 transition-colors hover:decoration-white">
+                <Icon name="mail" size={15} /> {EMAIL}
               </a>
             </div>
 
-            {/* Right: Links */}
-            <div className="md:col-span-7 grid grid-cols-2 gap-y-5 gap-x-6 content-start">
-              {links.map((l) => (
-                <a
-                  key={l.label}
-                  href={l.href}
-                  target={l.href.startsWith('http') ? '_blank' : '_self'}
-                  rel="noreferrer"
-                  className="group flex items-center gap-2 text-white/55 text-[12px] font-bold uppercase tracking-[0.12em] hover:text-white transition-colors duration-200"
-                >
-                  <span>{l.label}</span>
-                  {l.href.startsWith('http') && (
-                    <svg
-                      width="9" height="9"
-                      viewBox="0 0 24 24" fill="none"
-                      stroke="currentColor" strokeWidth="2.5"
-                      strokeLinecap="round" strokeLinejoin="round"
-                      className="opacity-0 group-hover:opacity-60 -translate-y-px group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200"
-                    >
-                      <line x1="7" y1="17" x2="17" y2="7"></line>
-                      <polyline points="7 7 17 7 17 17"></polyline>
-                    </svg>
-                  )}
-                </a>
-              ))}
+            <nav aria-label="Footer" className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:col-span-7">
+              <div>
+                <p className="text-[11px] font-semibold tracking-[0.2em] text-white/35 uppercase">Navigate</p>
+                <ul className="mt-4 flex flex-col gap-1">
+                  {navLinks.map((l) => (
+                    <li key={l.id}>
+                      <button type="button" onClick={() => scrollToId(l.id)} className={linkCls}>
+                        {l.name}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <p className="text-[11px] font-semibold tracking-[0.2em] text-white/35 uppercase">Work</p>
+                <ul className="mt-4 flex flex-col gap-1">
+                  {projects.map((p) => (
+                    <li key={p.id}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          scrollToId('projects');
+                          window.setTimeout(() => openProject(p.id), 450);
+                        }}
+                        className={linkCls}
+                      >
+                        {p.title}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <p className="text-[11px] font-semibold tracking-[0.2em] text-white/35 uppercase">Elsewhere</p>
+                <ul className="mt-4 flex flex-col gap-1">
+                  {[
+                    { label: 'GitHub', href: LINKS.github },
+                    { label: 'LinkedIn', href: LINKS.linkedin },
+                    { label: 'ASWorks', href: LINKS.asworks },
+                    { label: 'LangShift', href: LINKS.langshift },
+                    { label: 'Résumé', href: RESUME_URL },
+                  ].map((l) => (
+                    <li key={l.label}>
+                      <a href={l.href} target="_blank" rel="noreferrer noopener" className={linkCls}>
+                        {l.label}
+                        <Icon name="arrowUpRight" size={12} className="opacity-40 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:opacity-100" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </nav>
+          </div>
+
+          <div className="hairline my-9" />
+
+          <div className="flex flex-col gap-4 text-[12px] text-white/40 sm:flex-row sm:items-center sm:justify-between">
+            <p>© {new Date().getFullYear()} Abneesh Singh. All rights reserved.</p>
+            <div className="flex items-center gap-4">
+              <span>Built with React · TypeScript · Vite</span>
+              <button type="button" onClick={openPalette} className="lg-chip font-code hidden rounded-lg px-2 py-1 text-[11px] text-white/55 transition-colors hover:text-white sm:inline-block">
+                ⌘K
+              </button>
             </div>
           </div>
-
-          {/* Bottom row */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-8 border-t border-white/[0.08]">
-            <p className="text-white/35 text-[11px] font-medium uppercase tracking-widest">
-              © {new Date().getFullYear()} Abneesh Singh. All rights reserved.
-            </p>
-            <p className="text-white/35 text-[11px] font-medium uppercase tracking-widest">
-              Built with React · TypeScript · Vite
-            </p>
-          </div>
-
         </div>
-      </div>
+
+        <p
+          aria-hidden="true"
+          className="font-display pointer-events-none mt-6 text-center text-[clamp(56px,15vw,220px)] leading-[0.85] font-semibold tracking-[-0.06em] select-none"
+          style={{
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 85%)',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            color: 'transparent',
+          }}
+        >
+          Abneesh Singh
+        </p>
+      </Container>
     </footer>
   );
 }
