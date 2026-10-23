@@ -7,6 +7,7 @@ export const CATEGORIES: ('All' | Category)[] = ['All', 'AI', 'Systems', 'Platfo
 export interface Project {
   id: string;
   title: string;
+  shortTitle?: string;
   role: string;
   summary: string;
   description: string;

@@ -6,7 +6,7 @@ import { devopsProjects } from '../lib/devops-data';
 import { EMAIL, LINKS, openPalette, openProject, scrollToId } from '../lib/site';
 import { usePortfolio } from '../context/PortfolioContext';
 
-const linkCls = 'group inline-flex items-center gap-1 py-0.5 text-[12px] text-white/60 transition-colors hover:text-white sm:gap-1.5 sm:py-1 sm:text-[13.5px]';
+const linkCls = 'group inline-flex items-center gap-1 py-0.5 text-left text-[12px] text-white/60 transition-colors hover:text-white sm:gap-1.5 sm:py-1 sm:text-[13.5px]';
 
 export default function Footer() {
   const { isDevOps, resumeUrl } = usePortfolio();
@@ -63,7 +63,7 @@ export default function Footer() {
                         }}
                         className={linkCls}
                       >
-                        {p.title}
+                        {p.shortTitle ?? p.title}
                       </button>
                     </li>
                   ))}

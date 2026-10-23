@@ -146,12 +146,12 @@ export default function Hero() {
           <div className="lg:col-span-7">
             <div ref={copyRef} style={{ willChange: 'transform' }}>
             <div className="rise" style={d(0)}>
-              <span className="lg lg-spec inline-flex items-center gap-2.5 rounded-full py-1.5 pr-4 pl-1.5">
-                <span className="lg-bright inline-flex h-6 items-center gap-1.5 rounded-full px-2.5 text-[10.5px] font-bold tracking-[0.06em] uppercase">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              <span className="lg lg-spec inline-flex max-w-full items-center gap-2 rounded-full py-1.5 pr-3.5 pl-1.5 sm:gap-2.5 sm:pr-4">
+                <span className="lg-bright inline-flex h-6 shrink-0 whitespace-nowrap items-center gap-1.5 rounded-full px-2 text-[10px] font-bold tracking-[0.05em] uppercase sm:px-2.5 sm:text-[10.5px] sm:tracking-[0.06em]">
+                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
                   Open to work
                 </span>
-                <span className="text-[12.5px] text-white/75">
+                <span className="text-[11px] font-normal text-white/75 whitespace-nowrap overflow-hidden text-ellipsis sm:text-[12.5px] sm:overflow-visible">
                   {isDevOps ? 'DevOps & Cloud Engineering Intern' : 'Agentic AI & Systems Engineer'}
                 </span>
               </span>

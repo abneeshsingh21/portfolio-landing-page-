@@ -9,6 +9,7 @@ export const devopsProjects: Project[] = [
   {
     id: 'syting',
     title: 'Syting Database CI/CD & Migration Harness',
+    shortTitle: 'Syting CI/CD',
     role: 'Database Infrastructure & CI Engineer',
     summary: 'Ephemeral PostgreSQL 17 test harness executing 89 sequential migrations in GitHub Actions.',
     description:
@@ -30,13 +31,14 @@ export const devopsProjects: Project[] = [
     categories: ['CI/CD', 'Containers'] as any,
     icon: 'database',
     accent: '#ffc6a8',
-    link: 'https://github.com/abneeshsingh21/syting',
+    link: '#projects',
+    isPrivate: true,
     pipeline: ['Docker Run', 'pg_isready', '89 Migrations', 'RLS Gates', 'Exit Trap'],
-    repo: 'abneeshsingh21/syting',
   },
   {
     id: 'epl',
     title: 'EPL Continuous Delivery & Cloud Tooling',
+    shortTitle: 'EPL Cloud Tooling',
     role: 'DevOps & Release Tooling Architect',
     summary: 'Multi-OS matrix CI/CD, Azure Container Apps automation, and Kubernetes manifest generation.',
     description:
@@ -66,6 +68,7 @@ export const devopsProjects: Project[] = [
   {
     id: 'neuroshell',
     title: 'NeuroShell Reliability & Container Hardening',
+    shortTitle: 'NeuroShell CI',
     role: 'Systems & Reliability Engineer',
     summary: 'Cross-platform CMake & AddressSanitizer CI, nightly chaos testing, and hardened non-root Docker builds.',
     description:
@@ -94,6 +97,7 @@ export const devopsProjects: Project[] = [
   {
     id: 'asworks',
     title: 'ASWorks Cloud Deployment Packaging & Testing',
+    shortTitle: 'ASWorks Cloud',
     role: 'Cloud Deployment & Testing Architect',
     summary: 'MongoDB 7 service container CI pipeline and Next.js standalone packaging for Azure App Service.',
     description:
