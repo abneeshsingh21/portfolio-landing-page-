@@ -2,11 +2,16 @@ import Icon from './Icon';
 import { Monogram } from './Navbar';
 import { Container } from './ui';
 import { navLinks, projects } from '../lib/data';
-import { EMAIL, LINKS, RESUME_URL, openPalette, openProject, scrollToId } from '../lib/site';
+import { devopsProjects } from '../lib/devops-data';
+import { EMAIL, LINKS, openPalette, openProject, scrollToId } from '../lib/site';
+import { usePortfolio } from '../context/PortfolioContext';
 
 const linkCls = 'group inline-flex items-center gap-1 py-0.5 text-[12px] text-white/60 transition-colors hover:text-white sm:gap-1.5 sm:py-1 sm:text-[13.5px]';
 
 export default function Footer() {
+  const { isDevOps, resumeUrl } = usePortfolio();
+  const activeProjects = isDevOps ? devopsProjects : projects;
+
   return (
     <footer className="relative pt-6 pb-6 sm:pt-10 sm:pb-8">
       <Container>
@@ -17,11 +22,15 @@ export default function Footer() {
                 <Monogram size={38} />
                 <div>
                   <p className="font-display text-[17px] font-semibold text-white sm:text-[19px]">Abneesh Singh</p>
-                  <p className="text-[11.5px] text-white/50 sm:text-[12.5px]">Agentic AI &amp; Systems Engineer</p>
+                  <p className="text-[11.5px] text-white/50 sm:text-[12.5px]">
+                    {isDevOps ? 'DevOps & Cloud Engineering Intern' : 'Agentic AI & Systems Engineer'}
+                  </p>
                 </div>
               </div>
               <p className="mt-3.5 sm:mt-6 max-w-sm text-[13px] leading-[1.65] text-white/55 sm:text-[14px] sm:leading-[1.8]">
-                Building high-performance systems and practical AI applications at the intersection of C++, SQL and Generative AI.
+                {isDevOps
+                  ? 'Engineering automated CI/CD pipelines, hardened container runtimes and resilient cloud infrastructure on Azure.'
+                  : 'Building high-performance systems and practical AI applications at the intersection of C++, SQL and Generative AI.'}
               </p>
               <a href={`mailto:${EMAIL}`} className="mt-4 sm:mt-6 inline-flex items-center gap-2 text-[13px] sm:text-[14px] font-medium text-white underline decoration-white/25 underline-offset-4 transition-colors hover:decoration-white">
                 <Icon name="mail" size={14} /> {EMAIL}
@@ -44,7 +53,7 @@ export default function Footer() {
               <div>
                 <p className="text-[10px] font-semibold tracking-[0.2em] text-white/35 uppercase sm:text-[11px]">Work</p>
                 <ul className="mt-2.5 sm:mt-4 flex flex-col gap-0.5 sm:gap-1">
-                  {projects.map((p) => (
+                  {activeProjects.map((p) => (
                     <li key={p.id}>
                       <button
                         type="button"
@@ -68,7 +77,7 @@ export default function Footer() {
                     { label: 'LinkedIn', href: LINKS.linkedin },
                     { label: 'ASWorks', href: LINKS.asworks },
                     { label: 'LangShift', href: LINKS.langshift },
-                    { label: 'Résumé', href: RESUME_URL },
+                    { label: isDevOps ? 'DevOps Résumé' : 'Résumé', href: resumeUrl },
                   ].map((l) => (
                     <li key={l.label}>
                       <a href={l.href} target="_blank" rel="noreferrer noopener" className={linkCls}>

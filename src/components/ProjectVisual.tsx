@@ -109,8 +109,66 @@ const MAP: Record<string, ComponentType> = {
   langshift: LangShift,
 };
 
+function SytingDevOps() {
+  return (
+    <div className={`${box} font-code flex flex-col justify-between text-[11px]`}>
+      <div className="flex items-center justify-between text-white/50">
+        <span className="flex items-center gap-1.5">
+          <span className="h-2 w-2 rounded-full bg-emerald-400" />
+          postgres:17-alpine
+        </span>
+        <span className="rounded-md bg-black/40 px-2 py-0.5 text-[9.5px] text-emerald-300 border border-emerald-500/20">54332 ready</span>
+      </div>
+      <div className="flex items-center justify-between rounded-lg bg-white/[0.04] px-2.5 py-1.5 border border-white/10">
+        <span className="text-white/80"><span className="text-[#ffc6a8] font-bold">89/89</span> migrations</span>
+        <span className="text-[#8ff0d6] text-[10px]">RLS verified ✓</span>
+      </div>
+      <div className="flex items-center justify-between text-[9.5px] text-white/40">
+        <span>trap cleanup EXIT</span>
+        <span className="text-white/60">ephemeral teardown</span>
+      </div>
+    </div>
+  );
+}
+
+function ASWorksDevOps() {
+  return (
+    <div className={`${box} font-code flex flex-col justify-between text-[11px]`}>
+      <div className="flex items-center justify-between text-white/50">
+        <span className="flex items-center gap-1.5">
+          <span className="h-2 w-2 rounded-full bg-[#c7b2ff]" />
+          mongo:7 container
+        </span>
+        <span className="text-emerald-300 text-[10px]">healthcheck ping ✓</span>
+      </div>
+      <div className="flex items-center justify-between rounded-lg bg-white/[0.04] px-2.5 py-1.5 border border-white/10">
+        <span className="text-white/80">package-deploy.mjs</span>
+        <span className="text-[#c7b2ff] text-[10px]">standalone bundle</span>
+      </div>
+      <div className="flex items-center justify-between text-[9.5px] text-white/40">
+        <span>Azure App Service</span>
+        <span className="text-[#8ff0d6]">zero 404 packaging</span>
+      </div>
+    </div>
+  );
+}
+
 /** Small, illustrative, CSS-animated preview of what each product does. */
 export default function ProjectVisual({ project }: { project: Project }) {
+  if (project.id === 'syting' && project.tags.includes('PostgreSQL 17')) {
+    return (
+      <div aria-hidden="true">
+        <SytingDevOps />
+      </div>
+    );
+  }
+  if (project.id === 'asworks' && project.tags.includes('Azure App Service')) {
+    return (
+      <div aria-hidden="true">
+        <ASWorksDevOps />
+      </div>
+    );
+  }
   const V = MAP[project.id];
   return V ? (
     <div aria-hidden="true">

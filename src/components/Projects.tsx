@@ -5,7 +5,9 @@ import { BeamEffect, Container, GlassLink, Reveal, RippleEffect, SectionHeading 
 import { ripple, useTilt } from '../hooks/usePointerFx';
 import { timeAgo, useGithubStats } from '../hooks/useGithubStats';
 import { CATEGORIES, projects, type Category, type Project } from '../lib/data';
+import { DEVOPS_CATEGORIES, devopsProjects } from '../lib/devops-data';
 import { EVENTS } from '../lib/site';
+import { usePortfolio } from '../context/PortfolioContext';
 
 // Code-split: the case study only loads when someone opens one
 // (prefetched on card hover so it still opens instantly).
@@ -29,9 +31,28 @@ function RepoMeta({ project }: { project: Project }) {
 }
 
 function Pipeline({ project }: { project: Project }) {
+  const isSyting = project.id === 'syting';
+  const isDevopsEpl = project.id === 'epl' && project.tags.includes('Kubernetes YAML');
+
+  const eyebrow = isSyting
+    ? 'Database CI/CD Pipeline'
+    : isDevopsEpl
+      ? 'Continuous Delivery Pipeline'
+      : 'Compiler pipeline';
+
+  const targets = isSyting
+    ? ['Postgres 17 Alpine', 'GitHub Actions', 'pg_isready Health', 'Exit Trap Cleanup']
+    : isDevopsEpl
+      ? ['Ubuntu Matrix', 'macOS Matrix', 'Windows Matrix', 'Azure Container Apps']
+      : ['Interpreter', 'Bytecode VM', 'LLVM native', 'WebAssembly'];
+
+  const metric = isSyting ? '89' : isDevopsEpl ? 'OIDC' : '4,000+';
+  const metricSub = isSyting ? 'migrations applied sequentially' : isDevopsEpl ? 'cryptographic token releases' : 'global downloads';
+  const badge = isSyting ? '100% Hermetic' : isDevopsEpl ? 'Azure Container Apps' : '22-package stdlib';
+
   return (
     <div className="lg-chip relative flex h-full flex-col rounded-[20px] p-4 sm:rounded-[24px] sm:p-6">
-      <p className="text-[10px] font-semibold tracking-[0.22em] text-white/40 uppercase sm:text-[10.5px]">Compiler pipeline</p>
+      <p className="text-[10px] font-semibold tracking-[0.22em] text-white/40 uppercase sm:text-[10.5px]">{eyebrow}</p>
       <div className="mt-3 sm:mt-4 flex flex-wrap items-center gap-1.5 sm:gap-2">
         {(project.pipeline ?? []).map((s, i, arr) => (
           <span key={s} className="flex items-center gap-1.5 sm:gap-2">
@@ -46,7 +67,7 @@ function Pipeline({ project }: { project: Project }) {
         <span className="h-px flex-1 bg-white/10" />
       </div>
       <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
-        {['Interpreter', 'Bytecode VM', 'LLVM native', 'WebAssembly'].map((t) => (
+        {targets.map((t) => (
           <span key={t} className="font-code flex items-center gap-1.5 sm:gap-2 rounded-lg sm:rounded-xl border border-white/10 bg-black/20 px-2.5 py-1.5 sm:px-3 sm:py-2 text-[10.5px] sm:text-[11.5px] text-white/70">
             <span className="h-1.5 w-1.5 rounded-full shrink-0" style={{ background: project.accent }} />
             <span className="truncate">{t}</span>
@@ -55,10 +76,10 @@ function Pipeline({ project }: { project: Project }) {
       </div>
       <div className="mt-auto flex items-end justify-between pt-4 sm:pt-6">
         <div>
-          <p className="font-display text-[32px] sm:text-[44px] leading-none font-semibold tracking-[-0.05em] text-white">4,000+</p>
-          <p className="mt-1 text-[11px] sm:text-[12px] text-white/50">global downloads</p>
+          <p className="font-display text-[32px] sm:text-[44px] leading-none font-semibold tracking-[-0.05em] text-white">{metric}</p>
+          <p className="mt-1 text-[11px] sm:text-[12px] text-white/50">{metricSub}</p>
         </div>
-        <span className="lg-chip rounded-full px-2.5 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-[11px] text-white/60">22-package stdlib</span>
+        <span className="lg-chip rounded-full px-2.5 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-[11px] text-white/60">{badge}</span>
       </div>
     </div>
   );
@@ -161,11 +182,23 @@ function ProjectCard({ project, index, featured, onOpen }: { project: Project; i
 }
 
 export default function Projects() {
-  const [filter, setFilter] = useState<'All' | Category>('All');
+  const { isDevOps } = usePortfolio();
+  const activeProjects = isDevOps ? devopsProjects : projects;
+  const categories = isDevOps ? DEVOPS_CATEGORIES : CATEGORIES;
+
+  const [filter, setFilter] = useState<string>('All');
   const [activeId, setActiveId] = useState<string | null>(null);
 
-  const list = useMemo(() => (filter === 'All' ? projects : projects.filter((p) => p.categories.includes(filter))), [filter]);
-  const active = projects.find((p) => p.id === activeId) ?? null;
+  useEffect(() => {
+    setFilter('All');
+    setActiveId(null);
+  }, [isDevOps]);
+
+  const list = useMemo(
+    () => (filter === 'All' ? activeProjects : activeProjects.filter((p) => (p.categories as string[]).includes(filter))),
+    [filter, activeProjects]
+  );
+  const active = activeProjects.find((p) => p.id === activeId) ?? null;
 
   useEffect(() => {
     const onOpen = (e: Event) => setActiveId((e as CustomEvent<string>).detail);
@@ -174,8 +207,8 @@ export default function Projects() {
   }, []);
 
   const navigate = (dir: 1 | -1) => {
-    const i = projects.findIndex((p) => p.id === activeId);
-    setActiveId(projects[(i + dir + projects.length) % projects.length].id);
+    const i = activeProjects.findIndex((p) => p.id === activeId);
+    setActiveId(activeProjects[(i + dir + activeProjects.length) % activeProjects.length].id);
   };
 
   return (
@@ -183,10 +216,14 @@ export default function Projects() {
       <Container>
         <SectionHeading
           index="02"
-          eyebrow="Selected work"
-          title="Selected"
-          accent="works."
-          description="Languages, AI tooling and commercial platforms — each one designed, engineered and shipped end to end."
+          eyebrow={isDevOps ? 'CI/CD & Cloud Infrastructure' : 'Selected work'}
+          title={isDevOps ? 'Cloud &' : 'Selected'}
+          accent={isDevOps ? 'pipelines.' : 'works.'}
+          description={
+            isDevOps
+              ? 'Automated deployment pipelines, ephemeral container harnesses, and hardened production runtimes.'
+              : 'Languages, AI tooling and commercial platforms — each one designed, engineered and shipped end to end.'
+          }
           aside={
             <div className="relative max-w-full">
               <div
@@ -194,9 +231,9 @@ export default function Projects() {
                 aria-label="Filter projects"
                 className="lg lg-spec no-scrollbar flex max-w-full items-center gap-1 overflow-x-auto rounded-full p-1 scroll-smooth overscroll-x-contain [-webkit-overflow-scrolling:touch]"
               >
-                {CATEGORIES.map((c) => {
+                {categories.map((c) => {
                   const on = filter === c;
-                  const count = c === 'All' ? projects.length : projects.filter((p) => p.categories.includes(c)).length;
+                  const count = c === 'All' ? activeProjects.length : activeProjects.filter((p) => (p.categories as string[]).includes(c)).length;
                   return (
                     <button
                       key={c}
@@ -225,12 +262,12 @@ export default function Projects() {
           }
         />
 
-        <div key={filter} className="grid gap-4 sm:gap-5 md:grid-cols-2">
+        <div key={`${isDevOps}-${filter}`} className="grid gap-4 sm:gap-5 md:grid-cols-2">
           {list.map((p, i) => (
             <ProjectCard
               key={p.id}
               project={p}
-              index={projects.indexOf(p)}
+              index={activeProjects.indexOf(p)}
               featured={filter === 'All' && i === 0}
               onOpen={() => setActiveId(p.id)}
             />
@@ -242,8 +279,8 @@ export default function Projects() {
         <Suspense fallback={null}>
           <CaseStudyModal
             project={active}
-            index={projects.indexOf(active)}
-            total={projects.length}
+            index={activeProjects.indexOf(active)}
+            total={activeProjects.length}
             onClose={() => setActiveId(null)}
             onNavigate={navigate}
           />

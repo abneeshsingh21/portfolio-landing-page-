@@ -5,6 +5,8 @@ export const EMAIL = 'singhabneesh250@gmail.com';
 /** Resolve a /public asset against Vite's base URL (works on sub-path hosts). */
 export const asset = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`;
 
+export const SWE_RESUME_URL = asset('resume.pdf');
+export const DEVOPS_RESUME_URL = asset('devops-resume.pdf');
 export const RESUME_URL = asset('resume.pdf');
 
 export const LINKS = {

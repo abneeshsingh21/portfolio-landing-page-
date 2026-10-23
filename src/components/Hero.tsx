@@ -5,7 +5,9 @@ import { Container, GlassButton, GlassLink } from './ui';
 import { useCountUp } from '../hooks/useCountUp';
 import { useTypewriter } from '../hooks/useTypewriter';
 import { heroStats } from '../lib/data';
-import { INTRO_DELAY, LINKS, RESUME_URL, canHover, copyEmail, prefersReducedMotion, scrollToId } from '../lib/site';
+import { DEVOPS_PHRASES, devopsHeroStats } from '../lib/devops-data';
+import { INTRO_DELAY, LINKS, canHover, copyEmail, prefersReducedMotion, scrollToId } from '../lib/site';
+import { usePortfolio } from '../context/PortfolioContext';
 
 const PHRASES = [
   'generative AI & agentic systems.',
@@ -119,8 +121,11 @@ function useHeroMotion() {
 }
 
 export default function Hero() {
-  const typed = useTypewriter(PHRASES, { startDelay: INTRO_DELAY + 900 });
+  const { isDevOps, resumeUrl } = usePortfolio();
+  const phrases = isDevOps ? DEVOPS_PHRASES : PHRASES;
+  const typed = useTypewriter(phrases, { startDelay: INTRO_DELAY + 900 });
   const { sectionRef, copyRef, demoRef, lightRef } = useHeroMotion();
+  const activeStats = isDevOps ? devopsHeroStats : heroStats;
 
   return (
     <section ref={sectionRef} id="top" className="relative flex min-h-[100svh] flex-col pt-28 pb-10 sm:pt-36 lg:pt-40">
@@ -146,7 +151,9 @@ export default function Hero() {
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                   Open to work
                 </span>
-                <span className="text-[12.5px] text-white/75">Agentic AI &amp; Systems Engineer</span>
+                <span className="text-[12.5px] text-white/75">
+                  {isDevOps ? 'DevOps & Cloud Engineering Intern' : 'Agentic AI & Systems Engineer'}
+                </span>
               </span>
             </div>
 
@@ -158,7 +165,8 @@ export default function Hero() {
               </span>
               <span className="line-mask">
                 <span className="line-rise" style={d(170)}>
-                  <span className="font-accent text-iridescent">intelligent</span> systems
+                  <span className="font-accent text-iridescent">{isDevOps ? 'resilient' : 'intelligent'}</span>{' '}
+                  {isDevOps ? 'cloud' : 'systems'}
                 </span>
               </span>
               <span className="line-mask">
@@ -169,12 +177,13 @@ export default function Hero() {
             </h1>
 
             <p className="rise mt-7 max-w-[560px] text-[16px] leading-[1.7] text-white/70 sm:text-[18px]" style={d(420)}>
-              Hey, I’m <span className="font-semibold text-white">Abneesh Singh</span>. I build{' '}
+              Hey, I’m <span className="font-semibold text-white">Abneesh Singh</span>. I {isDevOps ? 'engineer' : 'build'}{' '}
               <span className="text-white">
                 {typed}
                 <span className="caret text-[#9fd0ff]" />
               </span>
-              <br className="hidden sm:block" /> <span className="text-white/50">What are we building next?</span>
+              <br className="hidden sm:block" />{' '}
+              <span className="text-white/50">{isDevOps ? 'What are we deploying next?' : 'What are we building next?'}</span>
             </p>
             </div>
 
@@ -182,8 +191,8 @@ export default function Hero() {
               <GlassButton variant="primary" size="md" className="sm:h-[52px] sm:px-7" iconRight="arrowRight" onClick={() => scrollToId('projects')}>
                 View projects
               </GlassButton>
-              <GlassLink href={RESUME_URL} external size="md" className="sm:h-[52px] sm:px-7" icon="download">
-                Résumé
+              <GlassLink href={resumeUrl} external size="md" className="sm:h-[52px] sm:px-7" icon="download">
+                {isDevOps ? 'DevOps Résumé' : 'Résumé'}
               </GlassLink>
               <GlassButton size="md" className="sm:h-[52px] sm:px-7" icon="copy" onClick={() => void copyEmail()} aria-label="Copy email address">
                 <span className="hidden sm:inline">Copy email</span>
@@ -216,7 +225,7 @@ export default function Hero() {
           {/* Live demo */}
           <div className="rise hidden lg:col-span-5 lg:block" style={d(360)}>
             <div ref={demoRef} style={{ willChange: 'transform' }}>
-              <HeroTerminal startDelay={INTRO_DELAY} />
+              <HeroTerminal startDelay={INTRO_DELAY} isDevOps={isDevOps} />
             </div>
           </div>
         </div>
@@ -224,7 +233,7 @@ export default function Hero() {
         {/* Stats */}
         <div className="rise mt-8 sm:mt-16" style={d(700)}>
           <div className="lg-prism grid grid-cols-2 overflow-hidden rounded-[20px] sm:rounded-[28px] md:grid-cols-4">
-            {heroStats.map((s, i) => (
+            {activeStats.map((s, i) => (
               <div
                 key={s.label}
                 className={`${i % 2 === 0 ? 'border-r border-white/[0.08]' : ''} ${i < 2 ? 'border-b border-white/[0.08] md:border-b-0' : ''} ${

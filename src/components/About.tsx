@@ -2,7 +2,9 @@ import Icon from './Icon';
 import { Monogram } from './Navbar';
 import { Container, GlassButton, GlassLink, Reveal, SectionHeading } from './ui';
 import { focusAreas } from '../lib/data';
-import { LINKS, RESUME_URL, copyEmail, scrollToId } from '../lib/site';
+import { devopsFocusAreas } from '../lib/devops-data';
+import { LINKS, copyEmail, scrollToId } from '../lib/site';
+import { usePortfolio } from '../context/PortfolioContext';
 
 const card = 'lg-prism lg-spec lg-glow rounded-[22px] sm:rounded-[30px] p-4.5 sm:p-7 lg:p-8';
 
@@ -13,32 +15,55 @@ const now = [
 ];
 
 export default function About() {
+  const { isDevOps, resumeUrl } = usePortfolio();
+  const activeFocus = isDevOps ? devopsFocusAreas : focusAreas;
+
   return (
     <section id="about" className="relative scroll-mt-24 py-12 sm:py-20 lg:py-28">
       <Container>
         <SectionHeading
           index="01"
           eyebrow="About"
-          title="Engineering at the boundary of"
-          accent="machine performance & human intent."
+          title={isDevOps ? 'Engineering scalable pipelines at' : 'Engineering at the boundary of'}
+          accent={isDevOps ? 'cloud reliability & automation.' : 'machine performance & human intent.'}
         />
 
         <div className="grid gap-3 sm:gap-5 lg:grid-cols-12">
           {/* Lead */}
           <Reveal className={`${card} lg:col-span-8`}>
-            <p className="text-[16px] leading-[1.65] font-light text-white/85 sm:text-[20px] lg:text-[22px]">
-              I’m a software engineer and open-source creator focused on{' '}
-              <span className="font-medium text-white">high-performance systems</span> and{' '}
-              <span className="font-medium text-white">practical AI</span>. With strong roots in C++, SQL and modern Generative AI,
-              my goal is to make computing intuitive and accessible.
-            </p>
-            <div className="hairline my-4 sm:my-7" />
-            <p className="text-[13.5px] leading-[1.75] text-white/60 sm:text-[15.5px] sm:leading-[1.85]">
-              I created <span className="text-white">EPL</span> (English Programming Language), an open-source language that lets
-              anyone code in plain English and has reached over 4,000 global downloads — and{' '}
-              <span className="text-white">NeuroShell</span>, an intelligent terminal that pairs a native C++ engine with AI to turn
-              plain English into safe command-line execution.
-            </p>
+            {isDevOps ? (
+              <>
+                <p className="text-[16px] leading-[1.65] font-light text-white/85 sm:text-[20px] lg:text-[22px]">
+                  I’m a software engineer and open-source creator focused on{' '}
+                  <span className="font-medium text-white">cloud infrastructure, containerization</span>, and{' '}
+                  <span className="font-medium text-white">automated CI/CD pipelines</span>. With strong foundations in Docker,
+                  Linux, GitHub Actions, and Microsoft Azure, my goal is to build reliable, reproducible deployment systems.
+                </p>
+                <div className="hairline my-4 sm:my-7" />
+                <p className="text-[13.5px] leading-[1.75] text-white/60 sm:text-[15.5px] sm:leading-[1.85]">
+                  I engineered automated database test harnesses for <span className="text-white">Syting</span> running 89 sequential SQL
+                  migrations in ephemeral PostgreSQL containers with exit-trap teardowns, built multi-OS matrix CI/CD workflows for{' '}
+                  <span className="text-white">EPL</span> deploying to Azure Container Apps, and hardened Docker runtimes for{' '}
+                  <span className="text-white">NeuroShell</span> using non-root security contexts.
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-[16px] leading-[1.65] font-light text-white/85 sm:text-[20px] lg:text-[22px]">
+                  I’m a software engineer and open-source creator focused on{' '}
+                  <span className="font-medium text-white">high-performance systems</span> and{' '}
+                  <span className="font-medium text-white">practical AI</span>. With strong roots in C++, SQL and modern Generative AI,
+                  my goal is to make computing intuitive and accessible.
+                </p>
+                <div className="hairline my-4 sm:my-7" />
+                <p className="text-[13.5px] leading-[1.75] text-white/60 sm:text-[15.5px] sm:leading-[1.85]">
+                  I created <span className="text-white">EPL</span> (English Programming Language), an open-source language that lets
+                  anyone code in plain English and has reached over 4,000 global downloads — and{' '}
+                  <span className="text-white">NeuroShell</span>, an intelligent terminal that pairs a native C++ engine with AI to turn
+                  plain English into safe command-line execution.
+                </p>
+              </>
+            )}
           </Reveal>
 
           {/* Profile */}
@@ -47,7 +72,9 @@ export default function About() {
               <Monogram size={46} />
               <div>
                 <p className="font-display text-[18px] font-semibold text-white sm:text-[20px]">Abneesh Singh</p>
-                <p className="text-[11.5px] text-white/50 sm:text-[12.5px]">Agentic AI &amp; Systems Engineer</p>
+                <p className="text-[11.5px] text-white/50 sm:text-[12.5px]">
+                  {isDevOps ? 'DevOps & Cloud Engineering Intern' : 'Agentic AI & Systems Engineer'}
+                </p>
               </div>
             </div>
             <div className="lg-chip mt-4 sm:mt-6 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/15 shadow-[inset_0_1px_1px_rgba(255,255,255,0.25)]">
@@ -63,8 +90,8 @@ export default function About() {
               </div>
             </div>
             <div className="mt-auto flex flex-wrap gap-2 pt-4 sm:pt-6">
-              <GlassLink href={RESUME_URL} external size="sm" icon="file" magnetic={false}>
-                Résumé
+              <GlassLink href={resumeUrl} external size="sm" icon="file" magnetic={false}>
+                {isDevOps ? 'DevOps Résumé' : 'Résumé'}
               </GlassLink>
               <GlassButton size="sm" variant="ghost" icon="copy" magnetic={false} onClick={() => void copyEmail()}>
                 Copy email
@@ -129,7 +156,7 @@ export default function About() {
 
           {/* Focus areas */}
           <div className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:col-span-12 lg:grid-cols-4">
-            {focusAreas.map((f, i) => (
+            {activeFocus.map((f, i) => (
               <Reveal key={f.title} delay={i * 70} className="lg lg-dim lg-spec lg-glow group rounded-[20px] p-3.5 sm:rounded-[26px] sm:p-6">
                 <span className="lg-chip grid h-9 w-9 sm:h-11 sm:w-11 place-items-center rounded-xl sm:rounded-2xl text-white/80 transition-colors duration-300 group-hover:text-white">
                   <Icon name={f.icon} size={17} />

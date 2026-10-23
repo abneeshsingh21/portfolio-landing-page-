@@ -3,6 +3,7 @@ import Icon from './Icon';
 import { BeamEffect } from './ui';
 import { useTilt } from '../hooks/usePointerFx';
 import { prefersReducedMotion } from '../lib/site';
+import { devopsTerminalScenes } from '../lib/devops-data';
 
 type Kind = 'out' | 'ok' | 'block' | 'info';
 interface Scene {
@@ -45,14 +46,21 @@ const tone: Record<Kind, string> = {
 
 const glyph: Record<Kind, string> = { out: '→', info: '·', ok: '✓', block: '✕' };
 
-/** Animated NeuroShell session: plain English in, safe shell out. */
-export default function HeroTerminal({ startDelay = 0 }: { startDelay?: number }) {
+/** Animated NeuroShell / CI Runner session: plain English in, safe shell / pipeline out. */
+export default function HeroTerminal({ startDelay = 0, isDevOps = false }: { startDelay?: number; isDevOps?: boolean }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const tiltRef = useRef<HTMLDivElement>(null);
   useTilt(tiltRef, 6);
+  const activeScenes = isDevOps ? devopsTerminalScenes : SCENES;
   const [scene, setScene] = useState(0);
-  const [typed, setTyped] = useState(() => (prefersReducedMotion() ? SCENES[0].prompt.length : 0));
-  const [shown, setShown] = useState(() => (prefersReducedMotion() ? SCENES[0].lines.length : 0));
+  const [typed, setTyped] = useState(() => (prefersReducedMotion() ? activeScenes[0].prompt.length : 0));
+  const [shown, setShown] = useState(() => (prefersReducedMotion() ? activeScenes[0].lines.length : 0));
+
+  useEffect(() => {
+    setScene(0);
+    setTyped(0);
+    setShown(0);
+  }, [isDevOps]);
 
   useEffect(() => {
     if (prefersReducedMotion()) return;
@@ -71,7 +79,7 @@ export default function HeroTerminal({ startDelay = 0 }: { startDelay?: number }
     };
 
     const typeNext = () => {
-      const sc = SCENES[s];
+      const sc = activeScenes[s];
       if (c < sc.prompt.length) {
         c++;
         setTyped(c);
@@ -81,7 +89,7 @@ export default function HeroTerminal({ startDelay = 0 }: { startDelay?: number }
       }
     };
     const showNext = () => {
-      const sc = SCENES[s];
+      const sc = activeScenes[s];
       if (l < sc.lines.length) {
         l++;
         setShown(l);
@@ -91,7 +99,7 @@ export default function HeroTerminal({ startDelay = 0 }: { startDelay?: number }
       }
     };
     const nextScene = () => {
-      s = (s + 1) % SCENES.length;
+      s = (s + 1) % activeScenes.length;
       c = 0;
       l = 0;
       setScene(s);
@@ -105,9 +113,9 @@ export default function HeroTerminal({ startDelay = 0 }: { startDelay?: number }
       clearTimeout(t);
       io.disconnect();
     };
-  }, [startDelay]);
+  }, [startDelay, activeScenes]);
 
-  const sc = SCENES[scene];
+  const sc = activeScenes[scene];
   const typing = typed < sc.prompt.length;
 
   return (
@@ -115,7 +123,7 @@ export default function HeroTerminal({ startDelay = 0 }: { startDelay?: number }
       <div ref={tiltRef} style={{ transformStyle: 'preserve-3d' }}>
         <div
           className="lg-preloader lg-spec group relative overflow-hidden rounded-[28px] shadow-[0_24px_70px_-15px_rgba(0,0,0,0.8),inset_0_1.5px_1.5px_0_rgba(255,255,255,0.45)]"
-          aria-label="NeuroShell demo session"
+          aria-label={isDevOps ? 'CI Runner demo session' : 'NeuroShell demo session'}
           role="img"
         >
           {/* Subtle perimeter chromatic beam */}
@@ -128,9 +136,11 @@ export default function HeroTerminal({ startDelay = 0 }: { startDelay?: number }
               <span className="h-2.5 w-2.5 rounded-full bg-[#ffd166] shadow-[0_0_8px_rgba(255,209,102,0.7),inset_0_1px_1px_rgba(255,255,255,0.8)]" />
               <span className="h-2.5 w-2.5 rounded-full bg-[#06d6a0] shadow-[0_0_8px_rgba(6,214,160,0.7),inset_0_1px_1px_rgba(255,255,255,0.8)]" />
             </div>
-            <span className="font-code text-[11px] text-white/55">neuroshell — ~/projects</span>
+            <span className="font-code text-[11px] text-white/55">
+              {isDevOps ? 'ci-runner — ~/pipelines' : 'neuroshell — ~/projects'}
+            </span>
             <span className="lg-chip font-code rounded-full px-2.5 py-0.5 text-[10px] text-white/70 border border-white/15 shadow-[inset_0_1px_1px_rgba(255,255,255,0.25)]">
-              C++20
+              {isDevOps ? 'GitHub Actions' : 'C++20'}
             </span>
           </div>
 

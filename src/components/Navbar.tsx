@@ -5,7 +5,8 @@ import { ripple } from '../hooks/usePointerFx';
 import { useScrollLock } from '../hooks/useScrollLock';
 import { useActiveSection } from '../hooks/useActiveSection';
 import { navLinks } from '../lib/data';
-import { EMAIL, LINKS, RESUME_URL, openInstallPrompt, openPalette, scrollToId } from '../lib/site';
+import { EMAIL, LINKS, openInstallPrompt, openPalette, scrollToId } from '../lib/site';
+import { usePortfolio } from '../context/PortfolioContext';
 
 export function Monogram({ size = 36 }: { size?: number }) {
   return (
@@ -34,6 +35,7 @@ export function Monogram({ size = 36 }: { size?: number }) {
 }
 
 export default function Navbar() {
+  const { isDevOps, setMode, resumeUrl } = usePortfolio();
   const section = useActiveSection();
   const active = section === 'top' ? '' : section;
   const [hovered, setHovered] = useState<string | null>(null);
@@ -129,7 +131,7 @@ export default function Navbar() {
                   <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400/70" />
                   <span className="relative h-1.5 w-1.5 rounded-full bg-emerald-400" />
                 </span>
-                Open to opportunities
+                {isDevOps ? 'DevOps & Cloud Intern' : 'Open to opportunities'}
               </span>
             </span>
           </a>
@@ -173,6 +175,32 @@ export default function Navbar() {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
+            {/* Mode Switcher Pill */}
+            <div className={`${pill} lg-spec relative hidden h-12 items-center rounded-full p-1 sm:flex`}>
+              <button
+                type="button"
+                onClick={() => setMode('swe')}
+                aria-label="Switch to Software Engineering Mode"
+                className={`relative z-[1] flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11.5px] font-medium transition-all duration-300 ${
+                  !isDevOps ? 'text-white bg-white/15 shadow-[0_0_12px_rgba(159,208,255,0.35)]' : 'text-white/50 hover:text-white/80'
+                }`}
+              >
+                <span>⚡</span>
+                <span>SWE</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode('devops')}
+                aria-label="Switch to DevOps Mode"
+                className={`relative z-[1] flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11.5px] font-medium transition-all duration-300 ${
+                  isDevOps ? 'text-emerald-200 bg-emerald-500/25 shadow-[0_0_12px_rgba(143,240,214,0.35)]' : 'text-white/50 hover:text-white/80'
+                }`}
+              >
+                <span>☁️</span>
+                <span>DevOps</span>
+              </button>
+            </div>
+
             <button
               type="button"
               onClick={openPalette}
@@ -217,6 +245,37 @@ export default function Navbar() {
         <>
           <div className="anim-fade fixed inset-0 z-[45] bg-black/45 backdrop-blur-[2px] md:hidden" onClick={() => setMenu(false)} aria-hidden="true" />
           <div id="mobile-menu" className="lg lg-strong anim-drop fixed inset-x-3 top-[76px] z-[46] rounded-[28px] p-2 md:hidden">
+            {/* Mobile Mode Switcher */}
+            <div className="mx-2 my-1 flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] p-2">
+              <span className="text-[12px] font-medium text-white/70 pl-2">Focus Mode</span>
+              <div className="flex items-center gap-1 rounded-xl bg-black/40 p-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode('swe');
+                    setMenu(false);
+                  }}
+                  className={`rounded-lg px-2.5 py-1 text-[11px] font-semibold transition-colors ${
+                    !isDevOps ? 'bg-white/20 text-white' : 'text-white/40'
+                  }`}
+                >
+                  ⚡ SWE
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode('devops');
+                    setMenu(false);
+                  }}
+                  className={`rounded-lg px-2.5 py-1 text-[11px] font-semibold transition-colors ${
+                    isDevOps ? 'bg-emerald-500/30 text-emerald-300' : 'text-white/40'
+                  }`}
+                >
+                  ☁️ DevOps
+                </button>
+              </div>
+            </div>
+
             <nav aria-label="Mobile" className="flex flex-col">
               {navLinks.map((l, i) => (
                 <button
@@ -236,8 +295,8 @@ export default function Navbar() {
             </nav>
             <div className="hairline my-2" />
             <div className="grid grid-cols-2 gap-2 p-2">
-              <GlassLink href={RESUME_URL} external size="md" icon="file" magnetic={false}>
-                Résumé
+              <GlassLink href={resumeUrl} external size="md" icon="file" magnetic={false}>
+                {isDevOps ? 'DevOps Résumé' : 'Résumé'}
               </GlassLink>
               <GlassButton
                 size="md"

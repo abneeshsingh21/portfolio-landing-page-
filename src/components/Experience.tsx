@@ -1,8 +1,14 @@
 import Icon from './Icon';
 import { Container, Reveal, SectionHeading } from './ui';
 import { certifications, competencies, principles } from '../lib/data';
+import { devopsCompetencies, devopsPrinciples } from '../lib/devops-data';
+import { usePortfolio } from '../context/PortfolioContext';
 
 export default function Experience() {
+  const { isDevOps } = usePortfolio();
+  const activeCompetencies = isDevOps ? devopsCompetencies : competencies;
+  const activePrinciples = isDevOps ? devopsPrinciples : principles;
+
   return (
     <>
       {/* Architecture */}
@@ -10,14 +16,18 @@ export default function Experience() {
         <Container>
           <SectionHeading
             index="03"
-            eyebrow="Core competencies"
-            title="Architecture,"
+            eyebrow={isDevOps ? 'Core competencies' : 'Core competencies'}
+            title={isDevOps ? 'Infrastructure,' : 'Architecture,'}
             accent="by design."
-            description="I architect reliable, high-performance systems at the intersection of modern C++ efficiency, relational database design and Generative AI workflows — building intuitive developer tools and scalable platforms with real-world impact."
+            description={
+              isDevOps
+                ? 'I engineer reliable, automated cloud deployment pipelines at the intersection of container isolation, least-privilege security gates, and Microsoft Azure cloud services.'
+                : 'I architect reliable, high-performance systems at the intersection of modern C++ efficiency, relational database design and Generative AI workflows — building intuitive developer tools and scalable platforms with real-world impact.'
+            }
           />
 
           <div className="grid gap-3.5 sm:gap-5 md:grid-cols-2">
-            {competencies.map((c, i) => (
+            {activeCompetencies.map((c, i) => (
               <Reveal key={c.number} delay={(i % 2) * 90} className="lg-prism lg-spec lg-glow group relative flex flex-col overflow-hidden rounded-[22px] p-4.5 sm:rounded-[30px] sm:p-8">
                 <div className="flex items-start justify-between">
                   <span className="lg-chip grid h-10 w-10 sm:h-12 sm:w-12 place-items-center rounded-xl sm:rounded-2xl text-white/85 border border-white/15 shadow-[inset_0_1px_1px_rgba(255,255,255,0.25)] transition-transform duration-500 group-hover:scale-105">
@@ -49,7 +59,7 @@ export default function Experience() {
             <div className="relative mt-5 sm:mt-7">
               <span aria-hidden="true" className="hairline absolute top-[15px] right-0 left-0 hidden lg:block" />
               <ol className="relative grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
-                {principles.map((p, i) => (
+                {activePrinciples.map((p, i) => (
                   <li key={p.title} className="relative">
                     <span
                       className="font-code relative grid h-[28px] w-[28px] sm:h-[30px] sm:w-[30px] place-items-center rounded-full text-[10.5px] sm:text-[11px] text-[#07070b] font-bold shadow-[0_0_12px_rgba(159,208,255,0.4)]"

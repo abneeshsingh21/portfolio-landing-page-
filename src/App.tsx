@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { PortfolioProvider } from './context/PortfolioContext';
 import { Ambient, GlassFilters } from './components/Atmosphere';
 import BackgroundVideo from './components/BackgroundVideo';
 import Cursor from './components/Cursor';
@@ -29,7 +30,7 @@ function useRefraction() {
   }, []);
 }
 
-export default function App() {
+function PortfolioApp() {
   useRefraction();
   useSpecularTracking();
 
@@ -62,5 +63,13 @@ export default function App() {
       <SectionRail />
       <BackToTop />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <PortfolioProvider>
+      <PortfolioApp />
+    </PortfolioProvider>
   );
 }

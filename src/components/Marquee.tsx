@@ -1,6 +1,8 @@
 import Icon from './Icon';
 import { Container } from './ui';
 import { stack } from '../lib/data';
+import { devopsStack } from '../lib/devops-data';
+import { usePortfolio } from '../context/PortfolioContext';
 
 function Row({ items, reverse = false, speed = 48 }: { items: string[]; reverse?: boolean; speed?: number }) {
   const doubled = [...items, ...items];
@@ -23,9 +25,11 @@ function Row({ items, reverse = false, speed = 48 }: { items: string[]; reverse?
 }
 
 export default function Marquee() {
-  const half = Math.ceil(stack.length / 2);
-  const a = stack.slice(0, half);
-  const b = stack.slice(half);
+  const { isDevOps } = usePortfolio();
+  const activeStack = isDevOps ? devopsStack : stack;
+  const half = Math.ceil(activeStack.length / 2);
+  const a = activeStack.slice(0, half);
+  const b = activeStack.slice(half);
   return (
     <section aria-label="Core stack" className="relative py-6 sm:py-10">
       <Container>

@@ -2,11 +2,14 @@ import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent a
 import Icon, { type IconName } from './Icon';
 import { useScrollLock } from '../hooks/useScrollLock';
 import { projects } from '../lib/data';
+import { devopsProjects } from '../lib/devops-data';
+import { usePortfolio } from '../context/PortfolioContext';
 import {
+  DEVOPS_RESUME_URL,
   EMAIL,
   EVENTS,
   LINKS,
-  RESUME_URL,
+  SWE_RESUME_URL,
   copyEmail,
   openExternal,
   openInstallPrompt,
@@ -34,10 +37,22 @@ export default function CommandPalette() {
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const restoreRef = useRef<HTMLElement | null>(null);
+  const { isDevOps, setMode, resumeUrl } = usePortfolio();
   useScrollLock(open);
+
+  const activeProjects = isDevOps ? devopsProjects : projects;
 
   const commands = useMemo<Command[]>(
     () => [
+      {
+        id: 'mode-switch',
+        group: 'Track switch',
+        label: isDevOps ? 'Switch to Software Engineering Mode' : 'Switch to DevOps & Cloud Mode',
+        hint: isDevOps ? 'Route: /' : 'Route: /devops',
+        icon: isDevOps ? 'code' : 'cloud',
+        keywords: 'devops cloud swe switch mode track engineer celebal',
+        run: () => setMode(isDevOps ? 'swe' : 'devops'),
+      },
       { id: 'nav-about', group: 'Navigate', label: 'About', icon: 'layers', run: () => scrollToId('about') },
       { id: 'nav-work', group: 'Navigate', label: 'Selected work', icon: 'layers', keywords: 'projects portfolio', run: () => scrollToId('projects') },
       { id: 'nav-arch', group: 'Navigate', label: 'Architecture & competencies', icon: 'layers', run: () => scrollToId('architecture') },
@@ -45,9 +60,24 @@ export default function CommandPalette() {
       { id: 'nav-contact', group: 'Navigate', label: 'Contact', icon: 'layers', keywords: 'hire message', run: () => scrollToId('contact') },
       { id: 'act-copy', group: 'Actions', label: 'Copy email address', hint: EMAIL, icon: 'copy', keywords: 'mail contact', run: () => void copyEmail() },
       { id: 'act-mail', group: 'Actions', label: 'Write an email', icon: 'mail', keywords: 'contact hire', run: () => (window.location.href = `mailto:${EMAIL}`) },
-      { id: 'act-resume', group: 'Actions', label: 'Open résumé (PDF)', icon: 'file', keywords: 'cv resume download', run: () => openExternal(RESUME_URL) },
+      {
+        id: 'act-resume-devops',
+        group: 'Actions',
+        label: 'Open DevOps Résumé (Celebal Tailored PDF)',
+        icon: 'file',
+        keywords: 'cv resume devops celebal cloud docker kubernetes',
+        run: () => openExternal(DEVOPS_RESUME_URL),
+      },
+      {
+        id: 'act-resume-swe',
+        group: 'Actions',
+        label: 'Open Software Engineering Résumé (Google SWE PDF)',
+        icon: 'file',
+        keywords: 'cv resume swe systems compilers ai google',
+        run: () => openExternal(SWE_RESUME_URL),
+      },
       { id: 'act-install', group: 'Actions', label: 'Install Portfolio App', hint: 'Add to home screen', icon: 'download', keywords: 'pwa mobile application download icon home screen install', run: () => openInstallPrompt() },
-      ...projects.map<Command>((p) => ({
+      ...activeProjects.map<Command>((p) => ({
         id: `proj-${p.id}`,
         group: 'Case studies',
         label: p.title,
@@ -64,7 +94,7 @@ export default function CommandPalette() {
       { id: 'ext-asworks', group: 'Elsewhere', label: 'ASWorks Studio', hint: 'asworks.studio', icon: 'bag', run: () => openExternal(LINKS.asworks) },
       { id: 'ext-langshift', group: 'Elsewhere', label: 'LangShift on VS Code Marketplace', icon: 'vscode', run: () => openExternal(LINKS.langshift) },
     ],
-    [],
+    [isDevOps, setMode, activeProjects],
   );
 
   const filtered = useMemo(() => {
